@@ -86,7 +86,7 @@ class SimplyHired_API {
 
 	function search( $number=10, $start=0 ) {
 
-		if( isset($this->onet) )
+		if( !empty($this->onet) )
 			$onet_filter = 'onet:(' . $this->onet . ')+';
 		//if( $this->is_usa ) 
 			$ssty= '&ssty=2';

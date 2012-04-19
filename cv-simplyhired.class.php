@@ -24,7 +24,10 @@ Based on Webstractions plugin.
 /* Constants - none as yet. */
 
 /* This class extends the SimplyHired_API class wrapper. */
-require_once ( 'simplyhired-api.class.php');
+require_once('simplyhired-api.class.php');
+
+/* This file contains utility functions for parsing XML. */
+require_once('lib/xmltools.php');
 
 /**
  * Main plugin class
@@ -80,18 +83,16 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		if ( $results->error  ) 
 			return $jobs_array; // If the results had an error, then return an empty array.
 		
-		$resultset = $results->rs;
-		
 		// Iterates over the r elements in the rs node of the XML document, setting the job values for each.
 		$i = 0;
-		foreach($resultset as $r) {
-		  $jobs_array[$i]['title'] = $r->jt;
-		  $jobs_array[$i]['org_name'] = $r->cn;
+		foreach($results->rs->r as $res) {
+		  $jobs_array[$i]['title'] = xt_getInnerXML($res->jt);
+		  //$jobs_array[$i]['org_name'] = xt_getInnerXML($res->cn);
 		  // @todo: get the url from the url attribute on src
 		  // @todo: get the location values from the attributes on loc
-		  $jobs_array[$i]['created'] = $r->dp;
-		  $jobs_array[$i]['changed'] = $r->ls;
-		  $jobs_array[$i]['description'] = $r->e;
+		  //$jobs_array[$i]['created'] = xt_getInnerXML($res->dp);
+		  //$jobs_array[$i]['changed'] = xt_getInnerXML($res->ls);
+		  //$jobs_array[$i]['description'] = xt_getInnerXML($res->e);
 		  $i++;
 		}
 		
