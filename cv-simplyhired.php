@@ -17,7 +17,7 @@ if ( class_exists( 'CV_SimplyHired_API' ) ) {
 	/* $cvsha->set_location('02124'); // search zipcode. */
 	$results = $cvsha->search(100);
 	// Print the query that was run.
-	$cvsha->print_api_call();
+	$cvsha->print_apicall();
 	// Print the error that was returned.
 	$cvsha->print_error();
 	$jobs = array();
