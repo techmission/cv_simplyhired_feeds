@@ -27,7 +27,7 @@ Based on Webstractions plugin.
 require_once('simplyhired-api.class.php');
 
 /* This file contains utility functions for parsing XML. */
-require_once('lib/xmltools.php');
+require_once('xmltools.php');
 
 /**
  * Main plugin class
@@ -87,12 +87,12 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		$i = 0;
 		foreach($results->rs->r as $res) {
 		  $jobs_array[$i]['title'] = xt_getInnerXML($res->jt);
-		  //$jobs_array[$i]['org_name'] = xt_getInnerXML($res->cn);
+		  $jobs_array[$i]['org_name'] = xt_getInnerXML($res->cn);
 		  // @todo: get the url from the url attribute on src
 		  // @todo: get the location values from the attributes on loc
-		  //$jobs_array[$i]['created'] = xt_getInnerXML($res->dp);
-		  //$jobs_array[$i]['changed'] = xt_getInnerXML($res->ls);
-		  //$jobs_array[$i]['description'] = xt_getInnerXML($res->e);
+		  $jobs_array[$i]['created'] = xt_getInnerXML($res->dp);
+		  $jobs_array[$i]['changed'] = xt_getInnerXML($res->ls);
+		  $jobs_array[$i]['description'] = xt_getInnerXML($res->e);
 		  $i++;
 		}
 		
