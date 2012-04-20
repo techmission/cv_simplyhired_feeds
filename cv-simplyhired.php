@@ -7,14 +7,19 @@
 
 // Load the class that does the actual requests to SimplyHired, via the API.
 require_once('cv-simplyhired.class.php');
+// Load the class for doing the inserts to the database.
+require_once('jobsdb.class.php');
 // Load Krumo for the sake of printing variables in debugging.
 require_once('krumo/class.krumo.php');
 
+// Define constants.
+define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs');
+
 /**
- * Initialize the class for SimplyHired CV.org integration, 
- * run query, then save.
+ * Initializes the class for SimplyHired CV.org integration, 
+ * set up search query, get back results, then save results to DB table.
  */
-if ( class_exists( 'CV_SimplyHired_API' ) ) {
+if (class_exists( 'CV_SimplyHired_API')) {
 	$options = array('publisher_id' => 30845,
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
 	$cvsha = new CV_SimplyHired_API($options);
@@ -34,6 +39,12 @@ if ( class_exists( 'CV_SimplyHired_API' ) ) {
 	krumo($jobs);
 	// Echo the jobs array.
     // $cvsha->printJobsResults();
+    
+	/* Test the connection to the jobs database. */
+	$jobsDb = new JobsDB();
+	$jobsDb->tableName = TABLE_FEEDS_JOBS;
+	$numRows = $jobsDb->countRecords();
+	krumo($numRows);
 }
 ?>
 </body>
