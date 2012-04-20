@@ -46,19 +46,23 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	/* Write the jobs array to the database. */
 	// Initialize the database handler.
 	$jobsDb = new JobsDB();
+	
 	// Set to log.
-	$jobsDb->isLogging = TRUE;
+	//$jobsDb->isLogging = TRUE;
 	// Set to dry run.
-	$jobsDb->isDryRun = TRUE;
+	//$jobsDb->isDryRun = TRUE;
 	// Get the database connection string.
 	//$jobsDb->getConnStr(TRUE);
+	
 	// Connect to the database;
 	$jobsDb->connect();
+	
 	// Set the table name to count/insert, etc.
 	//$jobsDb->tableName = TABLE_FEEDS_JOBS;
 	// Get the number of rows currently stored in 'tbl_feeds_jobs'
 	//$numRows = $jobsDb->countRecords();
 	//krumo($numRows);
+	
 	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs);
 	krumo($numInserted);
