@@ -95,6 +95,13 @@ class JobsDB {
   }
   
   /**
+   *  Return the current connection string. 
+   */
+  public function getConnStr($echo = FALSE) {
+  	$this->_echoOrReturn($this->connStr, $echo);
+  }
+  
+  /**
    * Return the tables that are currently part of the jobs feeds system, with their associated record types. 
    */
   public function getTables() {
@@ -247,11 +254,6 @@ class JobsDB {
   	  echo $e->getMessage();
   	}
   	return $lNumRows;
-  }
-  
-  /* Return the current connection string. */
-  public function getConnStr($echo = FALSE) {
-  	$this->_echoOrReturn($this->connStr, $echo);
   }
 
   private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = self::TYPE_INT, $pOperator = self::OP_IN) {

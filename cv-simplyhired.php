@@ -55,7 +55,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	}
 	
 	// Set to log.
-	$jobsDb->isLogging = TRUE;
+	$jobsDb->isLogging = FALSE;
 	// Set to dry run.
 	$jobsDb->isDryRun = FALSE;
 	// Get the database connection string.
@@ -71,8 +71,8 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	//krumo($numRows);
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
-	$numInserted = $jobsDb->createRecords($jobs);
-	krumo($numInserted);
+	//$numInserted = $jobsDb->createRecords($jobs);
+	//krumo($numInserted);
 	
 	// Delete old jobs records.
 	//$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
