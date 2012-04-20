@@ -28,18 +28,20 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$cvsha = new CV_SimplyHired_API($options);
 	$cvsha->setQuery('Christian'); // search Christian jobs.
 	$cvsha->setLocation('02124'); // search zipcode.
+	
 	// $results = $cvsha->doSearch(100);
 	// krumo($cvsha);
-	if(!empty($results->error)) {
+	/* if(!empty($results->error)) {
       $cvsha->printError();
-    }
+    } */
+	
     // In the background, run the query and turn the results into the proper format.
 	$jobs = array();
-	$jobs = $cvsha->getJobsArray();
+	//$jobs = $cvsha->getJobsArray();
 	
 	// Print the jobs array using Krumo.
 	// @todo: Remove when finished testing.
-	krumo($jobs);
+	// krumo($jobs);
 	// Echo the jobs array.
     // $cvsha->printJobsResults();
     
@@ -48,9 +50,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$jobsDb = new JobsDB();
 	
 	// Set to log.
-	//$jobsDb->isLogging = TRUE;
+	$jobsDb->isLogging = TRUE;
 	// Set to dry run.
-	//$jobsDb->isDryRun = TRUE;
+	$jobsDb->isDryRun = TRUE;
 	// Get the database connection string.
 	//$jobsDb->getConnStr(TRUE);
 	
@@ -64,8 +66,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	//krumo($numRows);
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
-	$numInserted = $jobsDb->createRecords($jobs);
-	krumo($numInserted);
+	//$numInserted = $jobsDb->createRecords($jobs);
+	//krumo($numInserted);
+	
+	// Delete old jobs records.
+	$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
+	krumo($numDeleted);
 }
 ?>
 </body>

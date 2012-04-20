@@ -14,6 +14,9 @@ class JobsDB {
   /* Record types that can be inserted/deleted. */
   const RECORDS_JOB = 0; // Job records - default.
 
+  /* Constants for operators. */
+  const OP_IN = 0;
+  
   /* Validation error codes. */
   const RES_ERROR_NOT_ARRAY = 1;
   const RES_ERROR_NO_MEMBERS = 2;
@@ -44,6 +47,10 @@ class JobsDB {
     if(!class_exists('PDO')) {
       throw new Exception('PDO class not available.');
     }
+    else if(!class_exists('PDO_Ext')) {
+      throw new Exception('PDO_Ext class not available.');
+    }
+    require_once('pdo_ext.class.php');
 
     // Set the configuration file.
     if(empty($pCfgFile)) {
@@ -79,7 +86,7 @@ class JobsDB {
   public function connect() {
   	// Use the connection string to connect to the database.
   	try {
-  		$this->dbh = new PDO($this->connStr, $this->dbInfo['username'], $this->dbInfo['password']);
+  		$this->dbh = new PDO_Ext($this->connStr, $this->dbInfo['username'], $this->dbInfo['password']);
   		// If set to logging, log that connection was successful.
   		if($this->isLogging == TRUE) {
   			echo 'Connected to database';
@@ -128,6 +135,51 @@ class JobsDB {
   }
 
   /**
+   * Delete records from the database that match certain values.
+   */
+  public function deleteRecords(string $pFieldName, array $pValues) {
+  	$lNumRows = FALSE; // Assume error condition to start.
+  	// Connect if no database handle.
+  	if($this->dbh == NULL) {
+  	  $this->connect();
+  	}
+  	// Set the table name to which to write, if not already set.
+  	// Default to the jobs table.
+  	if(empty($this->tableName)) {
+  	  $this->tableName = $this->_lookupTableName();
+  	}
+  	// Only prepare statement if there are values.
+  	if(count($pValues) == 0) {
+  	  return $lNumRows;
+  	}
+  	// Execute the query.
+  	try {
+  	  // Begin a transaction.
+  	  $this->dbh->beginTransaction();
+  	  $lPdoSql = $this->_buildDeleteStmt($this->TableName, $pFieldName, self::OP_IN);
+  	  // Debug the statement if logging.
+  	  if($this->isLogging && function_exists('krumo')) {
+  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
+  	  }
+  	  // Only do the insert if this is not a dry run.
+  	  if(!$this->isDryRun) {
+  	    $stmt = $this->dbh->prepare($lPdoSql);
+  	    $stmt->bindValue(':values', $pValues, PDO::PARAM_INT);
+  	    $stmt->execute();
+  	    $lNumRows = $stmt->rowCount();
+  	  }
+  	  // End the transaction.
+  	  $this->dbh->commit();
+  	}
+  	// Catch an error if there was one.
+  	catch(PDOException $e) {
+  	  $this->dbh->rollBack();
+  	  echo $e->getMessage();
+  	}
+  	return $lNumRows;
+  }
+  
+  /**
    * Write to the database an array of records. 
    * By default, write to the jobs table.
    */
@@ -144,6 +196,8 @@ class JobsDB {
     }
     // Validate that the records can be written to this table.
     $errors = $this->_validateRecords($records, $type);
+    // Add GUIDs to the records.
+    $records = $this->_addRecordGuids($records, $type);
     if($errors == FALSE) {
       // Actually create the records.
       $numRows = $this->_createRecords($records);
@@ -161,7 +215,7 @@ class JobsDB {
   	  // Note that for this to work, the first record in the set must have keys.
   	  $lRecord = current($records);
       $lFields = array_keys($lRecord);
-      $lPdoSql = $this->_buildStmt($lFields);
+      $lPdoSql = $this->_buildInsertStmt($this->tableName, $lFields);
       // Iterate and insert the records.
       // @todo: Bind them instead.
       foreach($records as $record) {
@@ -194,7 +248,14 @@ class JobsDB {
   	$this->_echoOrReturn($this->connStr, $echo);
   }
 
-  private function _buildStmt($pFields) {
+  private function _buildDeleteStmt($pTableName, $pFieldName, $pOperator = self::OP_IN) {
+  	if($pOperator == self::OP_IN) {
+  	  $lPdoSql = 'DELETE FROM ' . $pTableName . 'WHERE ' . $pFieldName . ' IN :values';
+  	}
+    return $lPdoSql;
+  }
+  
+  private function _buildInsertStmt($pTableName, $pFields) {
     $lFieldNamesStr = implode(',', $pFields);
     $lNamedParams = array();
     $lNamedParamsStr = '';
@@ -203,7 +264,7 @@ class JobsDB {
       $lNamedParams[] = ':' . $field;
     }
     $lNamedParamsStr = implode(',', $lNamedParams);
-    $lPdoSql = 'INSERT INTO ' . $this->tableName . '(' . $lFieldNamesStr . ') VALUES(' . $lNamedParamsStr . ')';
+    $lPdoSql = 'INSERT INTO ' . $pTableName . '(' . $lFieldNamesStr . ') VALUES(' . $lNamedParamsStr . ')';
     return $lPdoSql;
   }
   
@@ -216,7 +277,7 @@ class JobsDB {
   }
  
   /* Lookup the database table name by record type. */
-  private function _lookupTableName($type) {
+  private function _lookupTableName($type = self::RECORDS_JOB) {
     $lTableName = '';
     // By default, use tbl_feeds_jobs.
     switch($type) {
@@ -278,6 +339,27 @@ class JobsDB {
     
     // @todo: Actually check the records against the schema.
     return void;
+  }
+  
+  /* Only call this after records have been validated. */
+  private function _addRecordGuids($pRecords, $type = self::RECORDS_JOB) {
+  	$retRecords = array();
+  	$lGuid = '';
+  	$i = 0;
+  	foreach($pRecords as $record) {
+  	  // @todo: Make it possible to configure how GUID is generated.
+  	  if(!isset($record['guid']) || empty($record['guid'])) {
+  	  	// All records should have a source and a source GUID.
+  	  	// For now, it should be adequate to use source:source_GUID as the GUID.
+  	    if(!empty($record['source']) && !empty($record['source_guid'])) {
+  	      $lGuid = $record['source'] . ':' . $record['source_guid'];
+  	    }
+  	    $retRecords[$i] = $record;
+  	    $retRecords[$i]['guid'] = $lGuid;
+  	  }
+  	  $i++;
+  	}
+  	return $retRecords;
   }
   
   /*
