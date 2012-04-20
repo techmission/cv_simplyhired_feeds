@@ -17,7 +17,7 @@ class JobsDB {
   /* Validation error codes. */
   const RES_ERROR_NOT_ARRAY = 1;
   const RES_ERROR_NO_MEMBERS = 2;
-  const RES_ERROR_UNDEFINED_TABLE = 3
+  const RES_ERROR_UNDEFINED_TABLE = 3;
   const RES_ERROR_WRONG_TABLE = 4;
   const RES_ERROR_WRONG_DATA = 5;
 
@@ -146,7 +146,7 @@ class JobsDB {
     $lTableName = '';
     // By default, use tbl_feeds_jobs.
     switch($type) {
-      self::RECORDS_JOB:
+      case self::RECORDS_JOB:
       default:
         $lTableName = 'tbl_feeds_jobs'; 
     }
@@ -158,7 +158,7 @@ class JobsDB {
     $validation_errors = FALSE;
     // Check that there is a records array.
     if(!is_array($records)) {
-     $validation_errors[] = self:RES_ERR_NOT_ARRAY;
+     $validation_errors[] = self::RES_ERR_NOT_ARRAY;
     }
     // Check that it has members.
     else if(count($records) == 0) {
