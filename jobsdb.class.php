@@ -139,7 +139,7 @@ class JobsDB {
     }
     // Set the table name to which to write based on type,
     // if not already set.
-    if(is_empty($this->tableName)) {
+    if(empty($this->tableName)) {
       $this->tableName = $this->_lookupTableName($type);
     }
     // Validate that the records can be written to this table.
