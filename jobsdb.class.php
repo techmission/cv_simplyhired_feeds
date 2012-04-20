@@ -17,6 +17,14 @@ class JobsDB {
   /* Constants for operators. */
   const OP_IN = 0;
   
+  /* Constants for data types. */
+  const TYPE_INT = 0;
+  const TYPE_STRING = 1;
+  const TYPE_BOOL = 2; // Convert to 0 or 1
+  const TYPE_UNIXTIME = 3; // check if it is Unix timestamp first before inserting
+  const TYPE_ARRAY = 4; // must be serialized
+  const TYPE_OBJ = 5; // must be serialized
+  
   /* Validation error codes. */
   const RES_ERROR_NOT_ARRAY = 1;
   const RES_ERROR_NO_MEMBERS = 2;
@@ -237,9 +245,27 @@ class JobsDB {
   	$this->_echoOrReturn($this->connStr, $echo);
   }
 
-  private function _buildDeleteStmt($pTableName, $pFieldName, $pOperator = self::OP_IN) {
+  private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = TYPE_INT, $pOperator = self::OP_IN) {
   	if($pOperator == self::OP_IN) {
-  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN :values';
+  	  if(!is_array($pValue)) {
+  	  	$lValues = (array) $pValue;
+  	  }
+  	  else {
+  	  	$lValues = $pValue;
+  	  	$lValuesStr = '';
+  	  	// Prepare the values for the IN clause.
+  	  	if($pType == self::TYPE_INT) {
+  	  	  array_walk($lValues, $this->_valToInt($value));
+  	  	}
+  	  	else if($pType == self::TYPE_STRING) {
+  	  	  array_walk($lValues, $this->_valQuote($value));
+  	  	}
+  	  	else {
+  	  	  throw new Exception('Unsupported type.');
+  	  	}
+  	  	$lValuesStr = implode(',', $lValues);
+  	  }
+  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN (' . $lValuesStr . ')';
   	}
     return $lPdoSql;
   }
