@@ -71,12 +71,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	//krumo($numRows);
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
-	//$numInserted = $jobsDb->createRecords($jobs);
-	//krumo($numInserted);
+	$numInserted = $jobsDb->createRecords($jobs);
+	krumo($numInserted);
 	
 	// Delete old jobs records.
-	$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
-	krumo($numDeleted);
+	//$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
+	//krumo($numDeleted);
 }
 ?>
 </body>

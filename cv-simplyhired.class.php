@@ -33,6 +33,10 @@ require_once('xmltools.php');
  * Main plugin class
  */
 class CV_SimplyHired_API extends SimplyHired_API {
+	/* Constants. */
+	const SOURCE_NAME = 'simplyhired';
+	
+	/* Class variables. */
 
     private $jobsArray = array(); // only accessible through the methods
     
@@ -101,13 +105,18 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		$numJobs = 0;
 		$lJobsArray = array();
 		foreach($results->rs->r as $res) {
+		  // Source is always 'simplyhired'
+		  $lJobsArray[$i]['source'] = self::SOURCE_NAME;
 		  // Get the title.
 		  $lJobsArray[$i]['title'] = xt_getInnerXML($res->jt);
 		  // Get the organization name.
 		  $lJobsArray[$i]['org_name'] = xt_getInnerXML($res->cn);
-		  // Get the original url from the url attribute on the src element.
+		  // Get the original URL from the url attribute on the src element.
 		  $lJobsArray[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
+		  // Get the source GUID from that URL.
+		  $lJobsArray[$i]['source_guid'] = $this->_getSourceGuid($lJobsArray[$i]['referralurl']);
 		  // Get the location values from the attributes on loc element.
+		  // All of these don't necessarily have values all of the time.
 		  $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
 		  $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
 		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
@@ -117,6 +126,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
 		  // Get the job description.
 		  $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
+		  // Teaser should have same value as description, for this provider.
+		  $lJobsArray[$i]['teaser'] = $lJobsArray[$i]['description'];
 		  $i++;
 		}
 		
@@ -125,6 +136,19 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		
 		// Return the number of jobs in the array.
 		return $numJobs;
+	}
+	
+	private function _getSourceGuid($pUrl) {
+	  $lGuid = '';
+	  // Use a pattern with a PCRE named group to match the substring.
+	  // @see http://www.php.net/manual/en/function.preg-match.php#108117
+	  $lPattern = '/\/jobkey-?P<guid>(.*)\//';
+	  $lResults = array();
+	  preg_match($lPattern, $pUrl, $lResults);
+	  if(!empty($lResults['guid'])) {
+	  	$lGuid = $lResults['guid'];
+	  }
+	  return $lGuid;
 	}
 	
 	/**

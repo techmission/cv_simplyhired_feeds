@@ -40,14 +40,6 @@ class PDO_Ext extends PDO {
 	  }
     }
   }
-  
-  public static function _valToInt(&$value) {
-  	$value = (int) $value; 
-  }
-  
-  public static function _valQuote(&$value) {
-  	$value = PDO::quote($value);
-  }
 
  /**
    * ## EXAMPLE ##
@@ -58,4 +50,13 @@ class PDO_Ext extends PDO {
    * bindArrayValue($array,$req,$typeArray);
    * The function is more useful when you use limit clause because they need an integer.
    * */
+}
+
+/* This functions are not part of the class so they can be used as callbacks. */
+function val_toInt(&$value) {
+  $value = (int) $value;
+}
+
+function val_quote(&$value) {
+  $value = PDO::quote($value);
 }

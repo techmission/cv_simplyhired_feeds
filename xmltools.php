@@ -2,7 +2,8 @@
 
 /**
  * Gets innerXML from a string.
- * Based on a function on http://stackoverflow.com/questions/1937056 */
+ * Based on a function on http://stackoverflow.com/questions/1937056  
+ */
 function xt_getInnerXML($element)
 {
   $stripped = '';

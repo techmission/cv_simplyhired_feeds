@@ -153,7 +153,16 @@ class JobsDB {
   	try {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
-  	  $lPdoSql = $this->_buildDeleteStmt($this->tableName, $pFieldName, $pValues, $pType, self::OP_IN);
+  	  // Try to get a delete statement.
+  	  try {
+  	    $lPdoSql = $this->_buildDeleteStmt($this->tableName, $pFieldName, $pValues, $pType, self::OP_IN);
+  	  }
+  	  catch(Exception $e) {
+  	  	if($this->isLogging) {
+  	  	  echo $e->getMessage();
+  	  	}
+  	  	return $lNumRows;
+  	  }
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
   	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
@@ -255,10 +264,10 @@ class JobsDB {
   	  	$lValuesStr = '';
   	  	// Prepare the values for the IN clause.
   	  	if($pType == self::TYPE_INT) {
-  	  	  array_walk($lValues, PDO_Ext::_valToInt($value));
+  	  	  array_walk($lValues, 'val_toInt');
   	  	}
   	  	else if($pType == self::TYPE_STRING) {
-  	  	  array_walk($lValues, PDO_Ext::_valQuote($value));
+  	  	  array_walk($lValues, 'val_quote');
   	  	}
   	  	else {
   	  	  throw new Exception('Unsupported type.');
