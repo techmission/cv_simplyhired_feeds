@@ -159,7 +159,8 @@ class JobsDB {
   	  $this->dbh->beginTransaction();
   	  // Set up the PDO statement.
   	  // Note that for this to work, the first record in the set must have keys.
-      $lFields = array_keys($records[0]);
+  	  $lRecord = current($records);
+      $lFields = array_keys($lRecord);
       $lPdoSql = $this->_buildStmt($lFields);
       // Iterate and insert the records.
       // @todo: Bind them instead.
