@@ -25,6 +25,8 @@ function xt_getInnerXML($element)
      return "";
   $s3 = strrpos($xml_text,'<'); //get last closing "<"        
     $stripped = substr($xml_text,$s1+1,$s3-$s1-1);
+    // Decode any HTML entities.
+    $stripped = html_entity_decode($stripped);
     return $stripped;
 }
 
@@ -50,5 +52,7 @@ function xt_getAttrVal($element)
   $s3 = strrpos($xml_text,'"'); //get last closing '"'
     $stripped = substr($xml_text,$s1+2,$s3);
     $stripped = rtrim($stripped, '"');
+    // Decode any HTML entities.
+    $stripped = html_entity_decode($stripped);
     return $stripped;
 }
