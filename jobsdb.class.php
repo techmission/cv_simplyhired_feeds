@@ -46,7 +46,7 @@ class JobsDB {
     }
 
     // Set the configuration file.
-    if(is_empty($pCfgFile)) {
+    if(empty($pCfgFile)) {
       $this->cfgFile = self::CFG_FILE_DEFAULT;
     }
     else {
@@ -90,7 +90,7 @@ class JobsDB {
    */
   public function countRecords() {
   	$numRows = FALSE;
-  	if(is_empty($this->tableName)) {
+  	if(empty($this->tableName)) {
   	  return $numRows;
   	}
   	else {
