@@ -145,7 +145,7 @@ class JobsDB {
   	try {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
-  	  $lPdoSql = $this->_buildDeleteStmt($this->TableName, $pFieldName, self::OP_IN);
+  	  $lPdoSql = $this->_buildDeleteStmt($this->tableName, $pFieldName, self::OP_IN);
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
   	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
