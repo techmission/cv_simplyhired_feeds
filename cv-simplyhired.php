@@ -45,10 +45,10 @@ if (class_exists( 'CV_SimplyHired_API')) {
     
 	/* Test the connection to the jobs database. */
 	$jobsDb = new JobsDB();
+	$jobsDb->getConnStr(TRUE);
 	$jobsDb->tableName = TABLE_FEEDS_JOBS;
-	$numRows = $jobsDb->countRecords();
-	krumo($numRows);
-	krumo(0);
+	//$numRows = $jobsDb->countRecords();
+	//krumo($numRows);
 }
 ?>
 </body>
