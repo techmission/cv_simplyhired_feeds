@@ -85,6 +85,13 @@ class JobsDB {
   }
   
   /**
+   * Return the tables that are currently part of the jobs feeds system, with their associated record types. 
+   */
+  public function getTables() {
+  	return array('tbl_feeds_jobs' => self::RECORDS_JOB);
+  }
+  
+  /**
    *  Counts the number of records in a database table.
    *  @todo: Find a more efficient way to do this. 
    */
@@ -151,6 +158,11 @@ class JobsDB {
   	  $this->dbh->rollBack();
   	  echo $e->getMessage();
   	}
+  }
+  
+  /* Return the current connection string. */
+  public function getConnStr($echo = FALSE) {
+  	$this->_echoOrReturn($connStr, $echo);
   }
 
   private function _buildStmt($pFields) {
@@ -225,10 +237,6 @@ class JobsDB {
     $lTableSchema = $this->getSchema($this->tableName);
     // @todo: Actually check the records against the schema.
     return void;
-  }
-
-  public function getTables() {
-    return array('tbl_feeds_jobs' => self::RECORDS_JOB);
   }
   
   /*
@@ -321,13 +329,8 @@ class JobsDB {
   }
 
   /* Sets the connection string for connecting to the database. */
-  public function setConnStr() {
+  private function _setConnStr() {
     $this->connStr = 'mysql:host=' . $dbInfo['hostname'] . ';dbname=' . $dbInfo['db_name'];
-  }
-
-  /* Return the current connection string. */
-  public function getConnStr($echo = FALSE) {
-    $this->_echoOrReturn($connStr, $echo);
   }
 
   private function _echoOrReturn($var, $echo = FALSE) {
