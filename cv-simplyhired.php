@@ -15,6 +15,9 @@ require_once('krumo/class.krumo.php');
 // Define constants.
 define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs');
 
+// Temporarily display runtime errors to the screen.
+ini_set('display_errors', TRUE);
+
 /**
  * Initializes the class for SimplyHired CV.org integration, 
  * set up search query, get back results, then save results to DB table.
