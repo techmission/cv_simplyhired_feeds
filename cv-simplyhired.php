@@ -47,7 +47,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
     
 	/* Write the jobs array to the database. */
 	// Initialize the database handler.
-	$jobsDb = new JobsDB();
+	try {
+	  $jobsDb = new JobsDB();
+	}
+	catch(Exception $e) {
+	  echo $e->getMessage();
+	}
 	
 	// Set to log.
 	$jobsDb->isLogging = TRUE;

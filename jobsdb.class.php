@@ -25,12 +25,13 @@ class JobsDB {
   const RES_ERROR_WRONG_DATA = 5;
 
   /* Define class variables. */
+  private $cfgFile; // string: the configuration file containing the connection information
   private $dbInfo; // array: connection information for database 
   private $connStr; // string: connection string
 
   public $isLogging = FALSE; // boolean: whether to log data
   public $isDryRun = FALSE; // boolean: whether this is just a dry run - i.e., no CUD functions executed on DB
-  public $cfgFile; // string: the configuration file containing the connection information
+
   public $tableName; // string: the table to which to write
   public $dbh = NULL; // resource: the database handle (used to do writes)
 
@@ -43,29 +44,17 @@ class JobsDB {
    * @return void
    */
   function __construct($pCfgFile = '') {
-    // Check requirements.    
-    if(!class_exists('PDO')) {
-      throw new Exception('PDO class not available.');
+    // Check requirements and toss the exception back to the caller.
+    try {
+  	  $this->_checkRequirements();
     }
-    else if(!class_exists('PDO_Ext')) {
-      throw new Exception('PDO_Ext class not available.');
+    catch(Exception $e) {
+      throw new Exception($e->getMessage());
     }
-    require_once('pdo_ext.class.php');
 
     // Set the configuration file.
-    if(empty($pCfgFile)) {
-      $this->cfgFile = self::CFG_FILE_DEFAULT;
-    }
-    else {
-       // Only read .ini files.
-       if(substr($pCfgFile, -4) == '.ini') {
-
-         $this->cfgFile = $pCfgFile;
-       }
-       else {
-         $this->cfgFile = self::CFG_FILE_DEFAULT;
-       }
-    }
+    // Uses default if there wasn't one readable passed in.
+    $this->_setCfgFile($pCfgFile);
 
     // Set the database connection info.
     try {
@@ -75,7 +64,7 @@ class JobsDB {
       echo $e->getMessage();
     }
 
-    // Set the connection string.
+    // Set the database connection string.
     $this->_setConnStr();
   }
   
@@ -426,6 +415,42 @@ class JobsDB {
     }
   } */ 
 
+  /* Checks the requirements for the class. */
+  private function _checkRequirements() {
+  	// PDO class is required.
+  	if(!class_exists('PDO')) {
+  	  throw new Exception('PDO class not available.');
+  	}
+  	
+  	// The pdo_ext.class.php file is required.
+  	if(file_exists('pdo_ext.class.php')) {
+  	  require_once('pdo_ext.class.php');
+  	}
+  	else {
+  	  throw new Exception('PDO_Ext class file not present.');
+  	}
+  	
+  	// The class must have been loaded from that file.
+  	if(!class_exists('PDO_Ext')) {
+  	  throw new Exception('PDO_Ext class not available.');
+  	}
+  }
+  
+  private function _setCfgFile($pCfgFile) {
+  	if(empty($pCfgFile)) {
+  	  $this->cfgFile = self::CFG_FILE_DEFAULT;
+  	}
+  	else {
+  	  // Only read .ini files that exist.
+  	  if(substr($pCfgFile, -4) == '.ini' && file_exists($pCfgFile)) {
+  		$this->cfgFile = $pCfgFile;
+  	  }
+  	  else {
+  		$this->cfgFile = self::CFG_FILE_DEFAULT;
+  	  }
+  	}
+  }
+  
   /* Sets the database information based on the config file. */
   private function _setDBInfo() {
     // Check that the ini file exists.
