@@ -180,7 +180,7 @@ class JobsDB {
   
   /* Return the current connection string. */
   public function getConnStr($echo = FALSE) {
-  	$this->_echoOrReturn($connStr, $echo);
+  	$this->_echoOrReturn($this->connStr, $echo);
   }
 
   private function _buildStmt($pFields) {
