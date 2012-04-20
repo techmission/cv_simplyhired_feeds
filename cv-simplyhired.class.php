@@ -78,6 +78,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	    if(!empty($this->query) && !empty($this->location)) {
 	  	  $results = $this->doSearch();
 	  	  $this->setJobsArray($results);
+	  	  return $this->jobsArray;
 	    }
 	  }
 	}
