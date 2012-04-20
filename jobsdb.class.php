@@ -126,7 +126,7 @@ class JobsDB {
   /**
    * Delete records from the database that match certain values.
    */
-  public function deleteRecords(string $pFieldName, array $pValues) {
+  public function deleteRecords($pFieldName, array $pValues) {
   	$lNumRows = FALSE; // Assume error condition to start.
   	// Connect if no database handle.
   	if($this->dbh == NULL) {
