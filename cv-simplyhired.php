@@ -53,10 +53,13 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	// Connect to the database;
 	$jobsDb->connect();
 	// Set the table name to count/insert, etc.
-	$jobsDb->tableName = TABLE_FEEDS_JOBS;
+	//$jobsDb->tableName = TABLE_FEEDS_JOBS;
 	// Get the number of rows currently stored in 'tbl_feeds_jobs'
-	$numRows = $jobsDb->countRecords();
-	krumo($numRows);
+	//$numRows = $jobsDb->countRecords();
+	//krumo($numRows);
+	// Write to 
+	$numInserted = $jobsDb->createRecords($jobs);
+	krumo($numInserted);
 }
 ?>
 </body>
