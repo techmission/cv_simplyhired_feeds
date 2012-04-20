@@ -348,7 +348,7 @@ class JobsDB {
 
   /* Sets the connection string for connecting to the database. */
   private function _setConnStr() {
-    $this->connStr = 'mysql:host=' . $dbInfo['hostname'] . ';dbname=' . $dbInfo['db_name'];
+    $this->connStr = 'mysql:host=' . $this->dbInfo['hostname'] . ';dbname=' . $this->dbInfo['db_name'];
   }
 
   private function _echoOrReturn($var, $echo = FALSE) {
