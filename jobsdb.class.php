@@ -158,7 +158,8 @@ class JobsDB {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
   	  // Set up the PDO statement.
-      $lFields = array_keys($records);
+  	  // Note that for this to work, the first record in the set must have keys.
+      $lFields = array_keys($records[0]);
       $lPdoSql = $this->_buildStmt($lFields);
       // Iterate and insert the records.
       // @todo: Bind them instead.
@@ -236,6 +237,12 @@ class JobsDB {
     else if(count($records) == 0) {
      $validation_errors[] = self::RES_ERR_NO_MEMBERS;
     }
+    // Return early if either of these are the case.
+    // Otherwise, you could be in a situation 
+    // where you were trying to validate schema on an empty array. 
+    if(is_array($validation_errors)) {
+      return $validation_errors;
+    }
     // Compare the record type to the table schema.
     $record_type_error = $this->_checkRecordType($type);
     if(!empty($record_type_error)) {
@@ -261,7 +268,13 @@ class JobsDB {
   }
   
   private function _checkSchema($records) {
+  	// Get the schema for the table.
     $lTableSchema = $this->getSchema($this->tableName);
+    // Use the first record as representative for checking schema.
+    // Probably is not necessary at this stage to drop invalid records prior to insert, 
+    // but just assume based on the first one that the array structure is consistent.
+    $lRecord = $records[0];
+    
     // @todo: Actually check the records against the schema.
     return void;
   }
