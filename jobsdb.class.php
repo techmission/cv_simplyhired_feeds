@@ -29,10 +29,10 @@ class JobsDB {
   public $cfgFile; // string: the configuration file
                           // containing the connection information
   public $tableName; // string: the table to which to write
-  public $dbh; // resource: the database handle (used to do writes)
+  public $dbh = NULL; // resource: the database handle (used to do writes)
 
   /**
-   * Initialize the database connection as part of the constructor.
+   * Constructor gets the database ready for connection.
    * Uses a config file to get the connection string.
    *
    * @param string $cfg_file
@@ -70,18 +70,24 @@ class JobsDB {
 
     // Set the connection string.
     $this->_setConnStr();
-
-    // Use the connection string to connect to the database.
-    try {
-      $this->dbh = new PDO($this->connStr, $this->dbInfo['username'], $this->dbInfo['password']);
-      // If set to logging, log that connection was successful.
-      if($this->isLogging == TRUE) {
-        echo 'Connected to database';
-      }
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
+  }
+  
+  /**
+   * Connect to the database, using the parameters initialized in the constructor.
+   * No queries can run until this has happened.
+   */
+  public function connect() {
+  	// Use the connection string to connect to the database.
+  	try {
+  		$this->dbh = new PDO($this->connStr, $this->dbInfo['username'], $this->dbInfo['password']);
+  		// If set to logging, log that connection was successful.
+  		if($this->isLogging == TRUE) {
+  			echo 'Connected to database';
+  		}
+  	}
+  	catch(PDOException $e) {
+  		echo $e->getMessage();
+  	}
   }
   
   /**
@@ -95,10 +101,18 @@ class JobsDB {
    *  Counts the number of records in a database table.
    *  @todo: Find a more efficient way to do this. 
    */
-  public function countRecords() {
+  public function countRecords($pTableName = '') {
   	$numRows = FALSE;
-  	if(empty($this->tableName)) {
+  	// Connect if no database handle.
+  	if($this->dbh == NULL) {
+  	  $this->connect();
+  	}
+  	// Return FALSE if no table name has been set.
+  	if(empty($this->tableName) && empty($pTableName)) {
   	  return $numRows;
+  	}
+  	else if(empty($this->tableName) && !empty($pTableName)) {
+  	  $this->tableName = $pTableName;
   	}
   	else {
   	  try {
@@ -118,6 +132,10 @@ class JobsDB {
    */
   public function createRecords($records, $type = self::RECORDS_JOB) {
     $num_rows = FALSE; // Assume error condition to start.
+    // Connect if no database handle.
+    if($this->dbh == NULL) {
+    	$this->connect();
+    }
     // Set the table name to which to write based on type,
     // if not already set.
     if(is_empty($this->tableName)) {
