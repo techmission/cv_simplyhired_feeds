@@ -47,7 +47,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	// Initialize the database handler.
 	$jobsDb = new JobsDB();
 	// Set to log.
-	//$jobsDb->isLogging = TRUE;
+	$jobsDb->isLogging = TRUE;
+	// Set to dry run.
+	$jobsDb->isDryRun = TRUE;
 	// Get the database connection string.
 	//$jobsDb->getConnStr(TRUE);
 	// Connect to the database;

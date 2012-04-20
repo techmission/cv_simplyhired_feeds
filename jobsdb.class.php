@@ -26,8 +26,8 @@ class JobsDB {
   private $connStr; // string: connection string
 
   public $isLogging = FALSE; // boolean: whether to log data
-  public $cfgFile; // string: the configuration file
-                          // containing the connection information
+  public $isDryRun = FALSE; // boolean: whether this is just a dry run - i.e., no CUD functions executed on DB
+  public $cfgFile; // string: the configuration file containing the connection information
   public $tableName; // string: the table to which to write
   public $dbh = NULL; // resource: the database handle (used to do writes)
 
@@ -153,21 +153,28 @@ class JobsDB {
 
   /* Private function to do the dirty work of writing to the DB. */
   private function _createRecords($records) {
+  	$lNumRows = 0;
   	try {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
-  	  // Set up the PDo statement.
+  	  // Set up the PDO statement.
       $lFields = array_keys($records);
       $lPdoSql = $this->_buildStmt($lFields);
-      $lNumRows = 0;
       // Iterate and insert the records.
       // @todo: Bind them instead.
       foreach($records as $record) {
         $lPdoValues = $this->_buildValues($record);
         $stmt = $this->dbh->prepare($lPdoSql);
-        $stmt->execute($lPdoValues);
-        $lResult = $stmt->rowCount;
-        $lNumRows = $lNumRows + $lResult;
+        // Debug the statement if logging.
+        if($this->isLogging && function_exists('krumo')) {
+          krumo(array('sql' => $lPdoSql, 'values' => $lPdoValues));
+        }
+        // Only do the insert if this is not a dry run. 
+        if(!$this->isDryRun) {
+          $stmt->execute($lPdoValues);
+          $lResult = $stmt->rowCount;
+          $lNumRows = $lNumRows + $lResult;
+        }
       }
       // End the transaction.
       $this->dbh->commit();
@@ -177,6 +184,7 @@ class JobsDB {
   	  $this->dbh->rollBack();
   	  echo $e->getMessage();
   	}
+  	return $lNumRows;
   }
   
   /* Return the current connection string. */
