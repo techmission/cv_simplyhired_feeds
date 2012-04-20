@@ -134,7 +134,7 @@ class JobsDB {
   /**
    * Delete records from the database that match certain values.
    */
-  public function deleteRecords($pFieldName, array $pValues) {
+  public function deleteRecords($pFieldName, array $pValues, $pType = self::TYPE_INT) {
   	$lNumRows = FALSE; // Assume error condition to start.
   	// Connect if no database handle.
   	if($this->dbh == NULL) {
@@ -153,7 +153,7 @@ class JobsDB {
   	try {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
-  	  $lPdoSql = $this->_buildDeleteStmt($this->tableName, $pFieldName, self::OP_IN);
+  	  $lPdoSql = $this->_buildDeleteStmt($this->tableName, $pFieldName, $pValues, $pType, self::OP_IN);
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
   	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
@@ -245,7 +245,7 @@ class JobsDB {
   	$this->_echoOrReturn($this->connStr, $echo);
   }
 
-  private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = TYPE_INT, $pOperator = self::OP_IN) {
+  private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = self::TYPE_INT, $pOperator = self::OP_IN) {
   	if($pOperator == self::OP_IN) {
   	  if(!is_array($pValue)) {
   	  	$lValues = (array) $pValue;
