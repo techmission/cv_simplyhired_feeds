@@ -62,14 +62,14 @@ class JobsDB {
 
     // Set the database connection info.
     try {
-      _setDBInfo($this->cfgFile);
+      $this->_setDBInfo($this->cfgFile);
     }
     catch(Exception $e) {
       echo $e->getMessage();
     }
 
     // Set the connection string.
-    _setConnStr();
+    $this->_setConnStr();
 
     // Use the connection string to connect to the database.
     try {
@@ -114,13 +114,13 @@ class JobsDB {
     // Set the table name to which to write based on type,
     // if not already set.
     if(is_empty($this->tableName)) {
-      $this->tableName = _lookupTableName($type);
+      $this->tableName = $this->_lookupTableName($type);
     }
     // Validate that the records can be written to this table.
-    $errors = _validateRecords($records, $type);
+    $errors = $this->_validateRecords($records, $type);
     if($errors == FALSE) {
       // Actually create the records.
-      $numRows = _createRecords($records);
+      $numRows = $this->_createRecords($records);
     } 
     return $numRows;
   }
@@ -132,12 +132,12 @@ class JobsDB {
   	  $this->dbh->beginTransaction();
   	  // Set up the PDo statement.
       $lFields = array_keys($records);
-      $lPdoSql = _buildStmt($lFields);
+      $lPdoSql = $this->_buildStmt($lFields);
       $lNumRows = 0;
       // Iterate and insert the records.
       // @todo: Bind them instead.
       foreach($records as $record) {
-        $lPdoValues = _buildValues($record);
+        $lPdoValues = $this->_buildValues($record);
         $stmt = $this->dbh->prepare($lPdoSql);
         $stmt->execute($lPdoValues);
         $lResult = $stmt->rowCount;
@@ -198,7 +198,7 @@ class JobsDB {
      $validation_errors[] = self::RES_ERR_NO_MEMBERS;
     }
     // Compare the record type to the table schema.
-    $record_type_error = _checkRecordType($type);
+    $record_type_error = $this->_checkRecordType($type);
     if(!empty($record_type_error)) {
       $validation_errors[] = $record_type_error;
       // Compare the record values to the table schema.
@@ -211,7 +211,7 @@ class JobsDB {
   }
 
   private function _checkRecordType($type = self::RECORDS_JOB) {
-    $lTables = getTables();
+    $lTables = $this->getTables();
     $error = NULL;
     if(!array_key_exists($this->tableName, $lTables)) {
       $error = self::RES_ERR_UNDEFINED_TABLE;
@@ -222,7 +222,7 @@ class JobsDB {
   }
   
   private function _checkSchema($records) {
-    $lTableSchema = getSchema($this->tableName);
+    $lTableSchema = $this->getSchema($this->tableName);
     // @todo: Actually check the records against the schema.
     return void;
   }
@@ -327,7 +327,7 @@ class JobsDB {
 
   /* Return the current connection string. */
   public function getConnStr($echo = FALSE) {
-    _echoOrReturn($connStr, $echo);
+    $this->_echoOrReturn($connStr, $echo);
   }
 
   private function _echoOrReturn($var, $echo = FALSE) {
