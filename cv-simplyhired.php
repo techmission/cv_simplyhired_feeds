@@ -43,13 +43,13 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	// Echo the jobs array.
     // $cvsha->printJobsResults();
     
-	/* Test the connection to the jobs database. */
-	// Initialize.
+	/* Write the jobs array to the database. */
+	// Initialize the database handler.
 	$jobsDb = new JobsDB();
 	// Set to log.
-	$jobsDb->isLogging = TRUE;
+	//$jobsDb->isLogging = TRUE;
 	// Get the database connection string.
-	$jobsDb->getConnStr(TRUE);
+	//$jobsDb->getConnStr(TRUE);
 	// Connect to the database;
 	$jobsDb->connect();
 	// Set the table name to count/insert, etc.
@@ -57,7 +57,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	// Get the number of rows currently stored in 'tbl_feeds_jobs'
 	//$numRows = $jobsDb->countRecords();
 	//krumo($numRows);
-	// Write to 
+	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs);
 	krumo($numInserted);
 }
