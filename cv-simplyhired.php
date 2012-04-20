@@ -45,6 +45,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$jobsDb->tableName = TABLE_FEEDS_JOBS;
 	$numRows = $jobsDb->countRecords();
 	krumo($numRows);
+	krumo(0);
 }
 ?>
 </body>
