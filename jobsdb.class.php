@@ -117,7 +117,7 @@ class JobsDB {
   	else {
   	  try {
   	  	$lSql = 'SELECT id FROM ' . $this->tableName;
-  	  	$stmt = $this->$dbh->query($lSql);
+  	  	$stmt = $this->dbh->query($lSql);
   	  	$numRows = $stmt->rowCount();
   	  }
   	  catch(PDOException $e) {
