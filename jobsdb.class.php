@@ -239,7 +239,7 @@ class JobsDB {
 
   private function _buildDeleteStmt($pTableName, $pFieldName, $pOperator = self::OP_IN) {
   	if($pOperator == self::OP_IN) {
-  	  $lPdoSql = 'DELETE FROM ' . $pTableName . 'WHERE ' . $pFieldName . ' IN :values';
+  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN :values';
   	}
     return $lPdoSql;
   }
