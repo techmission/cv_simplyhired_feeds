@@ -44,12 +44,17 @@ if (class_exists( 'CV_SimplyHired_API')) {
     // $cvsha->printJobsResults();
     
 	/* Test the connection to the jobs database. */
+	// Initialize.
 	$jobsDb = new JobsDB();
+	// Get the database connection string.
 	$jobsDb->getConnStr(TRUE);
+	// Connect to the database;
+	$jobsDb->connect();
+	// Set the table name to count/insert, etc.
 	$jobsDb->tableName = TABLE_FEEDS_JOBS;
-	// $jobsDb->connect();
-	//$numRows = $jobsDb->countRecords();
-	//krumo($numRows);
+	// Get the number of rows currently stored in 'tbl_feeds_jobs'
+	$numRows = $jobsDb->countRecords();
+	krumo($numRows);
 }
 ?>
 </body>
