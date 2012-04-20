@@ -60,10 +60,10 @@ class CV_SimplyHired_API extends SimplyHired_API {
 			
 			/* Set broad ONET code (can be over-ridden via shortcode ) */
 			if ( $this->options['broad_onet_code'] ) {
-				$this->set_onet($this->options['broad_onet_code']);
+				$this->setOnet($this->options['broad_onet_code']);
 			}
-			$this->set_is_usa( $this->options['is_usa'] );
-			$this->set_disable_tracking( $this->options['disable_tracking']);
+			$this->setIsUsa( $this->options['is_usa'] );
+			$this->setDisableTracking( $this->options['disable_tracking']);
 		}
 	}
 	
