@@ -124,6 +124,7 @@ class JobsDB {
   	  	echo $e->getMessage();
   	  }
   	}
+  	return $numRows;
   }
 
   /**
