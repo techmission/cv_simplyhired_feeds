@@ -37,11 +37,11 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	
     // In the background, run the query and turn the results into the proper format.
 	$jobs = array();
-	//$jobs = $cvsha->getJobsArray();
+	$jobs = $cvsha->getJobsArray();
 	
 	// Print the jobs array using Krumo.
 	// @todo: Remove when finished testing.
-	// krumo($jobs);
+	krumo($jobs);
 	// Echo the jobs array.
     // $cvsha->printJobsResults();
     
