@@ -34,7 +34,8 @@ require_once('xmltools.php');
  */
 class CV_SimplyHired_API extends SimplyHired_API {
 
-
+    private $jobsArray = array(); // only accessible through the methods
+    
 	/* Options passed in when instantiating class. -
 	   this is a public variable so that it can be modified later, if needed. */
 	public $options = array();
@@ -47,9 +48,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * @return void
 	 */
 	function __construct($options = array()) {
-		
-		/* Constants */
-        /* none as yet */
 		
 		/* Options */
 		$this->options = $options;
@@ -69,42 +67,81 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		}
 	}
 	
+	/**
+	 * Returns the jobs array.
+	 */
+	public function getJobsArray() {
+	  if(is_array($this->jobsArray) && count($this->jobsArray) > 0) {
+	  	return $this->jobsArray;
+	  }
+	  else {
+	    if(!empty($this->query) && !empty($this->location)) {
+	  	  $results = $this->doSearch();
+	  	  $this->setJobsArray($results);
+	    }
+	  }
+	}
+	
     /**
 	 * Turns the response from SimplyHired into an array of jobs, for saving into a denormalized table.
 	 *
 	 * @param SimpleXMLElement $results - uses response for search (rq)
 	 *
-	 * @return array
+	 * @return int|void
+	 *   The number of jobs in the array, or no return value if an error in feed.
 	 */
-	function get_jobs_array( $results ) {
-		
-		$jobs_array = array();
-		
-		if ( $results->error  ) 
-			return $jobs_array; // If the results had an error, then return an empty array.
-		
+	private function setJobsArray($results) {
+		if($results->error) { 
+		  $this->jobsArray = array(); // If the results had an error, jobsArray can't be set, so clear previous (if any).
+		  return;
+		}
+
 		// Iterates over the r elements in the rs node of the XML document, setting the job values for each.
-		$i = 0;
+		$numJobs = 0;
+		$lJobsArray = array();
 		foreach($results->rs->r as $res) {
 		  // Get the title.
-		  $jobs_array[$i]['title'] = xt_getInnerXML($res->jt);
+		  $lJobsArray[$i]['title'] = xt_getInnerXML($res->jt);
 		  // Get the organization name.
-		  $jobs_array[$i]['org_name'] = xt_getInnerXML($res->cn);
+		  $lJobsArray[$i]['org_name'] = xt_getInnerXML($res->cn);
 		  // Get the original url from the url attribute on the src element.
-		  $jobs_array[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
+		  $lJobsArray[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
 		  // Get the location values from the attributes on loc element.
-		  $jobs_array[$i]['city'] = xt_getAttrVal($res->loc['cty']);
-		  $jobs_array[$i]['province'] = xt_getAttrVal($res->loc['st']);
-		  $jobs_array[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
-		  $jobs_array[$i]['country'] = xt_getAttrVal($res->loc['country']);
+		  $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
+		  $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
+		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
+		  $lJobsArray[$i]['country'] = xt_getAttrVal($res->loc['country']);
 		  // Get the created and changed dates.
-		  $jobs_array[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
-		  $jobs_array[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
+		  $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
+		  $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
 		  // Get the job description.
-		  $jobs_array[$i]['description'] = xt_getInnerXML($res->e);
+		  $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
 		  $i++;
 		}
 		
-		return $jobs_array;
+		// Set the jobs array variable.
+		$this->jobsArray = $lJobsArray;
+		
+		// Return the number of jobs in the array.
+		return $numJobs;
+	}
+	
+	/**
+	 * Prints the jobs array as HTML.
+	 */
+	public function printJobsResults() {
+	  if(empty($this->jobsArray)) {
+	  	return;
+	  }	
+	  else {
+	  	// @todo: Nicer formatting, more fields.
+	  	foreach($this->jobsArray as $job) {
+	  	  echo "<h1>" . $job['title'] . "</h1>";
+	  	  echo "<p>Org Name: " . $job['org_name'] . "</p>";
+	  	  echo "<p>Created: " . $job['created'] . "</p>";
+	  	  echo "<p>Changed: " . $job['changed'] . "</p>";
+	  	  echo "<p>" . $job['description'] . "</p>";
+	  	}
+	  }
 	}
 }

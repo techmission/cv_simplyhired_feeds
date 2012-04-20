@@ -1,7 +1,7 @@
 <?php
 /***************************************************************/
 /* 
-	SimplyHiredAPI - a Php class wrapper to access the SimplyHired API
+	SimplyHiredAPI - a PHP class wrapper to access the SimplyHired API
 	@author   Ronnie T. Dodger
 	@url      http://webstractions.com
 	@version  1.0 
@@ -36,7 +36,12 @@
 
 */
 /***************************************************************/
-   
+
+/**
+ *  Modifications to the class by Evan Donovan.
+ */
+
+// @todo: Finish the refactor so all code comforms to the same standard: CamelCase for all OOP.
 
 class SimplyHired_API {
 
@@ -60,6 +65,11 @@ class SimplyHired_API {
 	
 	/**/
 	public $disable_tracking = false;
+	
+	/* Search error (if any) 
+	 * @todo: Set this to a string, not SimpleXMLElement.
+	 */
+	private $search_error = '';
 
 	/*
 	 * API call variables for Query, Location, Page Number, Radius. 
@@ -73,6 +83,10 @@ class SimplyHired_API {
 	public $apicall  = '';
 	public $results = '';
 	
+	/* Note that there is no constructor, since it must be initialized from a subclass. 
+	 * @todo: Mixins once we have multiple APIs to deal with.
+	 * */
+	
 	function init( $pshid = false, $jbd = false ) {
 		if( $pshid ){ 
 			$this->pshid = $pshid;  	// Publisher ID assigned by SimplyHired
@@ -84,7 +98,7 @@ class SimplyHired_API {
 	
 	}
 
-	function search( $number=10, $start=0 ) {
+	function doSearch( $number=10, $start=0 ) {
 
 		if( !empty($this->onet) )
 			$onet_filter = 'onet:(' . $this->onet . ')+';
@@ -103,31 +117,35 @@ class SimplyHired_API {
 			return null;
 		
 		$this->results = $xml;
+		
+		if($xml->error) {
+		  $this->search_error = $xml->error->asXML();
+		}
 		return $xml;
 	
 	}
 	
-	function set_query( $query ) {
+	function setQuery( $query ) {
 		$this->query = $query;
 	}
 	
-	function set_onet( $code ) {
+	function setOnet( $code ) {
 		$this->onet = $code;
 	}
 
-	function set_location( $location ) {
+	function setLocation( $location ) {
 		$this->location = $location;
 	}
 	
-	function set_is_usa( $bool ) {
+	function setIsUsa( $bool ) {
 		$this->is_usa = $bool;
 	}
 
-	function set_disable_tracking( $bool ) {
+	function setDisableTracking( $bool ) {
 		$this->disable_tracking = $bool;
 	}
 
-	function get_disable_tracking() {
+	function getDisableTracking() {
 		return $this->disable_tracking;
 	}
 
@@ -144,7 +162,7 @@ class SimplyHired_API {
 		return $ip;
 	} 
 	
-	function set_pagenum( $num ) {
+	function setPagenum( $num ) {
 		if ( $num > 1 ) {
 			$this->pagenum = $num;
 		}
@@ -154,7 +172,7 @@ class SimplyHired_API {
 	 * Prints the Simply Hired attribution (per terms) to the screen
 	 *
 	 */
-	 function print_attribution( $echo=true ) {
+	 function printAttribution( $echo=true ) {
 	 
 		$output = '<div style="text-align: right;"><a style="text-decoration:none" href="http://www.simplyhired.com/" rel="nofollow"><span style="color: rgb(128, 128, 129);">Jobs</span></a> by <a style="text-decoration:none" href="http://www.simplyhired.com/"><span style="color: rgb(80, 209, 255); font-weight: bold;">Simply</span><span style="color: rgb(203, 244, 104); font-weight: bold;">Hired</span></a></div>';
 		if ($echo)
@@ -163,7 +181,7 @@ class SimplyHired_API {
 			return $output;
 	 }
 	 
-	 function get_footer_scripts() {
+	 function getFooterScripts() {
 		$output = '
 <!-- SimplyHired click tracking -->		
 <script type="text/javascript" src="http://api.simplyhired.com/c/jobs-api/js/xml-v2.js"></script>
@@ -171,7 +189,7 @@ class SimplyHired_API {
 		return $output;
 	 }
 	 
-	 function print_footer_scripts() {
+	 function printFooterScripts() {
 		$output = '
 <!-- SimplyHired click tracking -->		
 <script type="text/javascript" src="http://api.simplyhired.com/c/jobs-api/js/xml-v2.js"></script>
@@ -179,7 +197,7 @@ class SimplyHired_API {
 		echo $output;
 	 }
 	 
-	 function print_apicall( $echo=true ) {
+	 function printApiCall( $echo=true ) {
 	 
 	 $html = '<span class="apicall" style="float:right;"><a href="' . $this->apicall . '" target="_blank">View XML</a></span>';
 	 
@@ -190,7 +208,8 @@ class SimplyHired_API {
 
 	}
 	
-	function print_error ( $echo=true) {
+	/* @todo: Use the class variable that I created. */
+	function printError ( $echo=true) {
 	  if(isset($this->results->error)) {
 	    $error_msg = $results->error->text;
 	    $html = '<span class="error-message">' . $error_msg . '</span>';
@@ -205,7 +224,7 @@ class SimplyHired_API {
 		return $html;
 	}
 	
-	function print_results_totals( $echo=true ) {
+	function printResultTotals( $echo=true ) {
 
 		/* Total results display */
 		$result_start = $this->results->rq->si + 1;

@@ -85,6 +85,27 @@ class JobsDB {
   }
   
   /**
+   *  Counts the number of records in a database table.
+   *  @todo: Find a more efficient way to do this. 
+   */
+  public function countRecords() {
+  	$numRows = FALSE;
+  	if(is_empty($this->tableName)) {
+  	  return $numRows;
+  	}
+  	else {
+  	  try {
+  	  	$lSql = 'SELECT id FROM ' . $this->tableName;
+  	  	$stmt = $this->$dbh->query($lSql);
+  	  	$numRows = $stmt->rowCount();
+  	  }
+  	  catch(PDOException $e) {
+  	  	echo $e->getMessage();
+  	  }
+  	}
+  }
+
+  /**
    * Write to the database an array of records. 
    * By default, write to the jobs table.
    */
@@ -106,18 +127,30 @@ class JobsDB {
 
   /* Private function to do the dirty work of writing to the DB. */
   private function _createRecords($records) {
-    $lFields = array_keys($records);
-    $lPdoSql = _buildStmt($lFields);
-    $lNumRows = 0;
-    // Iterate and insert the records.
-    // @todo: Bind them instead.
-    foreach($records as $record) {
-      $lPdoValues = _buildValues($record);
-      $stmt = $dbh->prepare($lPdoSql);
-      $stmt->execute($lPdoValues);
-      $lResult = $stmt->rowCount;
-      $lNumRows = $lNumRows + $lResult;
-    }
+  	try {
+  	  // Begin a transaction.
+  	  $this->dbh->beginTransaction();
+  	  // Set up the PDo statement.
+      $lFields = array_keys($records);
+      $lPdoSql = _buildStmt($lFields);
+      $lNumRows = 0;
+      // Iterate and insert the records.
+      // @todo: Bind them instead.
+      foreach($records as $record) {
+        $lPdoValues = _buildValues($record);
+        $stmt = $this->dbh->prepare($lPdoSql);
+        $stmt->execute($lPdoValues);
+        $lResult = $stmt->rowCount;
+        $lNumRows = $lNumRows + $lResult;
+      }
+      // End the transaction.
+      $this->dbh->commit();
+  	}
+  	// Catch an error if there was one.
+  	catch(PDOException $e) {
+  	  $this->dbh->rollBack();
+  	  echo $e->getMessage();
+  	}
   }
 
   private function _buildStmt($pFields) {
