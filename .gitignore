@@ -1,4 +1,6 @@
-lib
-lib/*
+# Ignore secure database connection info.
+*.ini
+
+# Ignore krumo in repository.
 krumo
 krumo/*

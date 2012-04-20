@@ -86,12 +86,21 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		// Iterates over the r elements in the rs node of the XML document, setting the job values for each.
 		$i = 0;
 		foreach($results->rs->r as $res) {
+		  // Get the title.
 		  $jobs_array[$i]['title'] = xt_getInnerXML($res->jt);
+		  // Get the organization name.
 		  $jobs_array[$i]['org_name'] = xt_getInnerXML($res->cn);
-		  // @todo: get the url from the url attribute on src
-		  // @todo: get the location values from the attributes on loc
-		  $jobs_array[$i]['created'] = xt_getInnerXML($res->dp);
-		  $jobs_array[$i]['changed'] = xt_getInnerXML($res->ls);
+		  // Get the original url from the url attribute on the src element.
+		  $jobs_array[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
+		  // Get the location values from the attributes on loc element.
+		  $jobs_array[$i]['city'] = xt_getAttrVal($res->loc['cty']);
+		  $jobs_array[$i]['province'] = xt_getAttrVal($res->loc['st']);
+		  $jobs_array[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
+		  $jobs_array[$i]['country'] = xt_getAttrVal($res->loc['country']);
+		  // Get the created and changed dates.
+		  $jobs_array[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
+		  $jobs_array[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
+		  // Get the job description.
 		  $jobs_array[$i]['description'] = xt_getInnerXML($res->e);
 		  $i++;
 		}
