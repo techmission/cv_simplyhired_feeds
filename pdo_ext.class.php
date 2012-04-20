@@ -42,11 +42,11 @@ class PDO_Ext extends PDO {
   }
   
   private function _valToInt(&$value) {
-  	$value = (int) $value 
+  	$value = (int) $value; 
   }
   
   private function _valQuote(&$value) {
-  	$value = PDO::quote($value) 
+  	$value = PDO::quote($value);
   }
 
  /**
