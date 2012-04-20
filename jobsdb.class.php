@@ -255,10 +255,10 @@ class JobsDB {
   	  	$lValuesStr = '';
   	  	// Prepare the values for the IN clause.
   	  	if($pType == self::TYPE_INT) {
-  	  	  array_walk($lValues, $this->_valToInt($value));
+  	  	  array_walk($lValues, PDO_Ext::_valToInt($value));
   	  	}
   	  	else if($pType == self::TYPE_STRING) {
-  	  	  array_walk($lValues, $this->_valQuote($value));
+  	  	  array_walk($lValues, PDO_Ext::_valQuote($value));
   	  	}
   	  	else {
   	  	  throw new Exception('Unsupported type.');
