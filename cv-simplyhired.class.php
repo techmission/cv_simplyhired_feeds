@@ -142,7 +142,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lGuid = '';
 	  // Use a pattern with a PCRE named group to match the substring.
 	  // @see http://www.php.net/manual/en/function.preg-match.php#108117
-	  $lPattern = '/\/jobkey-?P<guid>(.*)\//';
+	  $lPattern = '/\/jobkey-(?P<guid>.*)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
 	  krumo($lResults);
