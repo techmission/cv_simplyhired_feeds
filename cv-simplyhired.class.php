@@ -141,8 +141,10 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	private function _getSourceGuid($pUrl) {
 	  $lGuid = '';
 	  // Use a pattern with a PCRE named group to match the substring.
+	  // The alphanumeric character class is used to restrict the match.
 	  // @see http://www.php.net/manual/en/function.preg-match.php#108117
-	  $lPattern = '/\/jobkey-(?P<guid>.*)\//';
+	  // @see http://www.php.net/manual/en/regexp.reference.character-classes.php
+	  $lPattern = '/\/jobkey-(?P<guid>[:alnum]+)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
 	  krumo($lResults);
