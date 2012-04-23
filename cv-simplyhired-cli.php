@@ -68,7 +68,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
     else {
       echo "This is a command line script. \n";
       echo "Usage: " . $argv[0] . " <location>" . "\n";
-      echo "Location can be either a zipcode, state, or city.";
+      echo "Location can be either a zipcode, state, or city. \n";
       exit(1); // Exit with error status code.
     }
 }
