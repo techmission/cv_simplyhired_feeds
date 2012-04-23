@@ -191,37 +191,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  return $retJobsArray;
 	}
 	
-	/**
-	 * Returns the jobs array.
-	 */
-	public function getJobsArray($pQuery = self::QRY_DEFAULT) {
-	  if(is_array($this->jobsArray) && count($this->jobsArray) > 0) {
-	  	return $this->jobsArray;
-	  }
-	  else {
-	  	// Use the already-set query if there is one.
-	    if(!empty($this->query) && !empty($this->location)) {
-	  	  $results = $this->doSearch(self::RES_SIZE_DEFAULT);
-	  	  $this->setJobsArray($results);
-	    }
-	    // Otherwise, set based on the passed-in parameter.
-	    else if(!empty($this->location)) {
-	      if($pQuery == self::QRY_DEFAULT) {
-	      	$lQuery = $this->buildDefaultQuery();
-	      	$this->setQuery($lQuery);
-	      	$results = $this->doSearch(self::RES_SIZE_DEFAULT);
-	      	$this->setJobsArray($results);
-	      }
-	      else if(is_string($pQuery) && !empty($pQuery)) {
-	      	$this->setQuery($pQuery);
-	      	$results = $this->doSearch(self::RES_SIZE_DEFAULT);
-	      	$this->setJobsArray($results);
-	      }
-	    }
-	    return $this->jobsArray;
-	  }
-	}
-	
     /**
 	 * Turns the response from SimplyHired into an array of jobs, for saving into a denormalized table.
 	 *
@@ -298,13 +267,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	/**
 	 * Prints the jobs array as HTML.
 	 */
-	public function printJobsResults() {
-	  if(empty($this->jobsArray)) {
+	public function printJobsResults(array $pJobsArray) {
+	  if(count($pJobsArray) == 0) {
 	  	return;
 	  }	
 	  else {
 	  	// @todo: Nicer formatting, more fields.
-	  	foreach($this->jobsArray as $job) {
+	  	foreach($pJobsArray as $job) {
 	  	  echo "<h1>" . $job['title'] . "</h1>";
 	  	  echo "<p>Org Name: " . $job['org_name'] . "</p>";
 	  	  echo "<p>Created: " . $job['created'] . "</p>";

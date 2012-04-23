@@ -32,7 +32,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	
       // In the background, run the query and turn the results into the proper format.
 	  $jobs = array();
-	  $jobs = $cvsha->getJobsArray(); // Will use the default query terms.
+	  $jobs = $cvsha->fetchJobs(); // Will use the default query terms.
 	
 	/* Print the API call. */
 	echo "API call: " . $cvsha->apicall . "\n";
