@@ -180,7 +180,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  }
 	  // Fetch jobs.
 	  $lJobsArray = $retJobsArray = $this->_fetchJobs($pLimit);
-	  while(count($lJobsArray) == 100) {
+	  /* while(count($lJobsArray) == 100) {
 	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
 	  	$retJobsArray = array_merge($lJobsArray, $retJobsArray);
 	  	$lOffset++;
@@ -188,7 +188,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  	if($lOffset == self::MAX_OFFSET) {
 	  	  break;
 	  	}
-	  }
+	  } */
 	  return $retJobsArray;
 	}
 	
