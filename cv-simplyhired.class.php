@@ -51,6 +51,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	/* Options passed in when instantiating class. -
 	   this is a public variable so that it can be modified later, if needed. */
 	public $options = array();
+	public $is_logging = FALSE;
 	
 	/**      
 	 * Constructor for class.
@@ -240,9 +241,15 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lPattern = '/\/jobkey-(?P<guid>[a-zA-Z0-9.-]+)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
-	  krumo(array('url' => $pUrl, 'results' => $lResults));
+	  //krumo(array('url' => $pUrl, 'results' => $lResults));
 	  if(!empty($lResults['guid'])) {
 	  	$lGuid = $lResults['guid'];
+	  }
+	  // Debug failed matches if we are logging and Krumo class exists.
+	  else {
+	  	if($this->is_logging && function_exists('krumo')) {
+	  	  krumo($lResults);
+	  	}
 	  }
 	  return $lGuid;
 	}
