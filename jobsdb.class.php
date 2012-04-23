@@ -575,6 +575,9 @@ class JobsDB {
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
   	    }
+  	    else {
+  	    	krumo(array('missing source_guid for ' . $i => $record));
+  	    }
   	    // Key the returned records by guid so they can be deduped.
   	    $retRecords[$lGuid] = $record;
   	    $retRecords[$lGuid]['guid'] = $lGuid;
