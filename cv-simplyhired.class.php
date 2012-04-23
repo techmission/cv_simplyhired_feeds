@@ -92,7 +92,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lDefaultQueryIncludes = '(' . implode($lOperator, $lQryIncludesArray) . ')';
 	  $lDefaultQueryExcludes = '';
 	  if(count($lQryExcludesArray) > 0) {
-	    $lDefaultQueryExcludes = implode(' AND NOT ', $lQryExcludesArray);
+	    $lDefaultQueryExcludes = ' AND NOT ' . implode(' AND NOT ', $lQryExcludesArray);
 	  }
 	  // Query has both inclusions and exclusions.
 	  $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes;
