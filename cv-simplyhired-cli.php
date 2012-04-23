@@ -1,6 +1,9 @@
-#! /usr/bin/local/php
-# PHP shell script.
 <?php
+
+  /**
+   *  @file: A PHP command-line script for parsing and storing
+   *  SimplyHired feed data.
+   */
 
 // Load the class that does the actual requests to SimplyHired, via the API.
 require_once(dirname(__FILE__) . '/cv-simplyhired.class.php');
@@ -32,7 +35,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $jobs = $cvsha->getJobsArray(); // Will use the default query terms.
 	
 	/* Print the API call. */
-	echo 'API call: ' . $cvsha->apicall . '\n';
+	echo "API call: " . $cvsha->apicall . "\n";
 	
 	// Echo the jobs array.
 	//var_dump($jobs);
@@ -44,7 +47,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $jobsDb = new JobsDB();
 	}
 	catch(Exception $e) {
-	  echo 'Exception: ' . $e->getMessage() . '\n';
+	  echo "Exception: " . $e->getMessage() . "\n";
 	}
 	
 	// Set to log.
@@ -58,14 +61,14 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	echo 'Number inserted was: ' . $numInserted . '\n';
+	echo "Number inserted was: " . $numInserted . "\n";
 
 	exit(0); // Exit with a zero status code: all is well.
     }
     else {
-      echo 'This is a command line script. \n';
-      echo 'Usage: ' . $argv[0] . ' <location>' . '\n';
-      echo 'Location can be either a zipcode, state, or city.';
+      echo "This is a command line script. \n";
+      echo "Usage: " . $argv[0] . " <location>" . "\n";
+      echo "Location can be either a zipcode, state, or city.";
       exit(1); // Exit with error status code.
     }
 }
