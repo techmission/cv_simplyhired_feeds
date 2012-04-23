@@ -335,37 +335,40 @@ class JobsDB {
   	if($pType == self::RECORDS_JOB) {
   	  $lRecords = $this->_dedupeRecords($lRecords, $pType);
   	}
-  	try {
-  	  // Begin a transaction.
-  	  $this->dbh->beginTransaction();
-  	  // Set up the PDO statement.
-  	  // Note that for this to work, the first record in the set must have keys.
-  	  $lRecord = current($lRecords);
-      $lFields = array_keys($lRecord);
-      $lPdoSql = $this->_buildInsertStmt($this->tableName, $lFields);
-      // Iterate and insert the records.
-      // @todo: Bind them instead.
-      foreach($lRecords as $lRecord) {
-        $lPdoValues = $this->_buildValues($lRecord);
-        $stmt = $this->dbh->prepare($lPdoSql);
-        // Debug the statement if logging.
-        if($this->isLogging && function_exists('krumo')) {
-          krumo(array('sql' => $lPdoSql, 'values' => $lPdoValues));
+  	// After de-duping, only do an insert if records still remain to be inserted.
+  	if(count($lRecords) > 0) {
+  	  try {
+  	    // Begin a transaction.
+  	    $this->dbh->beginTransaction();
+  	    // Set up the PDO statement.
+  	    // Note that for this to work, the first record in the set must have keys.
+  	    $lRecord = current($lRecords);
+        $lFields = array_keys($lRecord);
+        $lPdoSql = $this->_buildInsertStmt($this->tableName, $lFields);
+        // Iterate and insert the records.
+        // @todo: Bind them instead.
+        foreach($lRecords as $lRecord) {
+          $lPdoValues = $this->_buildValues($lRecord);
+          $stmt = $this->dbh->prepare($lPdoSql);
+          // Debug the statement if logging.
+          if($this->isLogging && function_exists('krumo')) {
+            krumo(array('sql' => $lPdoSql, 'values' => $lPdoValues));
+          }
+          // Only do the insert if this is not a dry run. 
+          if(!$this->isDryRun) {
+            $stmt->execute($lPdoValues);
+            $lResult = $stmt->rowCount();
+            $lNumRows = $lNumRows + $lResult;
+          }
         }
-        // Only do the insert if this is not a dry run. 
-        if(!$this->isDryRun) {
-          $stmt->execute($lPdoValues);
-          $lResult = $stmt->rowCount();
-          $lNumRows = $lNumRows + $lResult;
-        }
-      }
-      // End the transaction.
-      $this->dbh->commit();
-  	}
-  	// Catch an error if there was one.
-  	catch(PDOException $e) {
-  	  $this->dbh->rollBack();
-  	  echo $e->getMessage();
+        // End the transaction.
+        $this->dbh->commit();
+  	  }
+  	  // Catch an error if there was one.
+  	  catch(PDOException $e) {
+  	    $this->dbh->rollBack();
+  	    echo $e->getMessage();
+  	  }
   	}
   	return $lNumRows;
   }
