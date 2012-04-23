@@ -292,7 +292,7 @@ class JobsDB {
         // Only do the insert if this is not a dry run. 
         if(!$this->isDryRun) {
           $stmt->execute($lPdoValues);
-          $lResult = $stmt->rowCount;
+          $lResult = $stmt->rowCount();
           $lNumRows = $lNumRows + $lResult;
         }
       }
