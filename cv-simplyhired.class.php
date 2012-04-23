@@ -157,6 +157,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 */
 	public function fetchJobs($pQuery = self::QRY_DEFAULT, $pLimit = self::RES_SIZE_DEFAULT) {
 	  $lJobsArray = array();
+	  $lOffset = 0;
+	  $retJobsArray = array();
 	  // Error checking on maximum value.
 	  if(!is_int($pMax) || $pMax < 0 || $pMax > 100) {
 	  	$pMax = self::RES_SIZE_DEFAULT;
@@ -174,21 +176,21 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  if(empty($this->location)) {
 	  	$this->setLocation = self::LOCATION_DEFAULT;
 	  }
-	  // Recursively fetch all jobs.
-	  $lJobsArray = $this->_fetchJobs($pLimit);
-	  return $lJobsArray();
+	  // Fetch jobs.
+	  $lJobsArray = $retJobsArray = $this->_fetchJobs($pLimit);
+	  while(count($lJobsArray) == 100) {
+	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
+	  	$retJobsArray += $lJobsArray;
+	  	$lOffset++;
+	  }
+	  return $retJobsArray();
 	}
 	
-	/* Recursive function to get all the job results. */
-	private function _fetchJobs($pLimit, $pOffset = 0, $retJobsArray = array()) {
+	/* Private function to get job results. */
+	private function _fetchJobs($pLimit, $pOffset = 0) {
 	  $results = $this->doSearch($pLimit, $pOffset);
 	  $lJobsArray = $this->_buildJobsArray($results);
-	  // If there are 100 results, then call it again with the next page.
-	  if(count($lJobsArray) == 100) {
-	  	$retJobsArray += $this->_fetchJobs($pLimit, $pOffset + 1, $retJobsArray);
-	  }
-	  // Otherwise, just return at this point.
-	  return $retJobsArray;
+	  return $lJobsArray;
 	}
 	
     /**
