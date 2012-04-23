@@ -40,6 +40,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	
 	const OP_OR = 'OR'; // operators to join query string
 	const OP_AND = 'AND';
+	
+	const RES_SIZE_DEFAULT = 100; // by default query for the maximum that you can get in one page
 
 	/* Class variables. */
 
@@ -139,7 +141,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  else {
 	  	// Use the already-set query if there is one.
 	    if(!empty($this->query) && !empty($this->location)) {
-	  	  $results = $this->doSearch();
+	  	  $results = $this->doSearch(self::RES_SIZE_DEFAULT);
 	  	  $this->setJobsArray($results);
 	    }
 	    // Otherwise, set based on the passed-in parameter.
@@ -147,12 +149,12 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	      if($pQuery == self::QRY_DEFAULT) {
 	      	$lQuery = $this->buildDefaultQuery();
 	      	$this->setQuery($lQuery);
-	      	$results = $this->doSearch();
+	      	$results = $this->doSearch(self::RES_SIZE_DEFAULT);
 	      	$this->setJobsArray($results);
 	      }
 	      else if(is_string($pQuery) && !empty($pQuery)) {
 	      	$this->setQuery($pQuery);
-	      	$results = $this->doSearch();
+	      	$results = $this->doSearch(self::RES_SIZE_DEFAULT);
 	      	$this->setJobsArray($results);
 	      }
 	    }
