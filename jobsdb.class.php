@@ -426,8 +426,10 @@ class JobsDB {
   	foreach($pRecords as $record) {
   	  // @todo: Make it possible to configure how GUID is generated.
   	  if(!isset($record['guid']) || empty($record['guid'])) {
+  	  	// Unset the GUID after each iteration if it wasn't able to grab a GUID for one.
+  	  	$lGuid = '';
   	  	// All records should have a source and a source GUID.
-  	  	// For now, it should be adequate to use source:source_GUID as the GUID.
+  	  	// For now, it should be adequate to use source:source_guid as the GUID.
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
   	    }
