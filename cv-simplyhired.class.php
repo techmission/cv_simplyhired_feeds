@@ -85,16 +85,22 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * Sets a default query for the system, using ORs for all our faith terms.
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
-	  $lQryArray = $this->_getDefaultQueryArray();
+	  $lQryIncludesArray = $this->_getDefaultQueryIncludes();
+	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
 	  // Put spaces around the operator.
 	  $lOperator = ' ' . $pOperator . ' ';
-	  $lDefaultQuery = '(' . implode($lOperator, $lQryArray) . ')';
-	  $lDefaultQuery .= ' AND NOT Muslim AND NOT Jewish'; // exclude chaplains etc. for other religions
+	  $lDefaultQueryIncludes = '(' . implode($lOperator, $lQryIncludesArray) . ')';
+	  $lDefaultQueryExcludes = '';
+	  if(count($lQryExcludesArray) > 0) {
+	    $lDefaultQueryExcludes = implode(' AND NOT ', $lQryExcludesArray);
+	  }
+	  // Query has both inclusions and exclusions.
+	  $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes;
 	  return $lDefaultQuery;
 	}
 	
 	/* Defines the default query to be used for Christian job searches. */
-	private function _getDefaultQueryArray() {
+	private function _getDefaultQueryIncludes() {
 	  $lQryArray = array('pastor',
 	  		             'church',
 	  		             'chaplain',
@@ -135,6 +141,11 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  return $lQryArray; 	
 	}
 	
+	private function _getDefaultQueryExcludes() {
+	  $lQryArray = array('Muslim', 'Jewish', 'hospital');
+	  return $lQryArray;
+	}
+
 	/**
 	 * Returns the jobs array.
 	 */
@@ -229,6 +240,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lPattern = '/\/jobkey-(?P<guid>[a-zA-Z0-9.]+)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
+	  krumo(array('url' => $pUrl, 'results' => $lResults));
 	  if(!empty($lResults['guid'])) {
 	  	$lGuid = $lResults['guid'];
 	  }
