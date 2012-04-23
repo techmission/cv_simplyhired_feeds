@@ -290,13 +290,11 @@ class JobsDB {
   	  	$lRecords = $stmt;
   	  }
   	  $lNumRows = $stmt->rowCount();
-  	  krumo(array('numRows' => $lNumRows));
   	}
   	// Catch an error if there was one.
   	catch(PDOException $e) {
   	  echo $e->getMessage();
   	}
-  	krumo(array('records' => $lRecords));
   	return $lRecords;
   }
   
