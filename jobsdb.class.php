@@ -19,6 +19,7 @@ class JobsDB {
   
   /* Constants for fields to select. */
   const FIELDS_ALL = 0;
+  const FIELDS_GUID = 1;
   
   /* Constants for data types. */
   const TYPE_INT = 0;
@@ -264,7 +265,7 @@ class JobsDB {
   	try {
   	  // Try to get a select statement.
   	  try {
-  		$lPdoSql = $this->_buildSelectStmt($this->tableName, $pFieldName, $pValues, $pFieldType, self::FIELDS_ALL, self::OP_IN);
+  		$lPdoSql = $this->_buildSelectStmt($this->tableName, $pFieldName, $pValues, $pFieldType, self::FIELDS_GUID, self::OP_IN);
   	  }
   	  catch(Exception $e) {
   	  	if($this->isLogging) {
@@ -276,7 +277,7 @@ class JobsDB {
   	  $lBindValueType = $this->_lookupBindValueType($pFieldType);
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
-  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
+  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues, 'bindValueType' => $lBindValueType));
   	  }
   	  // Selects can be done on dry runs.
   	  $stmt = $this->dbh->prepare($lPdoSql);
@@ -284,7 +285,7 @@ class JobsDB {
   	  $stmt->execute();
   	  // If returning the full array, then build it here. Otherwise return the PDOStatement object.
   	  $lResults = $stmt->fetchAll($pFetchMode);
-  	  krumo($lResults);
+  	  krumo(array('results' => $lResults));
   	  if($pReturnAll == TRUE) {
   	  	foreach($lResults as $lRow) {
   	  	  $lRecords[] = $lRow;
@@ -294,13 +295,13 @@ class JobsDB {
   	  	$lRecords = $lResults;
   	  }
   	  $lNumRows = $stmt->rowCount();
-  	  krumo($lNumRows);
+  	  krumo(array('numRows' => $lNumRows));
   	}
   	// Catch an error if there was one.
   	catch(PDOException $e) {
   	  	echo $e->getMessage();
   	}
-  	krumo($lRecords);
+  	krumo(array('records' => $lRecords));
   	return $lRecords;
   }
   
@@ -398,15 +399,18 @@ class JobsDB {
   	$lPdoSql = '';
   	// Set the fields to select.
   	if($pSelectFields == self::FIELDS_ALL) {
-  		$lFields = '*';
+  	  $lFields = '*';
+  	}
+  	else if($pSelectFields == self::FIELDS_GUID) {
+  	  $lFields = 'id, guid, title';
   	}
   	else {
-  		if(is_array($pSelectFields)) {
-  			$lFields = implode(',', $pSelectFields);
-  		}
-  		else {
-  			$lFields = $pFields;
-  		}
+  	  if(is_array($pSelectFields)) {
+  		$lFields = implode(',', $pSelectFields);
+  	  }
+  	  else {
+  		$lFields = $pFields;
+  	  }
   	}
   	if($pOperator == self::OP_IN) {
   		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN :values';
