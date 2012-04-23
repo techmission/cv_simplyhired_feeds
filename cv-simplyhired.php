@@ -74,7 +74,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	//krumo($numRows);
 	
 	// Delete all old jobs records.
-	$jobsDb->truncate();
+	//$jobsDb->truncate();
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
