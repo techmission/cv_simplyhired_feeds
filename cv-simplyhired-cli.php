@@ -1,4 +1,4 @@
-#! /usr/bin/php
+#! /usr/bin/local/php
 # PHP shell script.
 <?php
 
