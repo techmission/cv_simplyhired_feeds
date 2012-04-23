@@ -87,7 +87,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  return $lDefaultQuery;
 	}
 	
-	/* Defines the 
+	/* Defines the default query to be used for Christian job searches. */
 	private function _getDefaultQueryArray() {
 	  $lQryArray = array('pastor',
 	  		             'church',
