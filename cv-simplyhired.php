@@ -55,7 +55,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	}
 	
 	// Set to log.
-	$jobsDb->isLogging = FALSE;
+	$jobsDb->isLogging = TRUE;
 	// Set to dry run.
 	$jobsDb->isDryRun = FALSE;
 	// Get the database connection string.
@@ -70,16 +70,16 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	//$numRows = $jobsDb->countRecords();
 	//krumo($numRows);
 	
+	// Delete all old jobs records.
+	$jobsDb->truncate();
+	
 	// Write the jobs records to the tbl_feeds_jobs table.
-	//$numInserted = $jobsDb->createRecords($jobs);
-	//krumo($numInserted);
+	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
+	krumo($numInserted);
 	
 	// Delete old jobs records.
 	//$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
 	//krumo($numDeleted);
-	
-	// Delete all old jobs records.
-	$jobsDb->truncate();
 }
 ?>
 </body>
