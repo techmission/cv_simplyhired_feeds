@@ -26,7 +26,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$options = array('publisher_id' => 30845,
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
 	$cvsha = new CV_SimplyHired_API($options);
-	$cvsha->setQuery('Christian'); // search Christian jobs.
+	//$cvsha->setQuery('Christian'); // search Christian jobs.
 	$cvsha->setLocation('02124'); // search zipcode.
 	
 	// $results = $cvsha->doSearch(100);
@@ -37,7 +37,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	
     // In the background, run the query and turn the results into the proper format.
 	$jobs = array();
-	$jobs = $cvsha->getJobsArray();
+	$jobs = $cvsha->getJobsArray(); // Will use the default query terms.
 	
 	/* Print the API call. */
 	krumo($cvsha->apicall);

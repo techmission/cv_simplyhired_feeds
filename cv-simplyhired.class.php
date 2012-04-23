@@ -34,8 +34,13 @@ require_once('xmltools.php');
  */
 class CV_SimplyHired_API extends SimplyHired_API {
 	/* Constants. */
-	const SOURCE_NAME = 'simplyhired';
+	const SOURCE_NAME = 'simplyhired'; // source name for database
 	
+	const QRY_DEFAULT = TRUE; // if the default query should be used
+	
+	const OP_OR = 'OR'; // operators to join query string
+	const OP_AND = 'AND';
+
 	/* Class variables. */
 
     private $jobsArray = array(); // only accessible through the methods
@@ -72,18 +77,86 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	}
 	
 	/**
+	 * Sets a default query for the system, using ORs for all our faith terms.
+	 */
+	public function buildDefaultQuery($pOperator = self::OP_OR) {
+	  $lQryArray = _getDefaultQueryArray();
+	  // Put spaces around the operator.
+	  $lOperator = ' ' . $pOperator . ' ';
+	  $lDefaultQuery = implode($lOperator, $lQryArray);
+	  return $lDefaultQuery;
+	}
+	
+	/* Defines the 
+	private function _getDefaultQueryArray() {
+	  $lQryArray = array('pastor',
+	  		             'church',
+	  		             'chaplain',
+	  		             'minister',
+	  		             'christian', 
+	  		             'jesus', 
+	  		             'gospel', 
+	  		             'catholic',
+	  		             'ministry',
+	  		             'religious',
+	  		             'evangelical',
+	  		             'christ',
+	  		             'faith',
+	  		             'Protestant',
+	  		             'missionary',
+	  		             'rescue mission',
+	  		             'Union Mission',
+	  		             'Salvation Army',
+	  		             'World Vision',
+	  		             'missionary',
+	  		             'baptist',
+	  		             'lutheran',
+	  		             'methodist',
+	  		             'presbyterian',
+	  		             'pentecostal',
+	  		             'denominational',
+	  		             'evangelical',
+	  		             'calvary',
+	  		             'born again',
+	  		             'orthodox',
+	  		             'anglican',
+	  		             'reformed', 
+	  		             'god',
+	  		             'apostolic',
+	  		             'worship',
+	  		             'choir',
+	  		         );
+	  return $lQryArray; 	
+	}
+	
+	/**
 	 * Returns the jobs array.
 	 */
-	public function getJobsArray() {
+	public function getJobsArray($pQuery = self::QRY_DEFAULT) {
 	  if(is_array($this->jobsArray) && count($this->jobsArray) > 0) {
 	  	return $this->jobsArray;
 	  }
 	  else {
+	  	// Use the already-set query if there is one.
 	    if(!empty($this->query) && !empty($this->location)) {
 	  	  $results = $this->doSearch();
 	  	  $this->setJobsArray($results);
-	  	  return $this->jobsArray;
 	    }
+	    // Otherwise, set based on the passed-in parameter.
+	    else if(!empty($this->location)) {
+	      if($pQuery == self::QRY_DEFAULT) {
+	      	$lQuery = $this->buildDefaultQuery();
+	      	$this->setQuery($lQuery);
+	      	$results = $this->doSearch();
+	      	$this->setJobsArray($results);
+	      }
+	      else if(is_string($pQuery) && !empty($pQuery)) {
+	      	$this->setQuery($pQuery);
+	      	$results = $this->doSearch();
+	      	$this->setJobsArray($results);
+	      }
+	    }
+	    return $this->jobsArray;
 	  }
 	}
 	
