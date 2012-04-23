@@ -510,11 +510,11 @@ class JobsDB {
     $validation_errors = FALSE;
     // Check that there is a records array.
     if(!is_array($records)) {
-     $validation_errors[] = self::RES_ERR_NOT_ARRAY;
+     $validation_errors[] = self::RES_ERROR_NOT_ARRAY;
     }
     // Check that it has members.
     else if(count($records) == 0) {
-     $validation_errors[] = self::RES_ERR_NO_MEMBERS;
+     $validation_errors[] = self::RES_ERROR_NO_MEMBERS;
     }
     // Return early if either of these are the case.
     // Otherwise, you could be in a situation 
@@ -539,10 +539,10 @@ class JobsDB {
     $lTables = $this->getTables();
     $error = NULL;
     if(!array_key_exists($this->tableName, $lTables)) {
-      $error = self::RES_ERR_UNDEFINED_TABLE;
+      $error = self::RES_ERROR_UNDEFINED_TABLE;
     }
     else if($lTables[$this->tableTable] != $type) {
-      $error = self::RES_ERR_WRONG_DATA;
+      $error = self::RES_ERROR_WRONG_DATA;
     }
   }
   

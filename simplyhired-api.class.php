@@ -166,14 +166,22 @@ class SimplyHired_API {
 
 	function getClientIP() {
 		$ip = '';
-		if (getenv("HTTP_CLIENT_IP"))
-		$ip = getenv("HTTP_CLIENT_IP");
-		else if(getenv("HTTP_X_FORWARDED_FOR"))
-		$ip = getenv("HTTP_X_FORWARDED_FOR");
-		else if(getenv("REMOTE_ADDR"))
-		$ip = getenv("REMOTE_ADDR");
-		else
-		$ip = "UNKNOWN";
+		if (getenv("HTTP_CLIENT_IP")) {
+		  $ip = getenv("HTTP_CLIENT_IP");
+	    }
+		else if(getenv("HTTP_X_FORWARDED_FOR")) {
+		  $ip = getenv("HTTP_X_FORWARDED_FOR");
+		}
+		else if(getenv("REMOTE_ADDR")) {
+		  $ip = getenv("REMOTE_ADDR");
+		}
+		else if(PHP_SAPI === "cli") {
+		  $ip = gethostbyname(gethostname());
+		}
+		else {
+		  // Note that this will return no results, since a valid IP is required.
+		  $ip = "UNKNOWN";
+		}
 		return $ip;
 	} 
 	
