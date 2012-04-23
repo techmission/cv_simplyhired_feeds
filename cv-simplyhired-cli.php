@@ -9,8 +9,6 @@
 require_once(dirname(__FILE__) . '/cv-simplyhired.class.php');
 // Load the class for doing the inserts to the database.
 require_once(dirname(__FILE__) . '/jobsdb.class.php');
-// Load Krumo for the sake of printing variables in debugging.
-require_once(dirname(__FILE__) . '/krumo/class.krumo.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
@@ -35,7 +33,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $jobs = $cvsha->fetchJobs(); // Will use the default query terms.
 	
 	/* Print the API call. */
-	echo "API call: " . $cvsha->apicall . "\n";
+	//echo "API call: " . $cvsha->apicall . "\n";
 	
 	// Echo the jobs array.
 	//var_dump($jobs);
@@ -61,7 +59,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	echo "Number inserted was: " . $numInserted . "\n";
+	//echo "Number inserted was: " . $numInserted . "\n";
 
 	exit(0); // Exit with a zero status code: all is well.
     }
