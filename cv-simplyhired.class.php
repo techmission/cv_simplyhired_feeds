@@ -80,7 +80,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * Sets a default query for the system, using ORs for all our faith terms.
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
-	  $lQryArray = _getDefaultQueryArray();
+	  $lQryArray = $this->_getDefaultQueryArray();
 	  // Put spaces around the operator.
 	  $lOperator = ' ' . $pOperator . ' ';
 	  $lDefaultQuery = implode($lOperator, $lQryArray);
