@@ -110,7 +110,10 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  // Get the title.
 		  $lJobsArray[$i]['title'] = xt_getInnerXML($res->jt);
 		  // Get the organization name.
-		  $lJobsArray[$i]['org_name'] = xt_getInnerXML($res->cn);
+		  // If it is not in the cn tag, then check the src tag.
+		  $cn_inner = xt_getInnerXML($res->cn);
+		  $src_inner = xt_getInnerXML($res->src);
+		  $lJobsArray[$i]['org_name'] = (!empty($cn_inner)) ? $cn_inner : $src_inner;
 		  // Get the original URL from the url attribute on the src element.
 		  $lJobsArray[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
 		  // Get the source GUID from that URL.
