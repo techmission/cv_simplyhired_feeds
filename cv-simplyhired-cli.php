@@ -1,3 +1,5 @@
+#! /usr/bin/php
+# PHP shell script.
 <?php
 
 // Load the class that does the actual requests to SimplyHired, via the API.
@@ -19,23 +21,21 @@ ini_set('display_errors', TRUE);
  * set up search query, get back results, then save results to DB table.
  */
 if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
-	$options = array('publisher_id' => 30845,
+    if(!empty($argv[1])) {
+	  $options = array('publisher_id' => 30845,
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
-	$cvsha = new CV_SimplyHired_API($options);
-	$cvsha->setLocation('02124'); // search zipcode.
+	  $cvsha = new CV_SimplyHired_API($options);
+	  $cvsha->setLocation($argv[1]); // search zipcode.
 	
-    // In the background, run the query and turn the results into the proper format.
-	$jobs = array();
-	$jobs = $cvsha->getJobsArray(); // Will use the default query terms.
+      // In the background, run the query and turn the results into the proper format.
+	  $jobs = array();
+	  $jobs = $cvsha->getJobsArray(); // Will use the default query terms.
 	
 	/* Print the API call. */
-	echo 'API call: ' . $cvsha->apicall;
+	echo 'API call: ' . $cvsha->apicall . '\n';
 	
-	// Print the jobs array using Krumo.
-	// @todo: Remove when finished testing.
-	krumo($jobs);
 	// Echo the jobs array.
-    // $cvsha->printJobsResults();
+	//var_dump($jobs);
     
 	/* Write the jobs array to the database. */
 	
@@ -44,7 +44,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $jobsDb = new JobsDB();
 	}
 	catch(Exception $e) {
-	  echo 'Exception: ' . $e->getMessage();
+	  echo 'Exception: ' . $e->getMessage() . '\n';
 	}
 	
 	// Set to log.
@@ -58,10 +58,17 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	
 	// Write the jobs records to the tbl_feeds_jobs table.
 	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	echo 'Number inserted was: ' . $numInserted;
+	echo 'Number inserted was: ' . $numInserted . '\n';
 
 	exit(0); // Exit with a zero status code: all is well.
+    }
+    else {
+      echo 'This is a command line script. \n';
+      echo 'Usage: ' . $argv[0] . ' <location>' . '\n';
+      echo 'Location can be either a zipcode, state, or city.';
+      exit(1); // Exit with error status code.
+    }
 }
 else {
-  exit(1);
+  exit(1); // Exit with error status code
 }
