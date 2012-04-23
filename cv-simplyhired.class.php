@@ -37,6 +37,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	const SOURCE_NAME = 'simplyhired'; // source name for database
 	
 	const QRY_DEFAULT = TRUE; // if the default query should be used
+	const LOCATION_DEFAULT = '02124'; // default search location
 	
 	const OP_OR = 'OR'; // operators to join query string
 	const OP_AND = 'AND';
@@ -45,8 +46,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	const RES_RADIUS_DEFAULT = 100; // query for a 100-mile radius by default
 
 	/* Class variables. */
-
-    private $jobsArray = array(); // only accessible through the methods
     
 	/* Options passed in when instantiating class. -
 	   this is a public variable so that it can be modified later, if needed. */
@@ -148,6 +147,51 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	}
 
 	/**
+	 * Runs search and returns jobs.
+	 * Pages through results if there is more than 100 returned.
+	 * 
+	 * @param bool|string $pQuery
+	 *   The search query. By default it uses the class' default query.
+	 * @param int $pLimit
+	 *   The maximum number of results to return.
+	 */
+	public function fetchJobs($pQuery = self::QRY_DEFAULT, $pLimit = self::RES_SIZE_DEFAULT) {
+	  $lJobsArray = array();
+	  // Error checking on maximum value.
+	  if(!is_int($pMax) || $pMax < 0 || $pMax > 100) {
+	  	$pMax = self::RES_SIZE_DEFAULT;
+	  }
+	  // Set query.
+	  $lQuery = $pQuery;
+	  if($pQuery == self::QRY_DEFAULT) {
+	  	$lQuery = $this->buildDefaultQuery();
+	  	$this->setQuery($lQuery);
+	  }
+	  else if(is_string($lQuery) && !empty($lQuery)) {
+	  	$this->setQuery($lQuery);
+	  }
+	  // Set location if not already set.
+	  if(empty($this->location)) {
+	  	$this->setLocation = self::LOCATION_DEFAULT;
+	  }
+	  // Recursively fetch all jobs.
+	  $lJobsArray = $this->_fetchJobs($pLimit);
+	  return $lJobsArray();
+	}
+	
+	/* Recursive function to get all the job results. */
+	private function _fetchJobs($pLimit, $pOffset = 0, $retJobsArray = array()) {
+	  $results = $this->doSearch($pLimit, $pOffset);
+	  $lJobsArray = $this->_buildJobsArray($results);
+	  // If there are 100 results, then call it again with the next page.
+	  if(count($lJobsArray) == 100) {
+	  	$retJobsArray += $this->_fetchJobs($pLimit, $pOffset + 1, $retJobsArray);
+	  }
+	  // Otherwise, just return at this point.
+	  return $retJobsArray;
+	}
+	
+	/**
 	 * Returns the jobs array.
 	 */
 	public function getJobsArray($pQuery = self::QRY_DEFAULT) {
@@ -186,7 +230,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * @return int|void
 	 *   The number of jobs in the array, or no return value if an error in feed.
 	 */
-	private function setJobsArray($results) {
+	private function _buildJobsArray($results) {
 		if($results->error) { 
 		  $this->jobsArray = array(); // If the results had an error, jobsArray can't be set, so clear previous (if any).
 		  return;
@@ -225,11 +269,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  $i++;
 		}
 		
-		// Set the jobs array variable.
-		$this->jobsArray = $lJobsArray;
-		
 		// Return the number of jobs in the array.
-		return $numJobs;
+		return $lJobsArray;
 	}
 	
 	private function _getSourceGuid($pUrl) {

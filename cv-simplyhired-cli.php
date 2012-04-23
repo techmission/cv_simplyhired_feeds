@@ -50,8 +50,8 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  echo "Exception: " . $e->getMessage() . "\n";
 	}
 	
-	// Set to log.
-	$jobsDb->isLogging = TRUE;
+	// Set to not log, since logging does not work in command line mode.
+	$jobsDb->isLogging = FALSE;
 	
 	// Connect to the database;
 	$jobsDb->connect();
