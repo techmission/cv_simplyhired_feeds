@@ -189,7 +189,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  	  break;
 	  	}
 	  }
-	  return $retJobsArray();
+	  return $retJobsArray;
 	}
 	
 	/* Private function to get job results. */
