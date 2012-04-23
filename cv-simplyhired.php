@@ -35,12 +35,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
       $cvsha->printError();
     } */
 	
-	/* Print the API call. */
-	krumo($cvsha->apicall);
-	
     // In the background, run the query and turn the results into the proper format.
 	$jobs = array();
 	$jobs = $cvsha->getJobsArray();
+	
+	/* Print the API call. */
+	krumo($cvsha->apicall);
 	
 	// Print the jobs array using Krumo.
 	// @todo: Remove when finished testing.
