@@ -17,6 +17,9 @@ class JobsDB {
   /* Constants for operators. */
   const OP_IN = 0;
   
+  /* Constants for fields to select. */
+  const FIELDS_ALL = 0;
+  
   /* Constants for data types. */
   const TYPE_INT = 0;
   const TYPE_STRING = 1;
@@ -233,22 +236,78 @@ class JobsDB {
   	return $lNumRows;
   }
   
-  /* Looks up the proper PDO bind value type for this type of value.
-  private function _lookupBindValueType($pType = self::TYPE_INT) {
-  	switch($pType) {
-  		case self::TYPE_INT:
-  		default:
-  		  $lBindValueType = PDO::PARAM_INT;
+
+  
+  /**
+   * Select records by a given set of criteria.
+   * The records are returned as a single array, or as a PDOStatement if requested that way.
+   */
+  public function selectRecords($pFieldName, array $pValues, $pFieldType = self::TYPE_INT, 
+  		$pObjType = self::RECORDS_JOB, $pReturnAll = TRUE, $pFetchMode = PDO::FETCH_ASSOC) {
+  	// Set return variables. Assume error condition to start.
+  	$lRecords = FALSE;
+  	$lNumRows = FALSE;
+  	// Connect if no database handle.
+  	if($this->dbh == NULL) {
+  		$this->connect();
   	}
-  	return $lBindValueType;
+  	// Set the table name from which to delete, if not already set.
+  	// Default to the jobs table.
+  	if(empty($this->tableName) || $pObjType != self::RECORDS_JOB) {
+  		$this->tableName = $this->_lookupTableName($pObjType);
+  	}
+  	// Only prepare statement if there are values.
+  	if(count($pValues) == 0) {
+  		return $lRecords;
+  	}
+  	// Execute the query.
+  	try {
+  	  // Try to get a select statement.
+  	  try {
+  		$lPdoSql = $this->_buildSelectStmt($this->tableName, $pFieldName, $pValues, $pFieldType, self::FIELDS_ALL, self::OP_IN);
+  	  }
+  	  catch(Exception $e) {
+  	  	if($this->isLogging) {
+  	  		echo $e->getMessage();
+  	  	}
+  	  	return $lRecords;
+  	  }
+  	  // Get the bind value type.
+  	  $lBindValueType = $this->_lookupBindValueType($pFieldType);
+  	  // Debug the statement if logging.
+  	  if($this->isLogging && function_exists('krumo')) {
+  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
+  	  }
+  	  // Selects can be done on dry runs.
+  	  $stmt = $this->dbh->prepare($lPdoSql);
+  	  $stmt->bindValue(':values', $pValues, $lBindValueType);
+  	  $stmt->execute();
+  	  // If returning the full array, then build it here. Otherwise return the PDOStatement object.
+  	  $lResults = $stmt->fetchAll($pFetchMode);
+  	  if($pReturnAll == TRUE) {
+  	  	foreach($lResults as $lRow) {
+  	  	  $lRecords[] = $lRow;
+  	  	}
+  	  }
+  	  else {
+  	  	$lRecords = $lResults;
+  	  }
+  	  $lNumRows = $stmt->rowCount();
+  	  }
+  	  // Catch an error if there was one.
+  	  catch(PDOException $e) {
+  	  	$this->dbh->rollBack();
+  	  	echo $e->getMessage();
+  	  }
+  	  return $lRecords;
   }
   
   /**
    * Write to the database an array of records. 
    * By default, write to the jobs table.
    */
-  public function createRecords($records, $type = self::RECORDS_JOB) {
-    $num_rows = FALSE; // Assume error condition to start.
+  public function createRecords($pRecords, $pType = self::RECORDS_JOB) {
+    $lNumRows = FALSE; // Assume error condition to start.
     // Connect if no database handle.
     if($this->dbh == NULL) {
     	$this->connect();
@@ -256,34 +315,40 @@ class JobsDB {
     // Set the table name to which to write based on type,
     // if not already set.
     if(empty($this->tableName)) {
-      $this->tableName = $this->_lookupTableName($type);
+      $this->tableName = $this->_lookupTableName($pType);
     }
     // Validate that the records can be written to this table.
-    $errors = $this->_validateRecords($records, $type);
+    $errors = $this->_validateRecords($pRecords, $pType);
     // Add GUIDs to the records.
-    $records = $this->_addRecordGuids($records, $type);
+    $lRecords = $this->_addRecordGuids($pRecords, $pType);
     if($errors == FALSE) {
       // Actually create the records.
-      $numRows = $this->_createRecords($records);
+      $lNumRows = $this->_createRecords($lRecords, $pType);
     } 
-    return $numRows;
+    return $lNumRows;
   }
 
   /* Private function to do the dirty work of writing to the DB. */
-  private function _createRecords($records) {
+  private function _createRecords($pRecords, $pType) {
   	$lNumRows = 0;
+  	$lRecords = $pRecords;
+  	// If the type should be de-duped, then do that before creating records.
+  	// @todo: Check by type in a separate function.
+  	if($pType == self::RECORDS_JOB) {
+  	  $lRecords = $this->_dedupeRecords($lRecords, $pType);
+  	}
   	try {
   	  // Begin a transaction.
   	  $this->dbh->beginTransaction();
   	  // Set up the PDO statement.
   	  // Note that for this to work, the first record in the set must have keys.
-  	  $lRecord = current($records);
+  	  $lRecord = current($lRecords);
       $lFields = array_keys($lRecord);
       $lPdoSql = $this->_buildInsertStmt($this->tableName, $lFields);
       // Iterate and insert the records.
       // @todo: Bind them instead.
-      foreach($records as $record) {
-        $lPdoValues = $this->_buildValues($record);
+      foreach($lRecords as $lRecord) {
+        $lPdoValues = $this->_buildValues($lRecord);
         $stmt = $this->dbh->prepare($lPdoSql);
         // Debug the statement if logging.
         if($this->isLogging && function_exists('krumo')) {
@@ -306,7 +371,58 @@ class JobsDB {
   	}
   	return $lNumRows;
   }
+  
+  /* Private function to de-dupe records by GUID. */
+  private function _dedupeRecords($pRecords, $pType = self::RECORDS_JOB) {
+  	// The GUIDs of the records should be the keys of the array.
+  	$lRecordGuids = array_keys($pRecords);
+  	$retRecords = $pRecords;
+  	// If there are GUIDs, then look up matches.
+  	if(count($lRecordGuids) > 0) {
+  	  $lMatchRecords = $this->selectRecords('guid', $lRecordGuids, self::TYPE_STRING, $pType);
+  	}
+  	// Unset the matching records from the array, so they will not be inserted.
+  	foreach($lMatchRecords as $record) {
+  	  $lGuid = $record['guid'];	
+  	  unset($retRecords[$lGuid]);
+  	}
+  	return $retRecords;
+  }
 
+  private function _buildSelectStmt($pTableName, $pFieldName, $pValues, $pFieldType, $pSelectFields, $pOperator) {
+  	$lFields = '';
+  	$lPdoSql = '';
+  	// Set the fields to select.
+  	if($pSelectFields == self::FIELDS_ALL) {
+  		$lFields = '*';
+  	}
+  	else {
+  		if(is_array($pSelectFields)) {
+  			$lFields = implode(',', $pSelectFields);
+  		}
+  		else {
+  			$lFields = $pFields;
+  		}
+  	}
+  	if($pOperator == self::OP_IN) {
+  		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN :values';
+  	}
+  	return $lPdoSql;
+  }
+  
+  private function _buildInsertStmt($pTableName, $pFields) {
+  	$lFieldNamesStr = implode(',', $pFields);
+  	$lNamedParams = array();
+  	$lNamedParamsStr = '';
+  	$lPdoSql = '';
+  	foreach($pFields as $field) {
+  		$lNamedParams[] = ':' . $field;
+  	}
+  	$lNamedParamsStr = implode(',', $lNamedParams);
+  	$lPdoSql = 'INSERT INTO ' . $pTableName . '(' . $lFieldNamesStr . ') VALUES(' . $lNamedParamsStr . ')';
+  	return $lPdoSql;
+  }
+  
   private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = self::TYPE_INT, $pOperator = self::OP_IN) {
   	if($pOperator == self::OP_IN) {
   	  if(!is_array($pValue)) {
@@ -332,17 +448,20 @@ class JobsDB {
     return $lPdoSql;
   }
   
-  private function _buildInsertStmt($pTableName, $pFields) {
-    $lFieldNamesStr = implode(',', $pFields);
-    $lNamedParams = array();
-    $lNamedParamsStr = '';
-    $lPdoSql = '';
-    foreach($pFields as $field) {
-      $lNamedParams[] = ':' . $field;
-    }
-    $lNamedParamsStr = implode(',', $lNamedParams);
-    $lPdoSql = 'INSERT INTO ' . $pTableName . '(' . $lFieldNamesStr . ') VALUES(' . $lNamedParamsStr . ')';
-    return $lPdoSql;
+  /* Looks up the proper PDO bind value type for this type of value. */
+  private function _lookupBindValueType($pType = self::TYPE_INT) {
+  	switch($pType) {
+  		case self::TYPE_BOOL:
+  			$lBindValueType = PDO::PARAM_BOOL;
+  		case self::TYPE_STRING:
+  			$lBindValueType = PDO::PARAM_STR;
+  			break;
+  		case self::TYPE_INT:
+  		default:
+  			$lBindValueType = PDO::PARAM_INT;
+  	}
+  	// @todo: Have an error condition if the type cannot be bound (i.e., arrays?)
+  	return $lBindValueType;
   }
   
   private function _buildValues($pRecord) {
@@ -426,15 +545,17 @@ class JobsDB {
   	foreach($pRecords as $record) {
   	  // @todo: Make it possible to configure how GUID is generated.
   	  if(!isset($record['guid']) || empty($record['guid'])) {
-  	  	// Unset the GUID after each iteration if it wasn't able to grab a GUID for one.
-  	  	$lGuid = '';
+  	  	// Set the GUID to a number if it wasn't able to grab a GUID for a record.
+  	  	// This is needed so the de-duping can work.
+  	  	$lGuid = $i;
   	  	// All records should have a source and a source GUID.
   	  	// For now, it should be adequate to use source:source_guid as the GUID.
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
   	    }
-  	    $retRecords[$i] = $record;
-  	    $retRecords[$i]['guid'] = $lGuid;
+  	    // Key the returned records by guid so they can be deduped.
+  	    $retRecords[$lGuid] = $record;
+  	    $retRecords[$lGuid]['guid'] = $lGuid;
   	  }
   	  $i++;
   	}
