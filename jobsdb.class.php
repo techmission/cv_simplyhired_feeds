@@ -273,15 +273,12 @@ class JobsDB {
   	  	}
   	  	return $lRecords;
   	  }
-  	  // Get the bind value type.
-  	  $lBindValueType = $this->_lookupBindValueType($pFieldType);
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
-  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues, 'bindValueType' => $lBindValueType));
+  	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
   	  }
   	  // Selects can be done on dry runs.
   	  $stmt = $this->dbh->prepare($lPdoSql);
-  	  $stmt->bindValue(':values', $pValues, $lBindValueType);
   	  $stmt->execute();
   	  // If returning the full array, then build it here. Otherwise return the PDOStatement object.
   	  if($pReturnAll == TRUE) {
@@ -392,7 +389,7 @@ class JobsDB {
   	return $retRecords;
   }
 
-  private function _buildSelectStmt($pTableName, $pFieldName, $pValues, $pFieldType, $pSelectFields, $pOperator) {
+  private function _buildSelectStmt($pTableName, $pFieldName, $pValue, $pFieldType, $pSelectFields, $pOperator) {
   	$lFields = '';
   	$lPdoSql = '';
   	// Set the fields to select.
@@ -411,7 +408,11 @@ class JobsDB {
   	  }
   	}
   	if($pOperator == self::OP_IN) {
-  		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN :values';
+  		$lInClause = $this->_buildInClause($pValue, $pType);
+  		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN ' . $lInClause;
+  	}
+  	else {
+  		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' = :value';
   	}
   	return $lPdoSql;
   }
@@ -431,27 +432,38 @@ class JobsDB {
   
   private function _buildDeleteStmt($pTableName, $pFieldName, $pValue, $pType = self::TYPE_INT, $pOperator = self::OP_IN) {
   	if($pOperator == self::OP_IN) {
-  	  if(!is_array($pValue)) {
-  	  	$lValues = (array) $pValue;
-  	  }
-  	  else {
-  	  	$lValues = $pValue;
-  	  	$lValuesStr = '';
-  	  	// Prepare the values for the IN clause.
-  	  	if($pType == self::TYPE_INT) {
-  	  	  array_walk($lValues, 'val_toInt');
-  	  	}
-  	  	else if($pType == self::TYPE_STRING) {
-  	  	  array_walk($lValues, 'val_quote');
-  	  	}
-  	  	else {
-  	  	  throw new Exception('Unsupported type.');
-  	  	}
-  	  	$lValuesStr = implode(',', $lValues);
-  	  }
-  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN (' . $lValuesStr . ')';
+  	  $lInClause = $this->_buildInClause($pValue, $pType);
+  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN ' . $lInClause;
+  	}
+  	else {
+  	  // @todo: Add in other options.
+  	  $lPdoSql = 'DELETE FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' = :value';
   	}
     return $lPdoSql;
+  }
+  
+  private function _buildInClause($pValue, $pType) {
+  	$lInClause = '';
+  	if(!is_array($pValue)) {
+  		$lValues = (array) $pValue;
+  	}
+  	else {
+  		$lValues = $pValue;
+  		$lValuesStr = '';
+  		// Prepare the values for the IN clause.
+  		if($pType == self::TYPE_INT) {
+  			array_walk($lValues, 'val_toInt');
+  		}
+  		else if($pType == self::TYPE_STRING) {
+  			array_walk($lValues, 'val_quote');
+  		}
+  		else {
+  			throw new Exception('Unsupported type.');
+  		}
+  		$lValuesStr = implode(',', $lValues);
+  	}
+  	$lInClause = '(' . $lValuesStr . ')';
+  	return $lInClause;
   }
   
   /* Looks up the proper PDO bind value type for this type of value. */
