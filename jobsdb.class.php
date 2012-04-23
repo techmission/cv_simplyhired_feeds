@@ -304,6 +304,7 @@ class JobsDB {
    */
   public function createRecords($pRecords, $pType = self::RECORDS_JOB) {
     $lNumRows = FALSE; // Assume error condition to start.
+    krumo(count($pRecords));
     // Connect if no database handle.
     if($this->dbh == NULL) {
     	$this->connect();
