@@ -579,6 +579,9 @@ class JobsDB {
   	    $retRecords[$lGuid] = $record;
   	    $retRecords[$lGuid]['guid'] = $lGuid;
   	  }
+  	  else {
+  	  	krumo(array('skipped ' . $i => $record));
+  	  }
   	  $i++;
   	}
   	krumo($i);
