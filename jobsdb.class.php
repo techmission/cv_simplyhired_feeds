@@ -284,6 +284,7 @@ class JobsDB {
   	  $stmt->execute();
   	  // If returning the full array, then build it here. Otherwise return the PDOStatement object.
   	  $lResults = $stmt->fetchAll($pFetchMode);
+  	  krumo($lResults);
   	  if($pReturnAll == TRUE) {
   	  	foreach($lResults as $lRow) {
   	  	  $lRecords[] = $lRow;
@@ -293,14 +294,14 @@ class JobsDB {
   	  	$lRecords = $lResults;
   	  }
   	  $lNumRows = $stmt->rowCount();
-  	  }
-  	  // Catch an error if there was one.
-  	  catch(PDOException $e) {
-  	  	$this->dbh->rollBack();
+  	  krumo($lNumRows);
+  	}
+  	// Catch an error if there was one.
+  	catch(PDOException $e) {
   	  	echo $e->getMessage();
-  	  }
-  	  krumo($lRecords);
-  	  return $lRecords;
+  	}
+  	krumo($lRecords);
+  	return $lRecords;
   }
   
   /**
