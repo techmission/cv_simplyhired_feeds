@@ -561,6 +561,7 @@ class JobsDB {
   /* Only call this after records have been validated. */
   private function _addRecordGuids($pRecords, $type = self::RECORDS_JOB) {
   	$retRecords = array();
+  	krumo($pRecords);
   	$lGuid = '';
   	$i = 0;
   	foreach($pRecords as $record) {
@@ -580,6 +581,7 @@ class JobsDB {
   	  }
   	  $i++;
   	}
+  	krumo($retRecords);
   	return $retRecords;
   }
   
