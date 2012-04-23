@@ -329,7 +329,6 @@ class JobsDB {
   private function _createRecords($pRecords, $pType) {
   	$lNumRows = 0;
   	$lRecords = $pRecords;
-  	krumo(count($lRecords));
   	// If the type should be de-duped, then do that before creating records.
   	// @todo: Check by type in a separate function.
   	if($pType == self::RECORDS_JOB) {
@@ -561,7 +560,6 @@ class JobsDB {
   /* Only call this after records have been validated. */
   private function _addRecordGuids($pRecords, $type = self::RECORDS_JOB) {
   	$retRecords = array();
-  	krumo(count($pRecords));
   	$lGuid = '';
   	$i = 0;
   	foreach($pRecords as $record) {
@@ -574,22 +572,23 @@ class JobsDB {
   	  	// For now, it should be adequate to use source:source_guid as the GUID.
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
-  	      krumo('guid for record ' . $i . ': ' . $lGuid);
   	    }
   	    else {
+  	      if($this->isLogging && function_exists('krumo')) {
   	    	krumo(array('missing source_guid for ' . $i => $record));
+  	      }
   	    }
   	    // Key the returned records by guid so they can be deduped.
   	    $retRecords[$lGuid] = $record;
   	    $retRecords[$lGuid]['guid'] = $lGuid;
   	  }
   	  else {
-  	  	krumo(array('skipped ' . $i => $record));
+  	  	if($this->isLogging && function_exists('krumo')) {
+  	  	  krumo(array('skipped ' . $i => $record));
+  	  	}
   	  }
   	  $i++;
   	}
-  	krumo($i);
-  	krumo(count($retRecords));
   	return $retRecords;
   }
   
