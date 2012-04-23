@@ -144,7 +144,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  // The alphanumeric character class is used to restrict the match.
 	  // @see http://www.php.net/manual/en/function.preg-match.php#108117
 	  // @see http://www.php.net/manual/en/regexp.reference.character-classes.php
-	  $lPattern = '/\/jobkey-(?P<guid>[a-zA-Z0-9]+)\//';
+	  $lPattern = '/\/jobkey-(?P<guid>[a-zA-Z0-9.]+)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
 	  krumo($lResults);
