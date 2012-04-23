@@ -42,6 +42,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	const OP_AND = 'AND';
 	
 	const RES_SIZE_DEFAULT = 100; // by default query for the maximum that you can get in one page
+	const RES_RADIUS_DEFAULT = 100; // query for a 100-mile radius by default
 
 	/* Class variables. */
 
@@ -74,6 +75,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 				$this->setOnet($this->options['broad_onet_code']);
 			}
 			$this->setIsUsa( $this->options['is_usa'] );
+			$radius = (!empty($this->options['radius'])) ? $this->options['radius'] : self::RES_RADIUS_DEFAULT;
+			$this->setRadius($radius);
 			$this->setDisableTracking( $this->options['disable_tracking']);
 		}
 	}

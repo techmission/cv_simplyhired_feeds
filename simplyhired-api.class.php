@@ -98,31 +98,41 @@ class SimplyHired_API {
 	
 	}
 
-	function doSearch( $number=10, $start=0 ) {
+	function doSearch($number = 10, $start = 0) {
+		// Build the SimplyHired API call from parameters.
+		$this->apicall = $this->_buildApiCall($number, $start);
 
-		if( !empty($this->onet) )
-			$onet_filter = 'onet:(' . $this->onet . ')+';
-		//if( $this->is_usa ) 
-			$ssty= '&ssty=2';
-		//else 
-		//	$ssty= '&ssty=3';		
-		$apicall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/ws-' . $number . '/pn-' . $this->pagenum . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
-		
-		$this->apicall = $apicall;
-
-		$xmlstr = @file_get_contents( $apicall );
-		if( !$xmlstr == null ) 
-			$xml = new SimpleXMLElement( $xmlstr );
-		if( empty($xml) || $xml == null )
-			return null;
-		
+		// Get the result XML.
+		$xmlstr = @file_get_contents($this->apicall);
+		if(!$xmlstr == null ) {
+		  $xml = new SimpleXMLElement($xmlstr);
+	     }
+		if( empty($xml) || $xml == null ) {
+		  return null;
+		}
 		$this->results = $xml;
 		
+		// Set the search error if there was an error.
 		if($xml->error) {
 		  $this->search_error = $xml->error->asXML();
 		}
+		
+		// Return SimpleXMLElement tree of results.
 		return $xml;
+	}
 	
+	/**
+	 *  Build the API call as per parameters defined on 
+	 *  https://www.jobamatic.com/a/jbb/partner-dashboard-advanced-xml-api.
+	 */
+	private function _buildApiCall($number, $start) {
+	  if(!empty($this->onet)) {
+		$onet_filter = 'onet:(' . $this->onet . ')+';
+	  }
+	  //if( $this->is_usa )
+	  $ssty = '&ssty=2';
+	  $lApiCall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $this->pagenum . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
+	  return $lApiCall;
 	}
 	
 	function setQuery( $query ) {
@@ -135,6 +145,11 @@ class SimplyHired_API {
 
 	function setLocation( $location ) {
 		$this->location = $location;
+	}
+	
+	// Set the radius for searches.
+	function setRadius($radius) {
+	  $this->radius = $radius;	
 	}
 	
 	function setIsUsa( $bool ) {
