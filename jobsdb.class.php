@@ -656,7 +656,7 @@ class JobsDB {
   	
   	// The pdo_ext.class.php file is required.
   	if(file_exists('pdo_ext.class.php')) {
-  	  require_once('pdo_ext.class.php');
+  	  require_once(dirname(__FILE__) . '/pdo_ext.class.php');
   	}
   	else {
   	  throw new Exception('PDO_Ext class file not present.');

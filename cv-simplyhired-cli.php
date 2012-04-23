@@ -3,9 +3,9 @@
 // Load the class that does the actual requests to SimplyHired, via the API.
 require_once(dirname(__FILE__) . '/cv-simplyhired.class.php');
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . 'jobsdb.class.php');
+require_once(dirname(__FILE__) . '/jobsdb.class.php');
 // Load Krumo for the sake of printing variables in debugging.
-require_once(dirname(__FILE__) . 'krumo/class.krumo.php');
+require_once(dirname(__FILE__) . '/krumo/class.krumo.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
