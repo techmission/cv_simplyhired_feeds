@@ -328,6 +328,7 @@ class JobsDB {
   private function _createRecords($pRecords, $pType) {
   	$lNumRows = 0;
   	$lRecords = $pRecords;
+  	krumo(count($lRecords));
   	// If the type should be de-duped, then do that before creating records.
   	// @todo: Check by type in a separate function.
   	if($pType == self::RECORDS_JOB) {
