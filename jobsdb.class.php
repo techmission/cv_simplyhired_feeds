@@ -574,7 +574,7 @@ class JobsDB {
   	  	// For now, it should be adequate to use source:source_guid as the GUID.
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
-  	      krumo($lGuid);
+  	      krumo('guid for record ' . $i . ': ' . $lGuid);
   	    }
   	    else {
   	    	krumo(array('missing source_guid for ' . $i => $record));
