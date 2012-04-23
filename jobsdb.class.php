@@ -317,8 +317,7 @@ class JobsDB {
     // Validate that the records can be written to this table.
     $errors = $this->_validateRecords($pRecords, $pType);
     // Add GUIDs to the records.
-    //$lRecords = $this->_addRecordGuids($pRecords, $pType);
-    $lRecords = $pRecords;
+    $lRecords = $this->_addRecordGuids($pRecords, $pType);
     if($errors == FALSE) {
       // Actually create the records.
       $lNumRows = $this->_createRecords($lRecords, $pType);
@@ -575,6 +574,7 @@ class JobsDB {
   	  	// For now, it should be adequate to use source:source_guid as the GUID.
   	    if(!empty($record['source']) && !empty($record['source_guid'])) {
   	      $lGuid = $record['source'] . ':' . $record['source_guid'];
+  	      krumo($lGuid);
   	    }
   	    else {
   	    	krumo(array('missing source_guid for ' . $i => $record));
