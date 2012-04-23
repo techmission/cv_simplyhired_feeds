@@ -139,18 +139,57 @@ class JobsDB {
   }
 
   /**
+   * Delete all records from a table.
+   */
+  public function truncate($pObjType = self::RECORDS_JOB) {
+    $lNumRows = FALSE; // Assume error condition to start.
+  	// Connect if no database handle.
+  	if($this->dbh == NULL) {
+  	  $this->connect();
+  	}
+  	// Set the table name from which to delete, if not already set.
+  	// Default to the jobs table.
+  	if(empty($this->tableName) || $pObjType != self::RECORDS_JOB) {
+  		$this->tableName = $this->_lookupTableName($pObjType);
+  	}
+  	// Execute the query.
+  	try {
+  		// Begin a transaction.
+  		$this->dbh->beginTransaction();
+  		$lPdoSql = 'DELETE FROM ' . $this->tableName;
+  		if($this->isLogging && function_exists('krumo')) {
+  		  krumo($lPdoSql);
+  		}
+  		// Only do the delete if this is not a dry run.
+  		if(!$this->isDryRun) {
+  	      $stmt = $this->dbh->prepare($lPdoSql);
+  		  $stmt->execute();
+  		  $lNumRows = $stmt->rowCount();
+  		}
+  		// End the transaction.
+  		$this->dbh->commit();
+  	}
+  	// Catch an error if there was one.
+  	catch(PDOException $e) {
+  	  $this->dbh->rollBack();
+  	  echo $e->getMessage();
+  	}
+  	return $lNumRows;
+  } 
+   
+  /**
    * Delete records from the database that match certain values.
    */
-  public function deleteRecords($pFieldName, array $pValues, $pType = self::TYPE_INT) {
+  public function deleteRecords($pFieldName, array $pValues, $pType = self::TYPE_INT, $pObjType = self::RECORDS_JOB) {
   	$lNumRows = FALSE; // Assume error condition to start.
   	// Connect if no database handle.
   	if($this->dbh == NULL) {
   	  $this->connect();
   	}
-  	// Set the table name to which to write, if not already set.
+  	// Set the table name from which to delete, if not already set.
   	// Default to the jobs table.
-  	if(empty($this->tableName)) {
-  	  $this->tableName = $this->_lookupTableName();
+  	if(empty($this->tableName) || $pObjType != self::RECORDS_JOB) {
+  	  $this->tableName = $this->_lookupTableName($pObjType);
   	}
   	// Only prepare statement if there are values.
   	if(count($pValues) == 0) {
@@ -170,14 +209,16 @@ class JobsDB {
   	  	}
   	  	return $lNumRows;
   	  }
+  	  // Get the bind value type.
+  	  $lBindValueType = $this->_lookupBindValueType($pType);
   	  // Debug the statement if logging.
   	  if($this->isLogging && function_exists('krumo')) {
   	  	krumo(array('sql' => $lPdoSql, 'values' => $pValues));
   	  }
-  	  // Only do the insert if this is not a dry run.
+  	  // Only do the delete if this is not a dry run.
   	  if(!$this->isDryRun) {
   	    $stmt = $this->dbh->prepare($lPdoSql);
-  	    $stmt->bindValue(':values', $pValues, PDO::PARAM_INT);
+  	    $stmt->bindValue(':values', $pValues, $lBindValueType);
   	    $stmt->execute();
   	    $lNumRows = $stmt->rowCount();
   	  }
@@ -190,6 +231,16 @@ class JobsDB {
   	  echo $e->getMessage();
   	}
   	return $lNumRows;
+  }
+  
+  /* Looks up the proper PDO bind value type for this type of value.
+  private function _lookupBindValueType($pType = self::TYPE_INT) {
+  	switch($pType) {
+  		case self::TYPE_INT:
+  		default:
+  		  $lBindValueType = PDO::PARAM_INT;
+  	}
+  	return $lBindValueType;
   }
   
   /**
