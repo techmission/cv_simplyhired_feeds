@@ -98,7 +98,7 @@ class SimplyHired_API {
 	
 	}
 
-	function doSearch($number = 10, $start = 0) {
+	function doSearch($number = 10, $start = 1) {
 		// Build the SimplyHired API call from parameters.
 		$this->apicall = $this->_buildApiCall($number, $start);
 
@@ -131,7 +131,7 @@ class SimplyHired_API {
 	  }
 	  //if( $this->is_usa )
 	  $ssty = '&ssty=2';
-	  $lApiCall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $this->pagenum . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
+	  $lApiCall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
 	  return $lApiCall;
 	}
 	

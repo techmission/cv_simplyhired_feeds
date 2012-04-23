@@ -317,8 +317,7 @@ class JobsDB {
     // Validate that the records can be written to this table.
     $errors = $this->_validateRecords($pRecords, $pType);
     // Add GUIDs to the records.
-    $lRecords = $pRecords;
-    //$lRecords = $this->_addRecordGuids($pRecords, $pType);
+    $lRecords = $this->_addRecordGuids($pRecords, $pType);
     if($errors == FALSE) {
       // Actually create the records.
       $lNumRows = $this->_createRecords($lRecords, $pType);
