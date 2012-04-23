@@ -44,6 +44,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	
 	const RES_SIZE_DEFAULT = 100; // by default query for the maximum that you can get in one page
 	const RES_RADIUS_DEFAULT = 100; // query for a 100-mile radius by default
+	
+	const MAX_OFFSET = 4; // the maximum number of pages beyond the first page of results to get
 
 	/* Class variables. */
     
@@ -182,6 +184,10 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
 	  	$retJobsArray += $lJobsArray;
 	  	$lOffset++;
+	  	// Don't go over 4 pages.
+	  	if($lOffset == self::MAX_OFFSET) {
+	  	  break;
+	  	}
 	  }
 	  return $retJobsArray();
 	}
