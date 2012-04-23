@@ -58,7 +58,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	}
 	
 	// Set to log.
-	$jobsDb->isLogging = TRUE;
+	$jobsDb->isLogging = FALSE;
 	// Set to dry run.
 	$jobsDb->isDryRun = FALSE;
 	// Get the database connection string.

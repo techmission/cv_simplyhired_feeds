@@ -182,7 +182,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lJobsArray = $retJobsArray = $this->_fetchJobs($pLimit);
 	  while(count($lJobsArray) == 100) {
 	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
-	  	$retJobsArray += $lJobsArray;
+	  	$retJobsArray = array_merge($lJobsArray, $retJobsArray);
 	  	$lOffset++;
 	  	// Don't go over 4 pages.
 	  	if($lOffset == self::MAX_OFFSET) {
