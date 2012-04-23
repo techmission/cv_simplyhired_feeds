@@ -299,6 +299,7 @@ class JobsDB {
   	  	$this->dbh->rollBack();
   	  	echo $e->getMessage();
   	  }
+  	  krumo($lRecords);
   	  return $lRecords;
   }
   
@@ -382,9 +383,11 @@ class JobsDB {
   	  $lMatchRecords = $this->selectRecords('guid', $lRecordGuids, self::TYPE_STRING, $pType);
   	}
   	// Unset the matching records from the array, so they will not be inserted.
-  	foreach($lMatchRecords as $record) {
-  	  $lGuid = $record['guid'];	
-  	  unset($retRecords[$lGuid]);
+  	if(is_array($lMatchRecords) && count($lMatchRecords > 0)) {
+  	  foreach($lMatchRecords as $record) {
+  	    $lGuid = $record['guid'];	
+  	    unset($retRecords[$lGuid]);
+  	  }
   	}
   	return $retRecords;
   }
