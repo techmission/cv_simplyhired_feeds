@@ -88,7 +88,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lQryArray = $this->_getDefaultQueryArray();
 	  // Put spaces around the operator.
 	  $lOperator = ' ' . $pOperator . ' ';
-	  $lDefaultQuery = implode($lOperator, $lQryArray);
+	  $lDefaultQuery = '(' . implode($lOperator, $lQryArray) . ')';
 	  $lDefaultQuery .= ' AND NOT Muslim AND NOT Jewish'; // exclude chaplains etc. for other religions
 	  return $lDefaultQuery;
 	}
