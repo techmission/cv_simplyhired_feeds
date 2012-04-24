@@ -33,8 +33,13 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $cvsha = new CV_SimplyHired_API($options);
 	  $cvsha->setLocation($argv[1]); // search zipcode.
 	  /* Set to search outside the US, if -f flag is passed. */
-	  if(!empty($argv[2]) && $argv[2] == '-f') {
-	  	$cvsha->setIsUsa(FALSE); // Search location is not in the US
+	  if(!empty($argv[2])) {
+	  	if($argv[2] == '-f') {
+	  	  $cvsha->setIsUsa(FALSE); // Search location is not in the US
+	    }
+	    else if($argv[2] == '-c') {
+	      $behavior = BEHAVIOR_COUNT;
+	    }
 	  }
 	  else {
 	  	$cvsha->setIsUsa(TRUE);
