@@ -154,7 +154,7 @@ class SimplyHired_API {
 		// Look up a location in the countries array.
 		$prefix = substr($location, 2);
 	    if($prefix == 'en') {
-	      $countries = $this->_AllowedCountries;
+	      $countries = $this->_listAllowedCountries;
 	      if(array_key_exists($location, $countries)) {
 	      	// Set that this is a search outside the US, if the location is not "en-us".
 	      	if($location != 'en-us') {
