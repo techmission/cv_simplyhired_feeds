@@ -129,8 +129,14 @@ class SimplyHired_API {
 	  if(!empty($this->onet)) {
 		$onet_filter = 'onet:(' . $this->onet . ')+';
 	  }
-	  //if( $this->is_usa )
-	  $ssty = '&ssty=2';
+	  // Set the "search style" parameter (ssty) based on whether
+	  // the searched location is in the US or not.
+	  if($this->is_usa) {
+	    $ssty = '&ssty=2';
+	  }
+	  else {
+	  	$ssty = '&ssty=3';
+	  }
 	  $lApiCall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
 	  return $lApiCall;
 	}
@@ -232,7 +238,7 @@ class SimplyHired_API {
 	}
 	
 	/* @todo: Use the class variable that I created. */
-	function printError ( $echo=true) {
+	function printError ($echo = TRUE) {
 	  if(isset($this->results->error)) {
 	    $error_msg = $results->error->text;
 	    $html = '<span class="error-message">' . $error_msg . '</span>';
@@ -247,8 +253,7 @@ class SimplyHired_API {
 		return $html;
 	}
 	
-	function printResultTotals( $echo=true ) {
-
+	function printResultTotals($echo = TRUE) {
 		/* Total results display */
 		$result_start = $this->results->rq->si + 1;
 		$result_end = $this->results->rq->si + $this->results->rq->rpd;
@@ -269,5 +274,35 @@ class SimplyHired_API {
 		else
 			return $html;
 	
+	}
+	
+	/* Defines the allowed countries for searching. Not currently used elsewhere. */
+	private function _listAllowedCountries() {
+	  // @todo: Change keys to ISO country codes from their own keys?
+	  return array('en-us' => 'United States',       // ssty=2
+            'en-ar' => 'Argentina',                  /* this, and all below, ssty=3 */
+            'en-au' => 'Australia',                  
+            'en-at' => 'Austria',                    
+            'en-be' => 'Belgium',                  
+            'en-br' => 'Brazil',
+            'en-ca' => 'Canada',
+            'en-cn' => 'China',
+            'en-fr' => 'France',
+            'en-de' => 'Germany',
+            'en-in' => 'India',
+            'en-ie' => 'Ireland',
+            'en-it' => 'Italy',
+            'en-jp' => 'Japan',
+            'en-kr' => 'Korea',
+            'en-mx' => 'Mexico',
+            'en-nl' => 'Netherlands',
+            'en-pt' => 'Portugal',
+            'en-ru' => 'Russia',
+            'en-za' => 'South Africa',
+            'en-es' => 'Spain',
+            'en-se' => 'Sweden',
+            'en-ch' => 'Switzerland',
+            'en-gb' => 'United Kingdom',
+	  		);
 	}
 }
