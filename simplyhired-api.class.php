@@ -139,6 +139,9 @@ class SimplyHired_API {
 	  // the searched location is in the US or not.
 	  if($this->is_usa == TRUE) {
 	    $ssty = '&ssty=2';
+	    if(empty($this->country)) {
+	      $this->setCountry('en-us');
+	    }
 	  }
 	  else {
 	  	$ssty = '&ssty=3';
@@ -151,7 +154,11 @@ class SimplyHired_API {
 	  else {
 	  	$lEndpoint = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint . self::ENDPOINT_PATH;
 	  }
-	  $lApiCall = $lEndpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
+	  $lApiCall = $lEndpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&clip=' . $this->clip;
+	  // The job board (jbd) parameter is only valid within the US.
+	  if($this->country == 'en-us') {
+	  	$lApiCall .= '&jbd=' . $this->jbd;
+	  } 
 	  return $lApiCall;
 	}
 	
