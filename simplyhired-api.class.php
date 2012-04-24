@@ -142,7 +142,7 @@ class SimplyHired_API {
 	  }
 	  else {
 	  	$ssty = '&ssty=3';
-	  	$this->endpoint = $this->_setEndpointByCountry();
+	  	$this->_setEndpointByCountry();
 	  }
 	  // South Africa is a special case; the rest differ just in the TLD
 	  if($this->country == 'en-za') {
