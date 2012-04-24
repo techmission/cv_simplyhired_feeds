@@ -12,6 +12,8 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
 define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // name of jobs table
 
+define('DEFAULT_LOGFILE', 'cli-results.csv');  // name of log file for results
+
 // Temporarily display runtime errors to the screen.
 ini_set('display_errors', TRUE);
 
@@ -36,6 +38,10 @@ if (IS_CLI) {
 	
 	// Delete all old jobs records for compliance with SimplyHired API TOS.
 	$jobsDb->truncate();
+	
+	// Empty the log file.
+	// This will create it if it doesn't already exist.
+	$handle = @fopen(DEFAULT_LOGFILE, 'w');
 
 	exit(0); // Exit with a zero status code: all is well.
 }

@@ -14,6 +14,8 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
 define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // name of jobs table
 
+define('DEFAULT_LOGFILE', 'cli-results.csv');
+
 /* Behaviors of script based on flag. */
 define('BEHAVIOR_COUNT', 0);
 define('BEHAVIOR_QUERY', 1);
@@ -113,6 +115,18 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	      }	
 	      echo "Number returned was: " . count($jobs) . "\n";
 	      echo "Number inserted was: " . $numInserted . "\n";
+	    }
+	    // If not logging, then record to a file.
+	    else {
+	      // Open the file in append mode.
+	      if($handle = fopen(DEFAULT_LOGFILE, 'a')) {
+	      	// Log the parameter passed, number returned, and number inserted.
+	      	$log_fields = array($argv[1], count($jobs), $numInserted);
+	      	// Write them in CSV format.
+	      	fputcsv($handle, $log_fields);
+	      	// Close the file handle.
+	      	fclose($handle);
+	      }
 	    }
 	  }
 	  // Otherwise just run the query and get count.
