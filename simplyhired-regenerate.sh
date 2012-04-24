@@ -3,7 +3,7 @@
 SCRIPT_PATH = /home/techmi5/public_html/gospelpedia/simplyhired-feed
 SCRIPT = cv-simplyhired-cli.php
 
-# Request for all the cities in the US at 100-mile radius
+# Request for all the cities in the US at 100-mile radius (the Metropolitan Statistical Area list in techmi5_voleng.ZIPMSAs)
 php $SCRIPT_PATH/$SCRIPT 76443                       # Abilene (Abilene, TX)
 php $SCRIPT_PATH/$SCRIPT 00690                       # Aguadilla-Isabela-San Sebastian (Aguadilla, PR)
 php $SCRIPT_PATH/$SCRIPT 99545                       # AK NONMETROPOLITAN AREA ()
@@ -412,9 +412,10 @@ php $SCRIPT_PATH/$SCRIPT 16113                       # Youngstown-Warren-Boardma
 php $SCRIPT_PATH/$SCRIPT 95659                       # Yuba City (Yuba City, CA)
 php $SCRIPT_PATH/$SCRIPT 85333                       # Yuma (Yuma, AZ)
 
-# TODO: UK cities, Australian cities, Canadian cities
+# English-speaking countries
 
-# Canadian provinces
+# Canadian provinces (http://en.wikipedia.org/wiki/Provinces_and_territories_of_Canada)
+
 php $SCRIPT_PATH/$SCRIPT AB -f:en-ca                # Alberta
 php $SCRIPT_PATH/$SCRIPT BC -f:en-ca                # British Columbia
 php $SCRIPT_PATH/$SCRIPT MB -f:en-ca                # Manitoba
@@ -429,4 +430,47 @@ php $SCRIPT_PATH/$SCRIPT QC -f:en-ca                # Quebec
 php $SCRIPT_PATH/$SCRIPT SK -f:en-ca                # Saskatchewan
 php $SCRIPT_PATH/$SCRIPT YT -f:en-ca                # Yukon
 
-# TODO: All other non-English-speaking countries
+# United Kingdom countries
+# (administrative regions were too complex to use
+# - cf. http://www.geonames.org/GB/administrative-division-united-kingdom.html)
+# (could go by their "region names" or counties, but that is the full name
+# - still complex to figure out what that should be) 
+php $SCRIPT_PATH/$SCRIPT England -f:en-gb           # England
+php $SCRIPT_PATH/$SCRIPT Scotland -f:en-gb          # Scotland
+
+# Australian provinces (http://www.citypopulation.de/Australia-UC.html)
+
+php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Austrialian Capital Territory
+php $SCRIPT_PATH/$SCRIPT CHR -f:en-ca               # Christmas Island
+php $SCRIPT_PATH/$SCRIPT COC -f:en-ca               # Cocos Islands
+php $SCRIPT_PATH/$SCRIPT JB -f:en-ca                # Jervis Bay
+php $SCRIPT_PATH/$SCRIPT NSW -f:en-ca               # New South Wales
+php $SCRIPT_PATH/$SCRIPT NT -f:en-ca                # Northern Territory
+php $SCRIPT_PATH/$SCRIPT QLD -f:en-ca               # Queensland
+php $SCRIPT_PATH/$SCRIPT SA -f:en-ca                # South Australia
+php $SCRIPT_PATH/$SCRIPT TAS -f:en-ca               # Tasmania
+php $SCRIPT_PATH/$SCRIPT VIC -f:en-ca               # Victoria
+php $SCRIPT_PATH/$SCRIPT WA -f:en-ca                # Western Australia
+
+# Non-English-speaking countries
+
+php $SCRIPT_PATH/$SCRIPT Argentina -f:en-ar         # Argentina              
+php $SCRIPT_PATH/$SCRIPT Austria -f:en-at           # Austria                    
+php $SCRIPT_PATH/$SCRIPT Belgium -f:en-be           # Belgium                  
+php $SCRIPT_PATH/$SCRIPT Brazil -f:en-br            # Brazil
+php $SCRIPT_PATH/$SCRIPT China -f:en-cn             # China
+php $SCRIPT_PATH/$SCRIPT France -f:en-fr            # France
+php $SCRIPT_PATH/$SCRIPT Germany -f:en-de           # Germany
+php $SCRIPT_PATH/$SCRIPT India -f:en-in             # India
+php $SCRIPT_PATH/$SCRIPT Ireland -f:en-ie           # Ireland
+php $SCRIPT_PATH/$SCRIPT Italy -f:en-it             # Italy
+php $SCRIPT_PATH/$SCRIPT Japan -f:en-jp             # Japan
+php $SCRIPT_PATH/$SCRIPT Korea -f:en-kr             # Korea
+php $SCRIPT_PATH/$SCRIPT Mexico -f:en-mx            # Mexico
+php $SCRIPT_PATH/$SCRIPT Netherlands -f:en-nl       # Netherlands
+php $SCRIPT_PATH/$SCRIPT Portugal -f:en-pt          # Portugal
+php $SCRIPT_PATH/$SCRIPT Russia -f:en-ru            # Russia
+php $SCRIPT_PATH/$SCRIPT South Africa -f:en-za      # South Africa
+php $SCRIPT_PATH/$SCRIPT Spain -f:en-es             # Spain
+php $SCRIPT_PATH/$SCRIPT Sweden -f:en-se            # Sweden
+php $SCRIPT_PATH/$SCRIPT Switzerland -f:en-ch       # Switzerland
