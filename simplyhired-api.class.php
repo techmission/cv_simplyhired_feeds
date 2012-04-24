@@ -155,7 +155,7 @@ class SimplyHired_API {
 		$prefix = substr($location, 0, 2);
 		echo "prefix: " . $prefix . "\n";
 	    if($prefix == 'en') {
-	      $countries = $this->_listAllowedCountries;
+	      $countries = $this->_listAllowedCountries();
 	      var_dump($countries);
 	      if(array_key_exists($location, $countries)) {
 	      	// Set that this is a search outside the US, if the location is not "en-us".
@@ -306,33 +306,33 @@ class SimplyHired_API {
 	
 	}
 	
-	/* Defines the allowed countries for searching. Not currently used elsewhere. */
+	/* Defines the allowed countries for searching. Used in setLocation. */
 	private function _listAllowedCountries() {
-	  // @todo: Change keys to ISO country codes from their own keys?
-	  return array('en-us' => 'United States',       // ssty=2
-            'en-ar' => 'Argentina',                  /* this, and all below, ssty=3 */
-            'en-au' => 'Australia',                  
-            'en-at' => 'Austria',                    
-            'en-be' => 'Belgium',                  
-            'en-br' => 'Brazil',
-            'en-ca' => 'Canada',
-            'en-cn' => 'China',
-            'en-fr' => 'France',
-            'en-de' => 'Germany',
-            'en-in' => 'India',
-            'en-ie' => 'Ireland',
-            'en-it' => 'Italy',
-            'en-jp' => 'Japan',
-            'en-kr' => 'Korea',
-            'en-mx' => 'Mexico',
-            'en-nl' => 'Netherlands',
-            'en-pt' => 'Portugal',
-            'en-ru' => 'Russia',
-            'en-za' => 'South Africa',
-            'en-es' => 'Spain',
-            'en-se' => 'Sweden',
-            'en-ch' => 'Switzerland',
-            'en-gb' => 'United Kingdom',
-	  		);
+	  $lCountries = array('en-us' => 'United States',       // ssty=2
+                   'en-ar' => 'Argentina',                  /* this, and all below, ssty=3 */
+                   'en-au' => 'Australia',                  
+                   'en-at' => 'Austria',                    
+                   'en-be' => 'Belgium',                  
+                   'en-br' => 'Brazil',
+                   'en-ca' => 'Canada',
+                   'en-cn' => 'China',
+                   'en-fr' => 'France',
+                   'en-de' => 'Germany',
+                   'en-in' => 'India',
+                   'en-ie' => 'Ireland',
+                   'en-it' => 'Italy',
+                   'en-jp' => 'Japan',
+                   'en-kr' => 'Korea',
+                   'en-mx' => 'Mexico',
+                   'en-nl' => 'Netherlands',
+                   'en-pt' => 'Portugal',
+                   'en-ru' => 'Russia',
+                   'en-za' => 'South Africa',
+                   'en-es' => 'Spain',
+                   'en-se' => 'Sweden',
+                   'en-ch' => 'Switzerland',
+                   'en-gb' => 'United Kingdom',
+	   );
+	  return $lCountries;
 	}
 }
