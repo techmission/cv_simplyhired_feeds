@@ -103,6 +103,9 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	    // Write the jobs records to the tbl_feeds_jobs table.
 	    $numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
 	    if($logging == TRUE) {
+	      if(!is_int($numInserted)) {
+	      	$numInserted = -1; // error condition if numInserted is not a number
+	      }	
 	      echo "Number inserted was: " . $numInserted . "\n";
 	    }
 	  }
