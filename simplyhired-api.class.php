@@ -152,7 +152,7 @@ class SimplyHired_API {
 	/* Modified so that the CLI script can use short codes for locations. */
 	function setLocation( $location ) {
 		// Look up a location in the countries array.
-		$prefix = substr($location, 2);
+		$prefix = substr($location, 0, 2);
 		echo "prefix: " . $prefix . "\n";
 	    if($prefix == 'en') {
 	      $countries = $this->_listAllowedCountries;
