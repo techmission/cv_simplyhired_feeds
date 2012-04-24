@@ -2,8 +2,14 @@
 
 SCRIPT_PATH = /home/techmi5/public_html/gospelpedia/simplyhired-feed
 SCRIPT = cv-simplyhired-cli.php
+DELETE_SCRIPT = cv-simplyhired-delete.php
 
-# Request for all the cities in the US at 100-mile radius (the Metropolitan Statistical Area list in techmi5_voleng.ZIPMSAs)
+# First, delete what is currently stored.
+php $SCRIPT_PATH/$DELETE_SCRIPT
+
+# Request for all the cities in the US at 100-mile radius
+# (the Metropolitan Statistical Area list in techmi5_voleng.ZIPMSAs)
+
 php $SCRIPT_PATH/$SCRIPT 76443                       # Abilene (Abilene, TX)
 php $SCRIPT_PATH/$SCRIPT 00690                       # Aguadilla-Isabela-San Sebastian (Aguadilla, PR)
 php $SCRIPT_PATH/$SCRIPT 99545                       # AK NONMETROPOLITAN AREA ()
