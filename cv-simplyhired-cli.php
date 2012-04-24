@@ -29,13 +29,13 @@ ini_set('display_errors', TRUE);
  * 
  * Usage examples:
  * 
- * php cv-simplyhired-cli.php 02124         # query and insert, no logging
- * php cv-simplyhired-cli.php 02124 -l      # query and insert, with logging
- * php cv-simplyhired-cli.php London -f     # query for results in the city of London (foreign country), no logging
- * php cv-simplyhired-cli.php en_gb -f      # query for results in the United Kingdom (foreign country), no logging
- * php cv-simplyhired-cli.php 02124 -c      # just get the count of results
- * php cv-simplyhired-cli.php London -f -l  # query and insert for London, with logging
- * php cv-simplyhired-cli.php London -f -c -l  # counts only for London, with logging
+ * php cv-simplyhired-cli.php 02124               # query and insert, no logging
+ * php cv-simplyhired-cli.php 02124 -l            # query and insert, with logging
+ * php cv-simplyhired-cli.php London -f:en_gb     # query for results in the city of London (foreign country), no logging
+ * php cv-simplyhired-cli.php England -f:en_gb    # query for results in England (foreign country), no logging
+ * php cv-simplyhired-cli.php 02124 -c            # just get the count of results
+ * php cv-simplyhired-cli.php London -f -l        # query and insert for London, with logging
+ * php cv-simplyhired-cli.php London -f -c -l     # counts only for London, with logging
  */
 if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
     if(!empty($argv[1])) {
@@ -45,15 +45,20 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  $cvsha = new CV_SimplyHired_API($options);
 	  $cvsha->setLocation($argv[1]);   // search zipcode.
 	  $cvsha->setIsUsa(TRUE);          // set to search in US by default
-	  /* Set to search outside the US, if -f flag is passed. */
+	  /* Set to search outside the US, if -f:<country_name> flag is passed. */
 	  if(!empty($argv[2])) {
-	  	if($argv[2] == '-f') {
+	  	$flag = substr($argv[2], 0, 2); // get the first part (-f, etc.)
+	  	if($flag == '-f') {
+	  	  list(, $country_code) = explode(':', $argv[2]); // explode on : to get country code
 	  	  $cvsha->setIsUsa(FALSE); // Search location is not in the US
+	  	  if(!empty($country_code)) {
+	  	  	$cvsha->setCountry($country_code);
+	  	  }
 	    }
-	    else if($argv[2] == '-c') {
+	    else if($flag == '-c') {
 	      $behavior = BEHAVIOR_COUNT;
 	    }
-	    else if($argv[2] == '-l') {
+	    else if($flag == '-l') {
 	      $logging = TRUE;
 	    }
 	  }
