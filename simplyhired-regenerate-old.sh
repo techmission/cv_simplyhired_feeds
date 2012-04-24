@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 SCRIPT_PATH = /home/techmi5/public_html/gospelpedia/simplyhired-feed
 SCRIPT = cv-simplyhired-cli.php
