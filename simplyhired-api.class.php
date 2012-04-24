@@ -132,6 +132,9 @@ class SimplyHired_API {
 	 *  https://www.jobamatic.com/a/jbb/partner-dashboard-advanced-xml-api.
 	 */
 	private function _buildApiCall($number, $start) {
+	  /* Initial value-setting. */
+
+	  // Set the O*Net filter (if any)
 	  if(!empty($this->onet)) {
 		$onet_filter = 'onet:(' . $this->onet . ')+';
 	  }
@@ -147,6 +150,8 @@ class SimplyHired_API {
 	  	$ssty = '&ssty=3';
 	  	$this->_setEndpointByCountry();
 	  }
+	  
+	  /* Set the endpoint for the query. */
 	  // South Africa is a special case; the rest differ just in the TLD
 	  if($this->country == 'en-za') {
 	    $lEndpoint = self::ENDPOINT_PREFIX . 'api.za.simplyhired.com' . self::ENDPOINT_PATH;
@@ -154,11 +159,22 @@ class SimplyHired_API {
 	  else {
 	  	$lEndpoint = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint . self::ENDPOINT_PATH;
 	  }
-	  $lApiCall = $lEndpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&clip=' . $this->clip;
+	  
+	  /* Set the parameters. */
+	  $lParams = 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start;
+	  if($this->country == 'en-us') {
+	    $lParams .= '/sb-dd';
+	  }
+	  
+	  /* Set the query string. */
+	  $lQueryString = 'pshid=' . $this->pshid .  $ssty . '&cflg=r&clip=' . $this->clip;
 	  // The job board (jbd) parameter is only valid within the US.
 	  if($this->country == 'en-us') {
-	  	$lApiCall .= '&jbd=' . $this->jbd;
-	  } 
+	  	$lQueryString .= '&jbd=' . $this->jbd;
+	  }
+	  
+	  /* Build the actual API call. */
+	  $lApiCall = $lEndpoint . $lParams . '?' . $lQueryString;
 	  return $lApiCall;
 	}
 	
