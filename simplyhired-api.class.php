@@ -146,10 +146,10 @@ class SimplyHired_API {
 	  }
 	  // South Africa is a special case; the rest differ just in the TLD
 	  if($this->country == 'en-za') {
-	    $lEndpoint = self::ENDPOINT_PREFIX . 'api.za.simplyhired.com' . self::ENDPOINT_SUFFIX;
+	    $lEndpoint = self::ENDPOINT_PREFIX . 'api.za.simplyhired.com' . self::ENDPOINT_PATH;
 	  }
 	  else {
-	  	$lEndpoint = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint . self::ENDPOINT_SUFFIX;
+	  	$lEndpoint = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint . self::ENDPOINT_PATH;
 	  }
 	  $lApiCall = $lEndpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
 	  return $lApiCall;
