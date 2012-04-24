@@ -153,10 +153,8 @@ class SimplyHired_API {
 	function setLocation( $location ) {
 		// Look up a location in the countries array.
 		$prefix = substr($location, 0, 2);
-		echo "prefix: " . $prefix . "\n";
 	    if($prefix == 'en') {
 	      $countries = $this->_listAllowedCountries();
-	      var_dump($countries);
 	      if(array_key_exists($location, $countries)) {
 	      	// Set that this is a search outside the US, if the location is not "en-us".
 	      	if($location != 'en-us') {
@@ -164,7 +162,6 @@ class SimplyHired_API {
 	      	}
 	      	// Set the country's name from the lookup array.
 	      	$location = $countries[$location];
-	      	echo "New location: " . $location . "\n";
 	      }
 	    }
 	    // Set the location name.
