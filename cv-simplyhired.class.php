@@ -45,7 +45,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	const RES_SIZE_DEFAULT = 100; // by default query for the maximum that you can get in one page
 	const RES_RADIUS_DEFAULT = 100; // query for a 100-mile radius by default
 	
-	const MAX_OFFSET = 4; // the maximum number of pages beyond the first page of results to get
+	const MAX_OFFSET = 9; // the maximum number of pages beyond the first page of results to get (1000 results total)
 
 	/* Class variables. */
     
@@ -149,6 +149,36 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	}
 
 	/**
+	 * Runs search, but only returns the number of items.
+	 * @todo: Condense this and fetchJobs into a single function, or wrap the functionality somehow?
+	 */
+	public function fetchCount($pQuery = self::QRY_DEFAULT) {
+	  $lCount = 0;
+	  // Set query.
+	  $lQuery = $pQuery;
+	  if($pQuery == self::QRY_DEFAULT) {
+	  	$lQuery = $this->buildDefaultQuery();
+	  	$this->setQuery($lQuery);
+	  }
+	  else if(is_string($pQuery) && !empty($pQuery)) {
+	  	$this->setQuery($pQuery);
+	  }
+	  // Set location if not already set.
+	  if(empty($this->location)) {
+	  	$this->setLocation = self::LOCATION_DEFAULT;
+	  }
+	  // Do the search based on the parameters set.
+	  $results = $this->doSearch();
+	  if(!empty($results) && !isset($results->error)) {
+	    $lCount = $this->parseResultNum($results);
+	  }
+	  else {
+	  	$lCount = '-1'; // error condition
+	  }
+	  return $lCount;	
+	}
+	
+	/**
 	 * Runs search and returns jobs.
 	 * Pages through results if there is more than 100 returned.
 	 * 
@@ -171,8 +201,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  	$lQuery = $this->buildDefaultQuery();
 	  	$this->setQuery($lQuery);
 	  }
-	  else if(is_string($lQuery) && !empty($lQuery)) {
-	  	$this->setQuery($lQuery);
+	  else if(is_string($pQuery) && !empty($pQuery)) {
+	  	$this->setQuery($pQuery);
 	  }
 	  // Set location if not already set.
 	  if(empty($this->location)) {
@@ -184,7 +214,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
 	  	$retJobsArray = array_merge($lJobsArray, $retJobsArray);
 	  	$lOffset++;
-	  	// Don't go over 4 pages.
+	  	// Don't go over 10 pages (the maximum that a resultset will say that it has).
 	  	if($lOffset == self::MAX_OFFSET) {
 	  	  break;
 	  	}

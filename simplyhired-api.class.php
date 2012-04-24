@@ -181,6 +181,8 @@ class SimplyHired_API {
 		else if(getenv("REMOTE_ADDR")) {
 		  $ip = getenv("REMOTE_ADDR");
 		}
+		// Use gethostbyname if running from command line.
+		// Requires PHP 5.3
 		else if(PHP_SAPI === "cli") {
 		  $ip = gethostbyname(gethostname());
 		}
@@ -253,18 +255,28 @@ class SimplyHired_API {
 		return $html;
 	}
 	
+	function parseResultNum($results) {
+	  // Parses out result number from the results XML.
+	  $result_num = $results->rq->tv;
+	  // If more than 1000, the initial resultset will not say by how much.
+	  if($result_num == '1000') {
+		$result_num = '>1000';
+	  }
+	  return $result_num;
+	}
+	
 	function printResultTotals($echo = TRUE) {
 		/* Total results display */
 		$result_start = $this->results->rq->si + 1;
 		$result_end = $this->results->rq->si + $this->results->rq->rpd;
 		if( $result_end > $this->results->rq->tv )
 			$result_end = $this->results->rq->tv;
-		$result_num = $this->results->rq->tv;
-		if( $result_num == '1000' ) {
-			$result_num = 'over 1000 results';
+		$result_num = $this->parseResultNum($this->results);
+		if($result_num == '>1000') {
+		  $result_num = 'over 1000 results';
 		}
 		else {
-			$result_num .= ' total results';
+		  $result_num .= ' total results';
 		}
 		
 		$html = '<span class="results-total">Displaying results ' . $result_start . '-' . $result_end . ' of ' . $result_num . '</span>';
