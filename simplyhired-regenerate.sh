@@ -414,4 +414,19 @@ php $SCRIPT_PATH/$SCRIPT 85333                       # Yuma (Yuma, AZ)
 
 # TODO: UK cities, Australian cities, Canadian cities
 
+# Canadian provinces
+php $SCRIPT_PATH/$SCRIPT AB -f:en-ca                # Alberta
+php $SCRIPT_PATH/$SCRIPT BC -f:en-ca                # British Columbia
+php $SCRIPT_PATH/$SCRIPT MB -f:en-ca                # Manitoba
+php $SCRIPT_PATH/$SCRIPT NB -f:en-ca                # New Brunswick
+php $SCRIPT_PATH/$SCRIPT NL -f:en-ca                # Newfoundland and Labrador
+php $SCRIPT_PATH/$SCRIPT NS -f:en-ca                # Nova Scotia
+php $SCRIPT_PATH/$SCRIPT NT -f:en-ca                # Northwest Territories
+php $SCRIPT_PATH/$SCRIPT NU -f:en-ca                # Nunavut
+php $SCRIPT_PATH/$SCRIPT ON -f:en-ca                # Ontario
+php $SCRIPT_PATH/$SCRIPT PE -f:en-ca                # Prince Edward Island
+php $SCRIPT_PATH/$SCRIPT QC -f:en-ca                # Quebec
+php $SCRIPT_PATH/$SCRIPT SK -f:en-ca                # Saskatchewan
+php $SCRIPT_PATH/$SCRIPT YT -f:en-ca                # Yukon
+
 # TODO: All other non-English-speaking countries
