@@ -9,6 +9,7 @@ php $SCRIPT_PATH/$DELETE_SCRIPT
 
 # Request for all the cities in the US at 100-mile radius
 # (the Metropolitan Statistical Area list in techmi5_voleng.ZIPMSAs)
+# See distribution at http://batchgeo.com/map/54273c4bd89db98c8cf92b00305e1c14
 
 php $SCRIPT_PATH/$SCRIPT 76443                       # Abilene (Abilene, TX)
 php $SCRIPT_PATH/$SCRIPT 00690                       # Aguadilla-Isabela-San Sebastian (Aguadilla, PR)
@@ -443,6 +444,13 @@ php $SCRIPT_PATH/$SCRIPT YT -f:en-ca                # Yukon
 # - still complex to figure out what that should be) 
 php $SCRIPT_PATH/$SCRIPT England -f:en-gb           # England
 php $SCRIPT_PATH/$SCRIPT Scotland -f:en-gb          # Scotland
+php $SCRIPT_PATH/$SCRIPT Craigavon -f:en-gb         # Near center of Northern Ireland
+
+# Major cities of Ireland
+php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie
+php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie
+php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie
+php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie
 
 # Australian provinces (http://www.citypopulation.de/Australia-UC.html)
 
@@ -459,24 +467,25 @@ php $SCRIPT_PATH/$SCRIPT VIC -f:en-ca               # Victoria
 php $SCRIPT_PATH/$SCRIPT WA -f:en-ca                # Western Australia
 
 # Non-English-speaking countries
+# These are not working with the country name or ISO code, so commented out for now.
+# Also, listings were not in English.
 
-php $SCRIPT_PATH/$SCRIPT Argentina -f:en-ar         # Argentina              
-php $SCRIPT_PATH/$SCRIPT Austria -f:en-at           # Austria                    
-php $SCRIPT_PATH/$SCRIPT Belgium -f:en-be           # Belgium                  
-php $SCRIPT_PATH/$SCRIPT Brazil -f:en-br            # Brazil
-php $SCRIPT_PATH/$SCRIPT China -f:en-cn             # China
-php $SCRIPT_PATH/$SCRIPT France -f:en-fr            # France
-php $SCRIPT_PATH/$SCRIPT Germany -f:en-de           # Germany
-php $SCRIPT_PATH/$SCRIPT India -f:en-in             # India
-php $SCRIPT_PATH/$SCRIPT Ireland -f:en-ie           # Ireland
-php $SCRIPT_PATH/$SCRIPT Italy -f:en-it             # Italy
-php $SCRIPT_PATH/$SCRIPT Japan -f:en-jp             # Japan
-php $SCRIPT_PATH/$SCRIPT Korea -f:en-kr             # Korea
-php $SCRIPT_PATH/$SCRIPT Mexico -f:en-mx            # Mexico
-php $SCRIPT_PATH/$SCRIPT Netherlands -f:en-nl       # Netherlands
-php $SCRIPT_PATH/$SCRIPT Portugal -f:en-pt          # Portugal
-php $SCRIPT_PATH/$SCRIPT Russia -f:en-ru            # Russia
-php $SCRIPT_PATH/$SCRIPT South Africa -f:en-za      # South Africa
-php $SCRIPT_PATH/$SCRIPT Spain -f:en-es             # Spain
-php $SCRIPT_PATH/$SCRIPT Sweden -f:en-se            # Sweden
-php $SCRIPT_PATH/$SCRIPT Switzerland -f:en-ch       # Switzerland
+# php $SCRIPT_PATH/$SCRIPT Argentina -f:en-ar         # Argentina              
+# php $SCRIPT_PATH/$SCRIPT Austria -f:en-at           # Austria                    
+# php $SCRIPT_PATH/$SCRIPT Belgium -f:en-be           # Belgium                  
+# php $SCRIPT_PATH/$SCRIPT Brazil -f:en-br            # Brazil
+# php $SCRIPT_PATH/$SCRIPT China -f:en-cn             # China
+# php $SCRIPT_PATH/$SCRIPT France -f:en-fr            # France
+# php $SCRIPT_PATH/$SCRIPT Germany -f:en-de           # Germany
+# php $SCRIPT_PATH/$SCRIPT India -f:en-in             # India
+# php $SCRIPT_PATH/$SCRIPT Italy -f:en-it             # Italy
+# php $SCRIPT_PATH/$SCRIPT Japan -f:en-jp             # Japan
+# php $SCRIPT_PATH/$SCRIPT Korea -f:en-kr             # Korea
+# php $SCRIPT_PATH/$SCRIPT Mexico -f:en-mx            # Mexico
+# php $SCRIPT_PATH/$SCRIPT Netherlands -f:en-nl       # Netherlands
+# php $SCRIPT_PATH/$SCRIPT Portugal -f:en-pt          # Portugal
+# php $SCRIPT_PATH/$SCRIPT Russia -f:en-ru            # Russia
+# php $SCRIPT_PATH/$SCRIPT South Africa -f:en-za      # South Africa
+# php $SCRIPT_PATH/$SCRIPT Spain -f:en-es             # Spain
+# php $SCRIPT_PATH/$SCRIPT Sweden -f:en-se            # Sweden
+# php $SCRIPT_PATH/$SCRIPT Switzerland -f:en-ch       # Switzerland
