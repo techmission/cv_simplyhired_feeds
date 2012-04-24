@@ -106,6 +106,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	      if(!is_int($numInserted)) {
 	      	$numInserted = -1; // error condition if numInserted is not a number
 	      }	
+	      echo "Number returned was: " . count($jobs) . "\n";
 	      echo "Number inserted was: " . $numInserted . "\n";
 	    }
 	  }
