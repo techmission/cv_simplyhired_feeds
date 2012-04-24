@@ -383,8 +383,6 @@ class SimplyHired_API {
 	  if($this->country != 'en-us') {
 	  	$endpoints = $this->_listEndpoints();
 	  	if(array_key_exists($this->country, $endpoints)) {
-	  	  echo "Country: " . $this->country . "\n";
-	  	  echo "Endpoint: " . $endpoints[$this->country] . "\n";
 	  	  $this->setEndpoint($endpoints[$this->country]);
 	  	}
 	  }
