@@ -61,7 +61,7 @@ class SimplyHired_API {
 	public $onet = ''; // Not used by TechMission.
 	
 	/**/
-	public $is_usa = '';
+	public $is_usa = TRUE; // Use US opportunities by default.
 	
 	/**/
 	public $disable_tracking = false;
