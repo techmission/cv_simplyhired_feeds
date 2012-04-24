@@ -36,6 +36,9 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  if(!empty($argv[2]) && $argv[2] == '-f') {
 	  	$cvsha->setIsUsa(FALSE); // Search location is not in the US
 	  }
+	  else {
+	  	$cvsha->setIsUsa(TRUE);
+	  }
 	  
 	  /* Just do count if set to that behavior via command line. */
 	  if(!empty($argv[3]) && $argv[3] == '-c') {
