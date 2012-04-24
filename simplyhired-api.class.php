@@ -45,8 +45,13 @@
 
 class SimplyHired_API {
 
+	const ENDPOINT_PREFIX = 'http://';
+	const ENDPOINT_DOMAIN = 'api.simplyhired';
+	const WEB_DOMAIN =      'www.simplyhired';
+	const ENDPOINT_PATH = '/a/jobs-api/xml-v2/';
+	
 	/* API Endpoint URI */
-	public $endpoint = 'http://api.simplyhired.com/a/jobs-api/xml-v2/';
+	public $endpoint = '.com'; // Default endpoint for US jobs (differs by country)
 
 	/* Publisher ID */
 	public $pshid = '30845';
@@ -60,8 +65,9 @@ class SimplyHired_API {
 	/* O*NET code to filter search results with */
 	public $onet = ''; // Not used by TechMission.
 	
-	/**/
+	/* Settings for searching outside the country. */
 	public $is_usa = TRUE; // Use US opportunities by default.
+	public $country = 'en-us'; // See the lookup table of countries, below.
 	
 	/**/
 	public $disable_tracking = FALSE;
@@ -136,9 +142,21 @@ class SimplyHired_API {
 	  }
 	  else {
 	  	$ssty = '&ssty=3';
+	  	$this->endpoint = $this->_setEndpointByCountry();
 	  }
-	  $lApiCall = $this->endpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
+	  // South Africa is a special case; the rest differ just in the TLD
+	  if($this->country == 'en-za') {
+	    $lEndpoint = self::ENDPOINT_PREFIX . 'api.za.simplyhired.com' . self::ENDPOINT_SUFFIX;
+	  }
+	  else {
+	  	$lEndpoint = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint . self::ENDPOINT_SUFFIX;
+	  }
+	  $lApiCall = $lEndpoint . 'q-' . $onet_filter . $this->query . '/l-' . $this->location . '/mi-' . $this->radius . '/ws-' . $number . '/pn-' . $start . '/sb-dd?pshid=' . $this->pshid .  $ssty . '&cflg=r&jbd=' . $this->jbd . '&clip=' . $this->clip;
 	  return $lApiCall;
+	}
+	
+	function setEndpoint($endpoint) {
+	  $this->endpoint = $endpoint;
 	}
 	
 	function setQuery( $query ) {
@@ -159,6 +177,7 @@ class SimplyHired_API {
 	      	// Set that this is a search outside the US, if the location is not "en-us".
 	      	if($location != 'en-us') {
 	      	  $this->setIsUsa(FALSE);
+	      	  $this->setCountry($location);
 	      	}
 	      	// Set the country's name from the lookup array.
 	      	$location = $countries[$location];
@@ -175,6 +194,10 @@ class SimplyHired_API {
 	
 	function setIsUsa( $bool ) {
 		$this->is_usa = $bool;
+	}
+	
+	function setCountry($countryCode) {
+		$this->country = $countryCode;
 	}
 
 	function setDisableTracking( $bool ) {
@@ -219,8 +242,8 @@ class SimplyHired_API {
 	 *
 	 */
 	 function printAttribution( $echo=true ) {
-	 
-		$output = '<div style="text-align: right;"><a style="text-decoration:none" href="http://www.simplyhired.com/" rel="nofollow"><span style="color: rgb(128, 128, 129);">Jobs</span></a> by <a style="text-decoration:none" href="http://www.simplyhired.com/"><span style="color: rgb(80, 209, 255); font-weight: bold;">Simply</span><span style="color: rgb(203, 244, 104); font-weight: bold;">Hired</span></a></div>';
+	    $lDomain = $this->_getWebDomain();
+		$output = '<div style="text-align: right;"><a style="text-decoration:none" href="' . $lDomain . '" rel="nofollow"><span style="color: rgb(128, 128, 129);">Jobs</span></a> by <a style="text-decoration:none" href="http://www.simplyhired.com/"><span style="color: rgb(80, 209, 255); font-weight: bold;">Simply</span><span style="color: rgb(203, 244, 104); font-weight: bold;">Hired</span></a></div>';
 		if ($echo)
 			echo $output;
 		else
@@ -228,30 +251,29 @@ class SimplyHired_API {
 	 }
 	 
 	 function getFooterScripts() {
+	 	$lDomain = $this->_getAPIDomain();
 		$output = '
 <!-- SimplyHired click tracking -->		
-<script type="text/javascript" src="http://api.simplyhired.com/c/jobs-api/js/xml-v2.js"></script>
+<script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
 ';
 		return $output;
 	 }
 	 
 	 function printFooterScripts() {
+	 	$lDomain = $this->_getAPIDomain();
 		$output = '
 <!-- SimplyHired click tracking -->		
-<script type="text/javascript" src="http://api.simplyhired.com/c/jobs-api/js/xml-v2.js"></script>
+<script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
 ';
 		echo $output;
 	 }
 	 
 	 function printApiCall( $echo=true ) {
-	 
-	 $html = '<span class="apicall" style="float:right;"><a href="' . $this->apicall . '" target="_blank">View XML</a></span>';
-	 
-	 if ( $echo )
-		echo $html; 
-	 else 
+	   $html = '<span class="apicall" style="float:right;"><a href="' . $this->apicall . '" target="_blank">View XML</a></span>';
+	   if ( $echo )
+		 echo $html; 
+	   else 
 		return $html; 
-
 	}
 	
 	/* @todo: Use the class variable that I created. */
@@ -303,6 +325,46 @@ class SimplyHired_API {
 	
 	}
 	
+	private function _getWebDomain() {
+	  // Ensure that it is set properly if outside the US.
+	  if($this->country != 'en-us') {
+	  	$this->_setEndpointByCountry();
+	  }
+	  // Special-case South Africa.
+	  if($this->country == 'en-za') {
+	  	$lWebDomain = self::ENDPOINT_PREFIX . 'za.simplyhired.com/';
+	  }
+	  else {
+	    $lWebDomain = self::ENDPOINT_PREFIX . 'www.simplyhired' . $this->endpoint . '/';
+	  }
+	  return $lWebDomain;	
+	}
+	
+	private function _getAPIDomain() {
+      // Ensure that it is set properly if outside the US.
+	  if($this->country != 'en-us') {
+		$this->_setEndpointByCountry();
+	  }
+	  // Special-case South Africa.
+	  if($this->country == 'en-za') {
+	  	$lAPIDomain = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint;
+	  }
+	  else {
+	  	$lAPIDomain = self::ENDPOINT_PREFIX . 'api.za.simplyhired.com';
+	  }
+	  return $lAPIDomain;
+	}
+	
+	private function _setEndpointByCountry() {
+	  // Only change endpoints if the country is not the US.
+	  if($this->country != 'en-us') {
+	  	$endpoints = $this->_listEndpoints();
+	  	if(array_key_exists($this->country, $endpoints)) {
+	  	  $this->setEndpoint($endpoints[$this->country]);
+	  	}
+	  }
+	}
+	
 	/* Defines the allowed countries for searching. Used in setLocation. */
 	private function _listAllowedCountries() {
 	  $lCountries = array('en-us' => 'United States',       // ssty=2
@@ -331,5 +393,35 @@ class SimplyHired_API {
                    'en-gb' => 'United Kingdom',
 	   );
 	  return $lCountries;
+	}
+	
+	/* Defines the endpoints based on country. Used in _buildApiCall. */
+	private function _listEndpoints() {
+		$lCountries = array('en-us' => '.com',       // default; never needs to be set
+				'en-ar' => '.com.ar',                  
+				'en-au' => '.com.au',
+				'en-at' => '.at',
+				'en-be' => '.be',
+				'en-br' => '.com.br',
+				'en-ca' => '.ca',
+				'en-cn' => '.cn',
+				'en-fr' => '.fr',
+				'en-de' => '.de',
+				'en-in' => '.co.in',
+				'en-ie' => '.ca',
+				'en-it' => '.it',
+				'en-jp' => '.jp',
+				'en-kr' => '.kr',
+				'en-mx' => '.mx',
+				'en-nl' => '.nl',
+				'en-pt' => '.pt',
+				'en-ru' => '.ru',
+				'en-za' => '.za',                     // note that this is a special case
+				'en-es' => '.es',
+				'en-se' => '.se',
+				'en-ch' => '.ch',
+				'en-gb' => '.co.uk',
+		);
+		return $lCountries;
 	}
 }
