@@ -49,10 +49,10 @@ class SimplyHired_API {
 	public $endpoint = 'http://api.simplyhired.com/a/jobs-api/xml-v2/';
 
 	/* Publisher ID */
-	public $pshid = '7919'; // @todo: Change this default to ours.
+	public $pshid = '30845';
 	
 	/* Job-a-matic Url */
-	public $jbd = 'roofinfo.jobamatic.com'; // @todo: Change this default to ours.
+	public $jbd = 'christianjobsdirectory.jobamatic.com';
 
 	/* Client IP Address.  Needs to be captured and sent for each API call. */
 	public $clip = '';
@@ -64,7 +64,7 @@ class SimplyHired_API {
 	public $is_usa = TRUE; // Use US opportunities by default.
 	
 	/**/
-	public $disable_tracking = false;
+	public $disable_tracking = FALSE;
 	
 	/* Search error (if any) 
 	 * @todo: Set this to a string, not SimpleXMLElement.

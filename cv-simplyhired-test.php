@@ -39,6 +39,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$jobs = array();
 	$jobs = $cvsha->fetchJobs(); // Will use the default query terms.
 	
+	krumo($cvsha->is_usa);
 	/* Print the API call. */
 	krumo($cvsha->apicall);
 	
