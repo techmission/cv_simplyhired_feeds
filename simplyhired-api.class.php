@@ -149,7 +149,22 @@ class SimplyHired_API {
 		$this->onet = $code;
 	}
 
+	/* Modified so that the CLI script can use short codes for locations. */
 	function setLocation( $location ) {
+		// Look up a location in the countries array.
+		$prefix = substr($location, 2);
+	    if($prefix == 'en') {
+	      $countries = $this->_AllowedCountries;
+	      if(array_key_exists($location, $countries)) {
+	      	// Set that this is a search outside the US, if the location is not "en-us".
+	      	if($location != 'en-us') {
+	      	  $this->setIsUsa(FALSE);
+	      	}
+	      	// Set the country's name from the lookup array.
+	      	$location = $countries[$location];
+	      }
+	    }
+	    // Set the location name.
 		$this->location = $location;
 	}
 	

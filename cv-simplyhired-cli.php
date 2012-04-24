@@ -18,12 +18,24 @@ define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // name of jobs table
 define('BEHAVIOR_COUNT', 0);
 define('BEHAVIOR_QUERY', 1);
 
+$logging = FALSE;
+
 // Temporarily display runtime errors to the screen.
 ini_set('display_errors', TRUE);
 
 /**
  * Initializes the class for SimplyHired CV.org integration, 
  * set up search query, get back results, then save results to DB table.
+ * 
+ * Usage examples:
+ * 
+ * php cv-simplyhired-cli.php 02124         # query and insert, no logging
+ * php cv-simplyhired-cli.php 02124 -l      # query and insert, with logging
+ * php cv-simplyhired-cli.php London -f     # query for results in the city of London (foreign country), no logging
+ * php cv-simplyhired-cli.php en_gb -f      # query for results in the United Kingdom (foreign country), no logging
+ * php cv-simplyhired-cli.php 02124 -c      # just get the count of results
+ * php cv-simplyhired-cli.php London -f -l  # query and insert for London, with logging
+ * php cv-simplyhired-cli.php London -f -c -l  # counts only for London, with logging
  */
 if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
     if(!empty($argv[1])) {
@@ -41,14 +53,26 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	    else if($argv[2] == '-c') {
 	      $behavior = BEHAVIOR_COUNT;
 	    }
+	    else if($argv[2] == '-l') {
+	      $logging = TRUE;
+	    }
 	  }
 	  
 	  /* Just do count if set to that behavior via command line. */
-	  if(!empty($argv[3]) && $argv[3] == '-c') {
-	  	$behavior = BEHAVIOR_COUNT;
+	  if(!empty($argv[3])) {
+	  	if($argv[3] == '-c') {
+	  	  $behavior = BEHAVIOR_COUNT;
+	    }
+	    else if($argv[3] == '-l') {
+	      $logging = TRUE;
+	    }
 	  }
 	  
-	  
+	  // Set logging.
+	  if(!empty($argv[4]) && $argv[4] == '-l') {
+	  	$logging = TRUE;
+	  }
+
 	  if($behavior == BEHAVIOR_QUERY) {
         // In the background, run the query and turn the results into the proper format.
 	    $jobs = array();
@@ -67,7 +91,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	      echo "Exception: " . $e->getMessage() . "\n";
 	    }
 	
-	    // Set to not log, since logging does not work in command line mode.
+	    // Set to not log at database layer, since logging does not work in command line mode.
 	    $jobsDb->isLogging = FALSE;
 	
 	    // Connect to the database;
@@ -78,7 +102,9 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	
 	    // Write the jobs records to the tbl_feeds_jobs table.
 	    $numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	    //echo "Number inserted was: " . $numInserted . "\n";
+	    if($logging == TRUE) {
+	      echo "Number inserted was: " . $numInserted . "\n";
+	    }
 	  }
 	  // Otherwise just run the query and get count.
 	  else {
