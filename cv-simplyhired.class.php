@@ -91,7 +91,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  echo "Country: " . $this->country;
 	  if($this->country != 'en-us') {
 	  	echo "Is foreign country \n";
-	  	array_splice($lQryIncludesArray, 'ministry', 1); // leave out "ministry" for non-US
+	  	unset($lQryIncludesArray[8]); // leave out "ministry" for non-US
 	  }
 	  var_dump($lQryIncludesArray);
 	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
@@ -109,48 +109,48 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	
 	/* Defines the default query to be used for Christian job searches. */
 	private function _getDefaultQueryIncludes() {
-	  $lQryArray = array('pastor',
-	  		             'church',
-	  		             'chaplain',
-	  		             'minister',
-	  		             'christian', 
-	  		             'jesus', 
-	  		             'gospel', 
-	  		             'catholic',
-	  		             'ministry',
-	  		             'religious',
-	  		             'evangelical',
-	  		             'christ',
-	  		             'faith',
-	  		             'Protestant',
-	  		             'missionary',
-	  		             '"rescue mission"',
-	  		             '"Union Mission"',
-	  		             '"Salvation Army"',
-	  		             '"World Vision"',
-	  		             'missionary',
-	  		             'baptist',
-	  		             'lutheran',
-	  		             'methodist',
-	  		             'presbyterian',
-	  		             'pentecostal',
-	  		             'denominational',
-	  		             'evangelical',
-	  		             'calvary',
-	  		             '"born again"',
-	  		             'orthodox',
-	  		             'anglican',
-	  		             'reformed', 
-	  		             'god',
-	  		             'apostolic',
-	  		             'worship',
-	  		             'choir',
+	  $lQryArray = array(0 => 'pastor',
+	  		             1 => 'church',
+	  		             2 => 'chaplain',
+	  		             3 => 'minister',
+	  		             4 => 'christian', 
+	  		             5 => 'jesus', 
+	  		             6 => 'gospel', 
+	  		             7 => 'catholic',
+	  		             8 => 'ministry',
+	  		             9 => 'religious',
+	  		             10 => 'evangelical',
+	  		             11 => 'christ',
+	  		             12 => 'faith',
+	  		             13 => 'Protestant',
+	  		             14 => 'missionary',
+	  		             15 => '"rescue mission"',
+	  		             16 => '"Union Mission"',
+	  		             17 => '"Salvation Army"',
+	  		             18 => '"World Vision"',
+	  		             19 => 'missionary',
+	  		             20 => 'baptist',
+	  		             21 => 'lutheran',
+	  		             22 => 'methodist',
+	  		             23 => 'presbyterian',
+	  		             24 => 'pentecostal',
+	  		             25 => 'denominational',
+	  		             26 => 'evangelical',
+	  		             27 => 'calvary',
+	  		             28 => '"born again"',
+	  		             29 => 'orthodox',
+	  		             30 => 'anglican',
+	  		             31 => 'reformed', 
+	  		             32 => 'god',
+	  		             33 => 'apostolic',
+	  		             34 => 'worship',
+	  		             35 => 'choir',
 	  		         );
 	  return $lQryArray; 	
 	}
 	
 	private function _getDefaultQueryExcludes() {
-	  $lQryArray = array('Muslim', 'Jewish', 'hospital');
+	  $lQryArray = array(1 => 'Muslim', 2 => 'Jewish', 3 => 'hospital');
 	  return $lQryArray;
 	}
 
