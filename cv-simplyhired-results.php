@@ -47,7 +47,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  echo "<h2>" . $job['title'] . "</h2>";
   	  echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
   	  echo "<p><strong>Org Name:</strong> " . $job['org_name'] . "</p>";
-  	  echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . $job['postal_code'] . ", " . $job['location'];
+  	  echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . " " . $job['postal_code'] . ", " . $job['location'];
     }
   }
 }
