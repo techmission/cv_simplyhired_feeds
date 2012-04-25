@@ -115,7 +115,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             6 => 'gospel', 
 	  		             7 => 'catholic',
 	  		             8 => 'ministry',
-	  		             9 => 'religious',
+	  		             //9 => 'religious', /* too generic */
 	  		             10 => 'evangelical',
 	  		             11 => 'christ',
 	  		             12 => 'faith',
