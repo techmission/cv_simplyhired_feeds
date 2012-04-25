@@ -41,13 +41,18 @@ if (class_exists( 'CV_SimplyHired_API')) {
   // Fields from SimplyHired:
   // id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, 
   // country, created, changed, description
-  if(is_array($jobs) || (is_object($jobs) && get_class($jobs) == 'PDOStatement')) {
-    foreach($jobs as $job) {
-  	  echo "<h2>" . $job['title'] . "</h2>";
-  	  echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
-  	  echo "<p><strong>Org Name:</strong> " . $job['org_name'] . "</p>";
-  	  echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . " " . $job['postal_code'] . ", " . $job['location'];
-    }
+  if(is_object($jobs) && get_class($jobs) == 'PDOStatement') {
+  	if($jobs->rowCount() == 0) {
+  	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
+  	}
+  	else {
+      foreach($jobs as $job) {
+  	    echo "<h2>" . $job['title'] . "</h2>";
+  	    echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
+  	    echo "<p><strong>Org Name:</strong> " . $job['org_name'] . "</p>";
+  	    echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . " " . $job['postal_code'] . ", " . $job['location'];
+      }
+  	}
   }
 }
 
