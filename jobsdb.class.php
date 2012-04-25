@@ -20,6 +20,7 @@ class JobsDB {
   /* Constants for fields to select. */
   const FIELDS_ALL = 0;
   const FIELDS_GUID = 1;
+  const FIELDS_CORE = 2; // the basic fields
   
   /* Constants for data types. */
   const TYPE_INT = 0;
@@ -237,7 +238,63 @@ class JobsDB {
   	return $lNumRows;
   }
   
-
+  /**
+   * Select all records.
+   */
+  public function selectAllRecords($pObjType = self::RECORDS_JOB, $pSelectFields = self::FIELDS_ALL, 
+  		$pReturnAll = TRUE, $pFetchMode = PDO::FETCH_ASSOC) {
+  	// Set return variables. Assume error condition to start.
+  	$lRecords = FALSE;
+  	$lNumRows = FALSE;
+  	// Connect if no database handle.
+  	if($this->dbh == NULL) {
+  		$this->connect();
+  	}
+  	// Set the table name from which to delete, if not already set.
+  	// Default to the jobs table.
+  	if(empty($this->tableName) || $pObjType != self::RECORDS_JOB) {
+  		$this->tableName = $this->_lookupTableName($pObjType);
+  	}
+  	// Only prepare statement if there are values.
+  	if(count($pValues) == 0) {
+  		return $lRecords;
+  	}
+  	// Execute the query.
+  	try {
+  		// Try to get a select statement.
+  		try {
+  			$lPdoSql = $this->_buildSelectAllStmt($this->tableName, $pSelectFields);
+  		}
+  		catch(Exception $e) {
+  			if($this->isLogging) {
+  				echo $e->getMessage();
+  			}
+  			return $lRecords;
+  		}
+  		// Debug the statement if logging.
+  		if($this->isLogging && function_exists('krumo')) {
+  			krumo(array('sql' => $lPdoSql, 'values' => $pValues));
+  		}
+  		// Selects can be done on dry runs.
+  		$stmt = $this->dbh->prepare($lPdoSql);
+  		$stmt->execute();
+  		// If returning the full array, then build it here. Otherwise return the PDOStatement object.
+  		if($pReturnAll == TRUE) {
+  		  while($lRow = $stmt->fetch($pFetchMode)) {
+  			$lRecords[] = $lRow;
+  		  }
+  		}
+  		else {
+  			$lRecords = $stmt;
+  		}
+  		$lNumRows = $stmt->rowCount();
+  	}
+  	// Catch an error if there was one.
+  	catch(PDOException $e) {
+  		echo $e->getMessage();
+  	}
+  	return $lRecords;
+  }
   
   /**
    * Select records by a given set of criteria.
@@ -390,12 +447,40 @@ class JobsDB {
   	return $retRecords;
   }
 
+  private function _buildSelectAllStmt($pTableName, $pSelectFields) {
+    $lFields = '';
+  	$lPdoSql = '';
+  	// Set the fields to select.
+  	if($pSelectFields == self::FIELDS_ALL) {
+  	  $lFields = '*';
+  	}
+  	else if($pSelectFields == self::FIELDS_CORE) {
+  	  $lFields = 'id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, country, created, changed, description';
+  	}
+  	else if($pSelectFields == self::FIELDS_GUID) {
+  	  $lFields = 'id, guid, title';
+  	}
+  	else {
+  	  if(is_array($pSelectFields)) {
+  		$lFields = implode(',', $pSelectFields);
+  	  }
+  	  else {
+  		$lFields = $pFields;
+  	  }
+  	}
+  	$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName;
+  	return $lPdoSql;	
+  }
+  
   private function _buildSelectStmt($pTableName, $pFieldName, $pValue, $pFieldType, $pSelectFields, $pOperator) {
   	$lFields = '';
   	$lPdoSql = '';
   	// Set the fields to select.
   	if($pSelectFields == self::FIELDS_ALL) {
   	  $lFields = '*';
+  	}
+  	else if($pSelectFields == self::FIELDS_CORE) {
+  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, country, created, changed, description';
   	}
   	else if($pSelectFields == self::FIELDS_GUID) {
   	  $lFields = 'id, guid, title';

@@ -103,7 +103,7 @@ php $SCRIPT_PATH/$SCRIPT 93215                       #  Delano, CA (93215)      
 php $SCRIPT_PATH/$SCRIPT 95360                       #  Newman, CA (95360)             - 314, 113
 php $SCRIPT_PATH/$SCRIPT 95428                       #  Colvelo, CA (95428)            - 19, 7
 php $SCRIPT_PATH/$SCRIPT 96741                       #  Kalaheo, HI (96741)            - 2, 2
-php $SCRIPT_PATH/$SCRIPT 96778                       #  Pahoa, HI (96778)              - 0, 0
+php $SCRIPT_PATH/$SCRIPT Honolulu                    #  Honolulu, HI                   - 69, x
 php $SCRIPT_PATH/$SCRIPT 97051                       #  St Helens, OR (97051)          - 342, 144
 php $SCRIPT_PATH/$SCRIPT 97497                       #  Wolf Creek, OR (97497)         - 9, 9
 php $SCRIPT_PATH/$SCRIPT 97758                       #  Riley, OR (97758)              - 5, 5
@@ -126,6 +126,7 @@ php $SCRIPT_PATH/$SCRIPT 99762                       #  Nome, AK (99762)        
 # English-speaking countries (non-US)
 
 # Canadian provinces (http://en.wikipedia.org/wiki/Provinces_and_territories_of_Canada)
+# Result distribution is at: 
 
 php $SCRIPT_PATH/$SCRIPT AB -f:en-ca                # Alberta                          - 410, 211
 php $SCRIPT_PATH/$SCRIPT BC -f:en-ca                # British Columbia                 - 337, 140
@@ -151,24 +152,24 @@ php $SCRIPT_PATH/$SCRIPT Scotland -f:en-gb          # Scotland                  
 php $SCRIPT_PATH/$SCRIPT Craigavon -f:en-gb         # Center of Northern Ireland       - 438, 169
 
 # Major cities of Ireland
-php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie                                               - 0, 0
-php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie                                               - 629, 36
-php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie                                             - 344, 5
-php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie                                                 - 0, 0
+php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie                                               - 4, x
+php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie                                               - 46, x
+php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie                                             - 43, x
+php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie                                                 - 5, x
 
 # Australian provinces (http://www.citypopulation.de/Australia-UC.html)
 
-php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Australian Capital Territory    - 72, 72
+php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Australian Capital Territory     - 72, 72
 php $SCRIPT_PATH/$SCRIPT CHR -f:en-au               # Christmas Island                 - 0, 0
 php $SCRIPT_PATH/$SCRIPT COC -f:en-au               # Cocos Islands                    - 0, 0
 php $SCRIPT_PATH/$SCRIPT JB -f:en-au                # Jervis Bay                       - 0, 0
-php $SCRIPT_PATH/$SCRIPT NSW -f:en-au               # New South Wales                  - 0, 0
-php $SCRIPT_PATH/$SCRIPT NT -f:en-au                # Northern Territory               - 6, 0
-php $SCRIPT_PATH/$SCRIPT QLD -f:en-au               # Queensland                       - 0, 0
-php $SCRIPT_PATH/$SCRIPT SA -f:en-au                # South Australia                  - 0, 0
-php $SCRIPT_PATH/$SCRIPT TAS -f:en-au               # Tasmania                         - 0, 0
-php $SCRIPT_PATH/$SCRIPT VIC -f:en-au               # Victoria                         - 0, 0
-php $SCRIPT_PATH/$SCRIPT WA -f:en-au                # Western Australia                - 0, 0
+php $SCRIPT_PATH/$SCRIPT NSW -f:en-au               # New South Wales                  - 351, x
+php $SCRIPT_PATH/$SCRIPT NT -f:en-au                # Northern Territory               - 38, x
+php $SCRIPT_PATH/$SCRIPT QLD -f:en-au               # Queensland                       - 288, x
+php $SCRIPT_PATH/$SCRIPT SA -f:en-au                # South Australia                  - 46, x
+php $SCRIPT_PATH/$SCRIPT TAS -f:en-au               # Tasmania                         - 18, x
+php $SCRIPT_PATH/$SCRIPT VIC -f:en-au               # Victoria                         - 150, x
+php $SCRIPT_PATH/$SCRIPT WA -f:en-au                # Western Australia                - 44, x
 
 # Non-English-speaking countries
 # These are not working with the country name or ISO code, so commented out for now.
