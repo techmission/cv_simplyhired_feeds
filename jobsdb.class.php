@@ -243,6 +243,7 @@ class JobsDB {
    */
   public function selectAllRecords($pObjType = self::RECORDS_JOB, $pSelectFields = self::FIELDS_ALL, 
   		$pReturnAll = TRUE, $pFetchMode = PDO::FETCH_ASSOC) {
+  	echo "<p>Called function.</p>";
   	// Set return variables. Assume error condition to start.
   	$lRecords = FALSE;
   	$lNumRows = FALSE;
@@ -254,10 +255,6 @@ class JobsDB {
   	// Default to the jobs table.
   	if(empty($this->tableName) || $pObjType != self::RECORDS_JOB) {
   		$this->tableName = $this->_lookupTableName($pObjType);
-  	}
-  	// Only prepare statement if there are values.
-  	if(count($pValues) == 0) {
-  		return $lRecords;
   	}
   	// Execute the query.
   	try {
