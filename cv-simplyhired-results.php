@@ -31,14 +31,13 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	echo $e->getMessage();
   }
   
-  $jobsDb->isLogging = TRUE;
+  $jobsDb->isLogging = FALSE;
   
   // Connect to the database;
   $jobsDb->connect();
   
   // Get back all the jobs results, as a PDO result set.
   $jobs = $jobsDb->selectAllRecords($jobsDb::RECORDS_JOB, $jobsDb::FIELDS_ALL, FALSE);
-  krumo($jobs);
   // Fields from SimplyHired:
   // id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, 
   // country, created, changed, description

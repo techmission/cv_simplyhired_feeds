@@ -243,7 +243,6 @@ class JobsDB {
    */
   public function selectAllRecords($pObjType = self::RECORDS_JOB, $pSelectFields = self::FIELDS_ALL, 
   		$pReturnAll = TRUE, $pFetchMode = PDO::FETCH_ASSOC) {
-  	echo "<p>Called function.</p>";
   	// Set return variables. Assume error condition to start.
   	$lRecords = FALSE;
   	$lNumRows = FALSE;
