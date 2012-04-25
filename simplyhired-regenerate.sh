@@ -158,17 +158,17 @@ php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie                                          
 
 # Australian provinces (http://www.citypopulation.de/Australia-UC.html)
 
-php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Austrialian Capital Territory    - 72, 72
-php $SCRIPT_PATH/$SCRIPT CHR -f:en-ca               # Christmas Island                 - 0, 0
-php $SCRIPT_PATH/$SCRIPT COC -f:en-ca               # Cocos Islands                    - 0, 0
-php $SCRIPT_PATH/$SCRIPT JB -f:en-ca                # Jervis Bay                       - 0, 0
-php $SCRIPT_PATH/$SCRIPT NSW -f:en-ca               # New South Wales                  - 0, 0
-php $SCRIPT_PATH/$SCRIPT NT -f:en-ca                # Northern Territory               - 6, 0
-php $SCRIPT_PATH/$SCRIPT QLD -f:en-ca               # Queensland                       - 0, 0
-php $SCRIPT_PATH/$SCRIPT SA -f:en-ca                # South Australia                  - 0, 0
-php $SCRIPT_PATH/$SCRIPT TAS -f:en-ca               # Tasmania                         - 0, 0
-php $SCRIPT_PATH/$SCRIPT VIC -f:en-ca               # Victoria                         - 0, 0
-php $SCRIPT_PATH/$SCRIPT WA -f:en-ca                # Western Australia                - 0, 0
+php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Australian Capital Territory    - 72, 72
+php $SCRIPT_PATH/$SCRIPT CHR -f:en-au               # Christmas Island                 - 0, 0
+php $SCRIPT_PATH/$SCRIPT COC -f:en-au               # Cocos Islands                    - 0, 0
+php $SCRIPT_PATH/$SCRIPT JB -f:en-au                # Jervis Bay                       - 0, 0
+php $SCRIPT_PATH/$SCRIPT NSW -f:en-au               # New South Wales                  - 0, 0
+php $SCRIPT_PATH/$SCRIPT NT -f:en-au                # Northern Territory               - 6, 0
+php $SCRIPT_PATH/$SCRIPT QLD -f:en-au               # Queensland                       - 0, 0
+php $SCRIPT_PATH/$SCRIPT SA -f:en-au                # South Australia                  - 0, 0
+php $SCRIPT_PATH/$SCRIPT TAS -f:en-au               # Tasmania                         - 0, 0
+php $SCRIPT_PATH/$SCRIPT VIC -f:en-au               # Victoria                         - 0, 0
+php $SCRIPT_PATH/$SCRIPT WA -f:en-au                # Western Australia                - 0, 0
 
 # Non-English-speaking countries
 # These are not working with the country name or ISO code, so commented out for now.
