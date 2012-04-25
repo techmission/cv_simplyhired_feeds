@@ -88,9 +88,12 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
 	  $lQryIncludesArray = $this->_getDefaultQueryIncludes();
+	  echo "Country: " . $this->country;
 	  if($this->country != 'en-us') {
+	  	echo "Is foreign country \n";
 	  	unset($lQryIncludesArray['ministry']); // leave out "ministry" for non-US
 	  }
+	  var_dump($lQryIncludesArray);
 	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
 	  // Put spaces around the operator.
 	  $lOperator = ' ' . $pOperator . ' ';
