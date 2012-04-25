@@ -6,6 +6,9 @@
 # Ignore secure database connection info.
 *.ini
 
+# Ignore any results files.
+*.csv
+
 # Ignore krumo in repository.
 krumo
 krumo/*
