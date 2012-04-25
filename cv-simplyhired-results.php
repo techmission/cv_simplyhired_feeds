@@ -36,14 +36,17 @@ if (class_exists( 'CV_SimplyHired_API')) {
   
   // Get back all the jobs results, as a PDO result set.
   $jobs = $jobsDb->selectAllRecords($jobsDb::RECORDS_JOB, $jobsDb::FIELDS_ALL, FALSE);
+  krumo($jobs);
   // Fields from SimplyHired:
   // id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, 
   // country, created, changed, description
-  foreach($jobs as $job) {
-  	echo "<h2>" . $job['title'] . "</h2>";
-  	echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
-  	echo "<p><strong>Org Name:</strong> " . $job['org_name'] . "</p>";
-  	echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . $job['postal_code'] . ", " . $job['location'];
+  if(is_array($jobs)) {
+    foreach($jobs as $job) {
+  	  echo "<h2>" . $job['title'] . "</h2>";
+  	  echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
+  	  echo "<p><strong>Org Name:</strong> " . $job['org_name'] . "</p>";
+  	  echo "<p><strong>Location:</strong>" . $job['city'] . ", " . $job['province'] . $job['postal_code'] . ", " . $job['location'];
+    }
   }
 }
 
