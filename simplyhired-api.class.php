@@ -431,7 +431,7 @@ class SimplyHired_API {
 				'en-fr' => '.fr',
 				'en-de' => '.de',
 				'en-in' => '.co.in',
-				'en-ie' => '.ca',
+				'en-ie' => '.ie',
 				'en-it' => '.it',
 				'en-jp' => '.jp',
 				'en-kr' => '.kr',

@@ -10,6 +10,7 @@ php $SCRIPT_PATH/$DELETE_SCRIPT
 # Request for the same 100-mile radius zipcode points used for the AllForGood feed
 # (see saved Excel spreadsheet of these)
 # See distribution at http://batchgeo.com/map/589ea74668cbbf7a7d10ffa6d274d14d
+# For initial results, see http://batchgeo.com/map/8ef41c18859e44e3f8944082ef8b9c67
 
 php $SCRIPT_PATH/$SCRIPT 03846                       #  Jackson, NH (03846)            - 24, 24
 php $SCRIPT_PATH/$SCRIPT 06281                       #  Woodstock, CT (06281)          - 360, 155
