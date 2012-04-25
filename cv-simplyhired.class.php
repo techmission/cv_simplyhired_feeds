@@ -91,7 +91,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  echo "Country: " . $this->country;
 	  if($this->country != 'en-us') {
 	  	echo "Is foreign country \n";
-	  	unset($lQryIncludesArray['ministry']); // leave out "ministry" for non-US
+	  	array_splice($lQryIncludesArray, 'ministry', 1); // leave out "ministry" for non-US
 	  }
 	  var_dump($lQryIncludesArray);
 	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
