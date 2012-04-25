@@ -42,7 +42,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   // Fields from SimplyHired:
   // id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, 
   // country, created, changed, description
-  if(is_array($jobs)) {
+  if(is_array($jobs) || (is_object($jobs) && get_class($jobs) == 'PDOStatement')) {
     foreach($jobs as $job) {
   	  echo "<h2>" . $job['title'] . "</h2>";
   	  echo "<p><strong>Description:</strong> " . $job['description'] . "</p>";
