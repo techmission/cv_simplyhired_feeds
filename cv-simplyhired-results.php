@@ -31,6 +31,8 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	echo $e->getMessage();
   }
   
+  $jobsDb->isLogging = TRUE;
+  
   // Connect to the database;
   $jobsDb->connect();
   
