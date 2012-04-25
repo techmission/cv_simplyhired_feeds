@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<title>Jobs Table Results Browser</title>
 </head>
 <body>
 <?php

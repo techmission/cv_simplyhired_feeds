@@ -45,7 +45,8 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
 	  $behavior = BEHAVIOR_QUERY; // By default, query and save the results.
 	  $cvsha = new CV_SimplyHired_API($options);
-	  $cvsha->setLocation($argv[1]);   // search zipcode.
+	  $cvsha->setLocation($argv[1]);   // set location to first parameter of CLI: 
+	                                   // all locations use same basic query
 	  $cvsha->setIsUsa(TRUE);          // set to search in US by default
 	  /* Set to search outside the US, if -f:<country_name> flag is passed. */
 	  if(!empty($argv[2])) {
