@@ -462,7 +462,7 @@ class JobsDB {
   		$lFields = 'id, guid, title';
   	}
   	else if($pSelectFields == self::FIELDS_LOCATION) {
-  		$lFields = 'id, title, street, city, province, postal_code, country';
+  		$lFields = 'id, title, street, city, province, postal_code, country, latitude, longitude';
   	}
   	else {
   		if(is_array($pSelectFields)) {

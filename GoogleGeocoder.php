@@ -79,14 +79,14 @@ class GoogleGeocoder {
 		dpm($google_geocode_data, 'google geocode data for location');
 		// Location data is returned as an associative array from the JSON response of the Google geocoder.
 		return array(
-				'lat' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][1],
-				'lon' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][0],
-				'geocoded_street' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'],
-				'geocoded_city' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'],
-				'geocoded_state' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'],
+				'latitude' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][1],
+				'longitude' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][0],
+				'street' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'],
+				'city' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'],
+				'province' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'],
 				'geocoded_country' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'],
-				'geocoded_accuracy' => $google_geocode_data['Placemark'][0]['AddressDetails']['Accuracy'],
-				'geocoded_postalcode' =>$google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber']
+				//'geocoded_accuracy' => $google_geocode_data['Placemark'][0]['AddressDetails']['Accuracy'],
+				'postal_code' =>$google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber']
 		);
 	}
 

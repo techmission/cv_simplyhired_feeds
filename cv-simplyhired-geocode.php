@@ -60,7 +60,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	}
   	else {
   	  foreach($jobs as $job) {
-  	    $jobCoded = $geocoder->geocodeLocation($job, TRUE);
+  	    $jobCoded = $geocoder->geocodeLocation($job, FALSE);
   	    krumo($job);
   	    krumo($jobCoded);
   	  }
