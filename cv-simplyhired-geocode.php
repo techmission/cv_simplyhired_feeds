@@ -59,9 +59,11 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
   	}
   	else {
-  	  $jobCoded = $geocoder->geocodeLocation($job, TRUE);
-  	  krumo($job);
-  	  krumo($jobCoded);
+  	  foreach($jobs as $job) {
+  	    $jobCoded = $geocoder->geocodeLocation($job, TRUE);
+  	    krumo($job);
+  	    krumo($jobCoded);
+  	  }
   	}
   }
 }
