@@ -354,7 +354,7 @@ class SimplyHired_API {
 	  	$this->_setEndpointByCountry();
 	  }
 	  // Special-case South Africa.
-	  if($this->country == 'en-za') {
+	  if($this->country != 'en-za') {
 	  	$lWebDomain = self::ENDPOINT_PREFIX . 'za.simplyhired.com/';
 	  }
 	  else {
@@ -369,7 +369,7 @@ class SimplyHired_API {
 		$this->_setEndpointByCountry();
 	  }
 	  // Special-case South Africa.
-	  if($this->country == 'en-za') {
+	  if($this->country != 'en-za') {
 	  	$lAPIDomain = self::ENDPOINT_PREFIX . self::ENDPOINT_DOMAIN . $this->endpoint;
 	  }
 	  else {

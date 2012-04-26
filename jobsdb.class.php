@@ -2,6 +2,10 @@
 
 /**
  * @class Class for the inserts into jobs database.
+ * 
+ * @todo: Separate the methods in here into the ones 
+ * that should go in PDO_Ext, a Schema mixin class, and the actual JobsDb class.
+ * That will make this a more generic abstraction layer.
  *
  * Requires PHP Data Objects (PDO) for connection.
  */
@@ -18,9 +22,11 @@ class JobsDB {
   const OP_IN = 0;
   
   /* Constants for fields to select. */
-  const FIELDS_ALL = 0;
-  const FIELDS_GUID = 1;
+  /* @todo: Have the build fields do this based on the schema. */
+  const FIELDS_ALL = 0;  // *
+  const FIELDS_GUID = 1; // just the id and guid fields
   const FIELDS_CORE = 2; // the basic fields
+  const FIELDS_LOCATION = 3; // the location fields
   
   /* Constants for data types. */
   const TYPE_INT = 0;
@@ -443,52 +449,45 @@ class JobsDB {
   	return $retRecords;
   }
 
-  private function _buildSelectAllStmt($pTableName, $pSelectFields) {
-    $lFields = '';
-  	$lPdoSql = '';
+  private function _buildSelectFields($pSelectFields) {
+  	$lFields = '';
   	// Set the fields to select.
   	if($pSelectFields == self::FIELDS_ALL) {
-  	  $lFields = '*';
+  		$lFields = '*';
   	}
   	else if($pSelectFields == self::FIELDS_CORE) {
-  	  $lFields = 'id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, country, created, changed, description';
+  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, street, city, province, postal_code, country, created, changed, description';
   	}
   	else if($pSelectFields == self::FIELDS_GUID) {
-  	  $lFields = 'id, guid, title';
+  		$lFields = 'id, guid, title';
+  	}
+  	else if($pSelectFields == self::FIELDS_LOCATION) {
+  		$lFields = 'id, title, street, city, province, postal_code, country';
   	}
   	else {
-  	  if(is_array($pSelectFields)) {
-  		$lFields = implode(',', $pSelectFields);
-  	  }
-  	  else {
-  		$lFields = $pFields;
-  	  }
+  		if(is_array($pSelectFields)) {
+  			$lFields = implode(',', $pSelectFields);
+  		}
+  		else {
+  			$lFields = $pFields;
+  		}
   	}
+  	return $lFields;
+  }
+  
+  private function _buildSelectAllStmt($pTableName, $pSelectFields) {
+  	$lPdoSql = '';
+  	// Set the fields to select.
+  	$lFields = $this->_buildSelectFields($pSelectFields);
+  	// Build the statement itself.
   	$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName;
   	return $lPdoSql;	
   }
   
   private function _buildSelectStmt($pTableName, $pFieldName, $pValue, $pFieldType, $pSelectFields, $pOperator) {
-  	$lFields = '';
   	$lPdoSql = '';
   	// Set the fields to select.
-  	if($pSelectFields == self::FIELDS_ALL) {
-  	  $lFields = '*';
-  	}
-  	else if($pSelectFields == self::FIELDS_CORE) {
-  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, city, province, postal_code, country, created, changed, description';
-  	}
-  	else if($pSelectFields == self::FIELDS_GUID) {
-  	  $lFields = 'id, guid, title';
-  	}
-  	else {
-  	  if(is_array($pSelectFields)) {
-  		$lFields = implode(',', $pSelectFields);
-  	  }
-  	  else {
-  		$lFields = $pFields;
-  	  }
-  	}
+  	$lFields = $this->_buildSelectFields($pSelectFields);
   	if($pOperator == self::OP_IN) {
   		$lInClause = $this->_buildInClause($pValue, $pType);
   		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN ' . $lInClause;
