@@ -437,7 +437,7 @@ class JobsDB {
   	$retRecords = $pRecords;
   	// If there are GUIDs, then look up matches.
   	if(count($lRecordGuids) > 0) {
-  	  $lMatchRecords = $this->selectRecords('guid', $lRecordGuids, self::TYPE_STRING, $pType);
+  	  $lMatchRecords = $this->selectRecords('guid', $lRecordGuids, self::TYPE_STRING, self::FIELDS_GUID, $pType);
   	}
   	// Unset the matching records from the array, so they will not be inserted.
   	if(is_array($lMatchRecords) && count($lMatchRecords > 0)) {
