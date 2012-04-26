@@ -302,7 +302,7 @@ class JobsDB {
    * Select records by a given set of criteria.
    * The records are returned as a single array, or as a PDOStatement if requested that way.
    */
-  public function selectRecords($pFieldName, array $pValues, $pFieldType = self::TYPE_INT, 
+  public function selectRecords($pFieldName, array $pValues, $pFieldType = self::TYPE_INT, $pSelectFields = self::FIELDS_CORE,
   		$pObjType = self::RECORDS_JOB, $pReturnAll = TRUE, $pFetchMode = PDO::FETCH_ASSOC) {
   	// Set return variables. Assume error condition to start.
   	$lRecords = FALSE;
@@ -324,7 +324,7 @@ class JobsDB {
   	try {
   	  // Try to get a select statement.
   	  try {
-  		$lPdoSql = $this->_buildSelectStmt($this->tableName, $pFieldName, $pValues, $pFieldType, self::FIELDS_GUID, self::OP_IN);
+  		$lPdoSql = $this->_buildSelectStmt($this->tableName, $pFieldName, $pValues, $pFieldType, $pSelectFields, self::OP_IN);
   	  }
   	  catch(Exception $e) {
   	  	if($this->isLogging) {
