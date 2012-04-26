@@ -42,7 +42,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   
   // Get back all the jobs results, as a PDO result set.
   //$jobs = $jobsDb->selectAllRecords($jobsDb::RECORDS_JOB, $jobsDb::FIELDS_LOCATION, FALSE);
-  $jobs = $jobsDb->selectRecords('id', array(13022, 13023));
+  $jobs = $jobsDb->selectRecords('id', array(13022, 13023), $jobsDb::FIELDS_LOCATION, self::TYPE_INT, self::RECORDS_JOB, FALSE);
   
   // Initialize the geocoder.
   try {
