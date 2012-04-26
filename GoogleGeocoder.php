@@ -56,10 +56,7 @@ class GoogleGeocoder {
 				'q' => $gmap_q,
 		);
 	
-		$url = url('http://maps.google.com/maps/geo', array(
-				'query' => $query,
-				'external' => TRUE,
-		));
+		$url = 'http://maps.google.com/maps/geo' . '?' . implode('&', $query);
 	
 		dpm($url, 'Geocode URL');
 	
