@@ -147,23 +147,24 @@ class GoogleGeocoder {
 	
 	/**
 	 * Parses out a location from a v2 Google Maps API response.
+	 * Location data is returned as an associative array from the JSON response of the Google geocoder.
+	 * This collapses the 
 	 *
 	 * @param array $pJsonResponse
+	 * 
+	 * @return array
+	 *   An array of all the valid values that were found within the JSON response.
 	 */
 	private function _parseLocation($pJsonResponse) {
 		$geocoded_location = array();
-		//dpm($google_geocode_data, 'google geocode data for location');
-		/**
-		 * Parse relevant location data:
-		 * Location data is returned as an associative array from the JSON response of the Google geocoder.
-		 */
+		
 		// Latitude
 		if(isset($pJsonResponse['Placemark'][0]['Point']['coordinates'][1])) {
 			$geocoded_location['latitude'] = $pJsonResponse['Placemark'][0]['Point']['coordinates'][1];
 		}
 		// Longitude
 		if(isset($pJsonResponse['Placemark'][0]['Point']['coordinates'][0])) {
-			$geocoded_location['latitude'] = $pJsonResponse['Placemark'][0]['Point']['coordinates'][0];
+			$geocoded_location['longitude'] = $pJsonResponse['Placemark'][0]['Point']['coordinates'][0];
 		}
 		// Street
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'])) {
@@ -179,13 +180,14 @@ class GoogleGeocoder {
 		}
 		// Postal Code
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'])) {
-			$geocoded_location['province'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'];
+			$geocoded_location['postal_code'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'];
 		}
 		// Country
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'])) {
 			$geocoded_location['country'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'];
 		}
 		// Accuracy (by Google's standards)
+		// @todo: Use this somehow?
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Accuracy'])) {
 			$geocoded_location['accuracy'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Accuracy'];
 		}
