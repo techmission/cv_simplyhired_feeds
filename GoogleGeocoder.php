@@ -77,6 +77,7 @@ class GoogleGeocoder {
 		$location = array();
 		
 		// Only make a request if you have not already made over the limit.
+		krumo(array('numRequests' => $this->numRequests));
 		if($this->numRequests < 2499) {
 	      // Builds query.
 	      $query = $this->_buildQuery($location, $reverse);
