@@ -19,8 +19,7 @@ define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs');
 ini_set('display_errors', TRUE);
 
 /**
- * Initializes the class for SimplyHired CV.org integration, 
- * set up search query, get back results, then save results to DB table.
+ * Just a test of the queries.
  */
 if (class_exists( 'CV_SimplyHired_API')) {
 	$options = array('publisher_id' => 30845,
@@ -44,48 +43,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	krumo($cvsha->is_usa);
 	/* Print the API call. */
 	krumo($cvsha->apicall);
+	/* Print the query string. */
+	krumo($cvsha->querystring);
 	
-	// Print the jobs array using Krumo.
-	// @todo: Remove when finished testing.
-	krumo($jobs);
-	// Echo the jobs array.
-    // $cvsha->printJobsResults();
-    
-	/* Write the jobs array to the database. */
-	// Initialize the database handler.
-	try {
-	  $jobsDb = new JobsDB();
-	}
-	catch(Exception $e) {
-	  echo $e->getMessage();
-	}
-	
-	// Set to log.
-	$jobsDb->isLogging = TRUE;
-	// Set to dry run.
-	$jobsDb->isDryRun = FALSE;
-	// Get the database connection string.
-	//$jobsDb->getConnStr(TRUE);
-	
-	// Connect to the database;
-	$jobsDb->connect();
-	
-	// Set the table name to count/insert, etc. Not strictly necessary.
-	//$jobsDb->tableName = TABLE_FEEDS_JOBS;
-	// Get the number of rows currently stored in 'tbl_feeds_jobs'
-	//$numRows = $jobsDb->countRecords();
-	//krumo($numRows);
-	
-	// Delete all old jobs records.
-	//$jobsDb->truncate();
-	
-	// Write the jobs records to the tbl_feeds_jobs table.
-	$numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	krumo($numInserted);
-	
-	// Delete old jobs records.
-	//$numDeleted = $jobsDb->deleteRecords('id', array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19));
-	//krumo($numDeleted);
 }
 ?>
 </body>

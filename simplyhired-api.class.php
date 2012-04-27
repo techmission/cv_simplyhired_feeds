@@ -110,6 +110,9 @@ class SimplyHired_API {
 	}
 
 	function doSearch($number = 10, $start = 1) {
+		// Set return variable to null by default.
+		$xml = null;
+		
 		// Build the SimplyHired API call and query string from parameters.
 		$this->_buildApiCall($number, $start);
          
@@ -118,6 +121,7 @@ class SimplyHired_API {
 		if(!empty($this->apicall)) {
 		  $response = make_http_request($this->apicall, $this->querystring);
 		}
+		krumo($response);
 		
 		// Parse the response into XML.
 		$xml = $this->_parseResponse($response);
@@ -132,6 +136,7 @@ class SimplyHired_API {
 		  }
 	    }
 		
+	    krumo($xml);
 		// Return SimpleXMLElement tree of results.
 		return $xml;
 	}
