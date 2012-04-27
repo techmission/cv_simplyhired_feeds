@@ -410,9 +410,9 @@ class JobsDB {
           $lPdoValues = $this->_buildValues($lRecord);
           $stmt = $this->dbh->prepare($lPdoSql);
           // Debug the statement if logging.
-          if($this->isLogging && function_exists('krumo')) {
+          //if($this->isLogging && function_exists('krumo')) {
             krumo(array('sql' => $lPdoSql, 'values' => $lPdoValues));
-          }
+          //}
           // Only do the insert if this is not a dry run. 
           if(!$this->isDryRun) {
             $stmt->execute($lPdoValues);
@@ -645,7 +645,8 @@ class JobsDB {
   	$i = 0;
   	foreach($pRecords as $record) {
   	  // @todo: Make it possible to configure how GUID is generated.
-  	  if(!isset($record['guid']) || empty($record['guid'])) {
+  	  // Skip records with no title. They shouldn't be inserted.
+  	  if((!isset($record['guid']) || empty($record['guid'])) && !empty($record['title'])) {
   	  	// Set the GUID to a number if it wasn't able to grab a GUID for a record.
   	  	// This is needed so the de-duping can work.
   	  	$lGuid = $i;
