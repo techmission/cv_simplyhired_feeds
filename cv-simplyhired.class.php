@@ -290,7 +290,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lPattern = '/\/jobkey-(?P<guid>[a-zA-Z0-9.-]+)\//';
 	  $lResults = array();
 	  preg_match($lPattern, $pUrl, $lResults);
-	  //krumo(array('url' => $pUrl, 'results' => $lResults));
 	  if(!empty($lResults['guid'])) {
 	  	$lGuid = $lResults['guid'];
 	  }

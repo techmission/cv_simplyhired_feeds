@@ -410,9 +410,9 @@ class JobsDB {
           $lPdoValues = $this->_buildValues($lRecord);
           $stmt = $this->dbh->prepare($lPdoSql);
           // Debug the statement if logging.
-          //if($this->isLogging && function_exists('krumo')) {
+          if($this->isLogging && function_exists('krumo')) {
             krumo(array('sql' => $lPdoSql, 'values' => $lPdoValues));
-          //}
+          }
           // Only do the insert if this is not a dry run. 
           if(!$this->isDryRun) {
             $stmt->execute($lPdoValues);
@@ -568,7 +568,7 @@ class JobsDB {
   private function _buildValues($pRecord) {
     $lPdoValues = array();
     foreach($pRecord as $fieldName => $value) {
-      $value = utf8_decode($value);
+      $value = utf8_decode($value); // If value is in UTF-8 decode it. @todo: Why is this necessary?
       $lPdoValues[':' . $fieldName] = $value;
     }
     return $lPdoValues;
