@@ -14,10 +14,10 @@ class GoogleGeocoder {
 	private $key = ''; // the API key (must be set to valid for domain to work)
 	
 	// Keep track of requests, successes, failures, and number of requests over daily limit.
-	public $numRequestsOverLimit = 0;
-	public $numRequests = 0;
-	public $numSuccesses = 0;
-	public $numFailures = 0;
+	public $numRequestsOverLimit;
+	public $numRequests;
+	public $numSuccesses;
+	public $numFailures;
 	
 	const IS_LOGGING = FALSE; // whether or not to log to the screen
 	
@@ -45,6 +45,11 @@ class GoogleGeocoder {
 	  	// @todo: Also throw an exception if the API key is not valid for this domain.
 	  	throw new Exception('Invalid Gmap API key.');
 	  }
+	  // Set the counters to default.
+	  $this->numRequests = 0;
+	  $this->numRequestsOverLimit = 0;
+	  $this->numSuccesses = 0;
+	  $this->numFailures = 0;
 	}	
 	
 	/**
