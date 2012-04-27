@@ -4,6 +4,9 @@
  * @file
  * Google geocoder.
  * Object-oriented version of the Google geocoder included as part of the Drupal Location module.
+ * 
+ * @todo Add logging.
+ * 
  */
 
 class GoogleGeocoder {
@@ -54,8 +57,10 @@ class GoogleGeocoder {
 	public function geocodeLocation(array $location, $reverse = FALSE) {
 	    // Build query.
 	    $query = $this->_buildQuery($location, $reverse);
-	
-		$google_geocode_data = array();
+	    
+	    // Set location and json_response variable to default to empty array.
+		$location = array();
+		$json_response = array();
 		
 		// Make the HTTP request.
 		$response = make_http_request(self::ENDPOINT_URL, $query);
@@ -67,6 +72,7 @@ class GoogleGeocoder {
 		}
 		dpm($json_response, 'Google-returned json array');
 	    
+		// Check whether Google says this is a valid request.
 		$api_status = $this->_checkResponseStatus($json_response);
 		dpm($api_status, 'api status');
 		
@@ -132,6 +138,9 @@ class GoogleGeocoder {
 				}
 				$lStatus = FALSE;
 			}
+		}
+		else {
+			$lStatus = FALSE;
 		}
 		return $lStatus;
 	}
@@ -667,6 +676,7 @@ function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpReques
   else {
     throw new Exception('Class does not exist: HttpRequest');
   }
+  return $lResponse;
 }
 
 /* Temp: Wrapper around krumo */
