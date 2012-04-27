@@ -265,7 +265,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  $lJobsArray[$i]['source_guid'] = $this->_getSourceGuid($lJobsArray[$i]['referralurl']);
 		  // Get the location values from the attributes on loc element.
 		  // All of these don't necessarily have values all of the time.
-		  $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
+		  //$lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
+		  $lJobsArray[$i]['city'] = $res->loc['city']->asXML();
 		  $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
 		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
 		  $lJobsArray[$i]['country'] = xt_getAttrVal($res->loc['country']);
