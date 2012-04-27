@@ -35,7 +35,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	echo $e->getMessage();
   }
   
-  $jobsDb->isLogging = TRUE;
+  $jobsDb->isLogging = FALSE;
   
   // Connect to the database;
   $jobsDb->connect();
@@ -44,7 +44,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
   //$jobs = $jobsDb->selectAllRecords($jobsDb::RECORDS_JOB, $jobsDb::FIELDS_LOCATION, FALSE);
   $fields = $jobsDb->buildSelectFields($jobsDb::FIELDS_LOCATION);
   if(!is_null($jobsDb->dbh)) {
-    $stmt = $jobsDb->dbh->query('SELECT ' . $fields . ' FROM ' . $jobsDb->tableName . ' WHERE latitude IS NULL AND longitude IS NULL LIMIT 10');
+  	$pdoSql = 'SELECT ' . $fields . ' FROM ' . $jobsDb->tableName;
+  	$pdoSql .= ' WHERE latitude IS NULL AND longitude IS NULL LIMIT 2499'; // need to limit for Google API requests
+    $stmt = $jobsDb->dbh->query($pdoSql);
   }
   
   // Initialize the geocoder.
@@ -60,13 +62,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
   $updated_jobs = array();
   if(is_object($stmt) && get_class($stmt) == 'PDOStatement') {
   	if($stmt->rowCount() == 0) {
-  	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
+  	  exit(0); // Exit here; nothing to be done
+  	  //echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
   	}
   	else {
   	  foreach($stmt as $job) {
-  	  	//krumo($job);
   	    $location = $geocoder->geocodeLocation($job, FALSE);
-  	    krumo($location);
   	    // Add the latitude if a valid one was returned.
   	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
   	      $job['latitude'] = $location['latitude'];
@@ -82,8 +83,11 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  }
   	}
   }
-  krumo($geocoder->returnGeocodingResults());
-  krumo($updated_jobs);
+  
+  // Debug the results on successes and failures.
+  //krumo($geocoder->returnGeocodingResults());
+  
+  // Do the update. 
   try {
     $jobsDb->dbh->beginTransaction();
     foreach($updated_jobs as $job) {
@@ -92,7 +96,6 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  $stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
-  	  krumo(array('sql' => $pdoSql, 'vars' => array(':latitude' => $job['latitude'], ':longitude' => $job['longitude'], ':id' => $job['id'])));
   	  $stmt->execute();
     }
     $jobsDb->dbh->commit();
