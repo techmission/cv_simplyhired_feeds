@@ -62,7 +62,7 @@ class GoogleGeocoder {
 	
 		$google_geocode_data = array();
 		$http_reply = make_http_request($url);
-		// dpm($http_reply->data);
+		dpm($http_reply, 'http response');
 		$google_geocode_data = $this->_getJSONarray($http_reply->data);
 		dpm($google_geocode_data, 'Google-returned json array');
 	

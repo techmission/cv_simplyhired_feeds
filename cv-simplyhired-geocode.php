@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>Jobs Table Results Browser</title>
+<title>SimplyHired Geocoder</title>
 </head>
 <body>
 <?php
