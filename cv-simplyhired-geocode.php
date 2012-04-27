@@ -52,49 +52,47 @@ if (IS_CLI && class_exists( 'JobsDb')) {
   // id, street, city, province, postal_code, country
   $updated_jobs = array();
   if(is_object($stmt) && get_class($stmt) == 'PDOStatement') {
+  	// If there were no returned non-geocoded jobs...
   	if($stmt->rowCount() == 0) {
   	  exit(0); // Exit here; nothing to be done
-  	  //echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
   	}
+  	// Otherwise, geocode the jobs and insert records.
   	else {
-  	  foreach($stmt as $job) {
-  	    $location = $geocoder->geocodeLocation($job, FALSE);
-  	    // Add the latitude if a valid one was returned.
-  	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
-  	      $job['latitude'] = $location['latitude'];
-  	    }
-  	    // Add the longitude if a valid one was returned.
-  	    if(!empty($location['longitude']) && is_numeric($location['longitude']) && $location['longitude'] != 0) {
-  	      $job['longitude'] = $location['longitude'];
-  	    }
-  	    // Add to the array of jobs to update if geocoding was successful for both latitude and longitude.
-  	    if(!empty($location['latitude']) && !empty($location['longitude'])) {
-  	      $updated_jobs[$job['id']] = $job;
-  	    }
-  	  }
+  		try {
+  			$jobsDb->dbh->beginTransaction();
+  			foreach($stmt as $job) {
+  				$location = $geocoder->geocodeLocation($job, FALSE);
+  				// Add the latitude if a valid one was returned.
+  				if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
+  					$job['latitude'] = $location['latitude'];
+  				}
+  				// Add the longitude if a valid one was returned.
+  				if(!empty($location['longitude']) && is_numeric($location['longitude']) && $location['longitude'] != 0) {
+  					$job['longitude'] = $location['longitude'];
+  				}
+  				// Write values to database if geocoding was successful for both latitude and longitude.
+  				if(!empty($location['latitude']) && !empty($location['longitude']) 
+  						&& is_numeric($location['latitude'] && is_numeric($location['longitude'])
+  					    && $location['latitude'] != 0 && $location['longitude'] != 0)) {
+  					$pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude ';
+  					$pdoSql .= ' WHERE id = :id';
+  					$stmt = $jobsDb->dbh->prepare($pdoSql);
+  					$stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
+  					$stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
+  					$stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
+  					$stmt->execute();
+  				}
+  			}
+  			$jobsDb->dbh->commit();
+  		}
+  		catch(PDOException $e) {
+  			$db->rollback;
+  			echo $e->getMessage();
+  		}
   	}
   }
-  
   // Debug the results on successes and failures.
   //krumo($geocoder->returnGeocodingResults());
-  
-  // Do the update. 
-  try {
-    $jobsDb->dbh->beginTransaction();
-    foreach($updated_jobs as $job) {
-      $pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude WHERE id = :id';	
-  	  $stmt = $jobsDb->dbh->prepare($pdoSql);
-  	  $stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
-  	  $stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
-  	  $stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
-  	  $stmt->execute();
-    }
-    $jobsDb->dbh->commit();
-  }
-  catch(PDOException $e) {
-  	$db->rollback;
-  	echo $e->getMessage();
-  }
 }
 else {
   exit(1); // Not in command line or class doesn't exist.
