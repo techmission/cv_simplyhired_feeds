@@ -27,26 +27,29 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$options = array('publisher_id' => 30845,
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
 	$cvsha = new CV_SimplyHired_API($options);
-	//$cvsha->setQuery('Christian'); // search Christian jobs. (not needed - b/c class has default query)
 	$cvsha->setIsUsa(FALSE);           // search non-US jobs.
 	$cvsha->setCountry('en-ca');  // search jobs in Canada
 	$cvsha->setLocation('QC');    // search jobs in Quebec.
-	
-	// $results = $cvsha->doSearch(100);
-	// krumo($cvsha);
-	/* if(!empty($results->error)) {
-      $cvsha->printError();
-    } */
 	
     // In the background, run the query and turn the results into the proper format.
 	$jobs = array();
 	$jobs = $cvsha->fetchJobs(); // Will use the default query terms.
 	
-	krumo($cvsha->is_usa);
-	/* Print the API call. */
-	krumo($cvsha->apicall);
-	/* Print the query string. */
-	krumo($cvsha->querystring);
+	// Initialize the database handler.
+	try {
+		$jobsDb = new JobsDB();
+	}
+	catch(Exception $e) {
+		echo "Exception: " . $e->getMessage() . "\n";
+	}
+	
+	// Connect to the database;
+	$jobsDb->connect();
+	
+	// Set to log at database layer.
+	$jobsDb->isLogging = FALSE;
+	
+	$numInserted = $jobsDb->createRecords($jobs);
 	
 }
 ?>
