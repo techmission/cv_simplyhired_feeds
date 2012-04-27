@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
 <head>
+<meta charset="UTF-8">
+<title>Test Feed</title>
 </head>
 <body>
 <?php
