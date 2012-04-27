@@ -5,13 +5,14 @@
  * Google geocoder.
  * Object-oriented version of the Google geocoder included as part of the Drupal Location module.
  * 
- * @todo Add logging.
+ * @todo Add more robust logging.
  * 
  */
 
 class GoogleGeocoder {
 
 	private $key = ''; // the API key (must be set to valid for domain to work)
+	public static $isLogging = FALSE; // whether or not to log to the screen
 	
 	const ENDPOINT_URL = 'http://maps.google.com/maps/geo'; // Endpoint URL for the Gmap v2 API
 	
@@ -128,13 +129,13 @@ class GoogleGeocoder {
 			$status_code = $pJsonResponse['Status']['code'];
 			if ($status_code != 200) {
 				if ($status_code == 620) {
-					echo 'Google geocoding returned status code: ' . $status_code . ' This usually means you have been making too many requests within a short window of time.';
+					//echo 'Google geocoding returned status code: ' . $status_code . ' This usually means you have been making too many requests within a short window of time.';
 				}
 				else if ($status_code == 602) {
-					echo 'Google geocoding return status code: ' . $status_code . ' This usually means that the format you used for the address was incorrect.';
+					//echo 'Google geocoding return status code: ' . $status_code . ' This usually means that the format you used for the address was incorrect.';
 				}
 				else {
-					echo 'Google geocoding returned status code:  ' . $status_code;
+					//echo 'Google geocoding returned status code:  ' . $status_code;
 				}
 				$lStatus = FALSE;
 			}
@@ -666,13 +667,18 @@ function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpReques
   return $lResponse;
 }
 
-/* Temp: Wrapper around krumo */
+/**
+ * Temp: Wrapper around krumo 
+ * @todo: Make this a separate logging class for the whole project.
+ * /
 function dpm($var, $label = 'variable') {
-  if(function_exists('krumo')) {
-	krumo(array($label => $var));
-  }
-  else {
-	echo $label . ': ' . $var;
+  if(GoogleGeocoder::isLogging == TRUE) {
+    if(function_exists('krumo')) {
+	  krumo(array($label => $var));
+    }
+    else {
+	  echo $label . ': ' . $var;
+    }
   }
 }
 
