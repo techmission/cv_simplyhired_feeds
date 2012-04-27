@@ -87,20 +87,25 @@ class GoogleGeocoder {
 		
 		  // Makes the HTTP request.
 		  $response = make_http_request(self::ENDPOINT_URL, $query);
+		  krumo($response);
 		
 		  // Parses the response using json_decode (expects a JSON string).
-		  if($response->code = 200 && !empty($response->body)) {
+		  if(isset($response->code) && isset($response->body) 
+		  		&& $response->code = 200 && !empty($response->body)) {
 		    $json_response = json_decode($response->body, TRUE);
 		  }
+		  krumo($json_response);
 	    
 		  // Checks whether Google says this is a valid request.
 		  $api_status = $this->_checkResponseStatus($json_response);
-		
+		  krumo($api_status);
+		  
 		  // If this was a valid response, then parse for the location.
 		  // An empty array will be returned if no valid location could be found.
           if($api_status == TRUE) {
             $location = $this->_parseLocation($json_response);
           }
+          krumo($location);
         
           // Keep track of number of requests. Google limits to 2500 a day.
           $this->numRequests++;
@@ -113,7 +118,11 @@ class GoogleGeocoder {
             $this->numFailures++;
           }
 		}
-		$this->numRequestsOverLimit++;
+		// If the request limit had been exceeded, increment the counter of requests over limit.
+		// @todo: Log this persistently and initialize in constructor.
+		else {
+		  $this->numRequestsOverLimit++;
+		}
 
         return $location;
 	}
