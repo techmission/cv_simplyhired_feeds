@@ -147,7 +147,9 @@ class SimplyHired_API {
 	  $xml_response = null;
 	  if(isset($response->body) && !empty($response->body)) {
 	  	//$response_body = Encoding::fixUTF8($response->body);
-	  	//krumo($response_body);
+	  	if(function_exists('krumo')) {
+	  	  krumo($response->body);
+	  	}
 	  	$xml_response = new SimpleXMLElement($response->body);
 	  } 
 	  return $xml_response;
