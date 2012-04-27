@@ -61,17 +61,23 @@ class GoogleGeocoder {
 		dpm($url, 'Geocode URL');
 	
 		$google_geocode_data = array();
+		$json_response = '';
 		$r = new HttpRequest($url, HttpRequest::METH_GET);
 		$r->addQueryData($query);
 		try {
 		  $r->send();
-		  if($r->getResponseCode() == 200) {
+		  $responseCode = $r->getResponseCode();
+		  if($responseCode == 200) {
 		  	$json_response = $r->getResponseBody();
+		  }
+		  else {
+		  	dpm($responseCode, 'error response code');
 		  }
 		}
 		catch(HttpException $e) {
 		  echo 'Exception on request: ' . $e;
 		}
+		dpm($r, 'http request object');
 		dpm($json_response, 'http response');
 		$google_geocode_data = $this->_getJSONarray($json_response);
 		dpm($google_geocode_data, 'Google-returned json array');
