@@ -3,13 +3,28 @@
 /**
  * @file
  * Google geocoder.
- * Based on the Google geocoder included as part of the Drupal Location module.
+ * Object-oriented version of the Google geocoder included as part of the Drupal Location module.
  */
 
 class GoogleGeocoder {
 
-	private $key = ''; // the API key
+	private $key = ''; // the API key (must be set to valid for domain to work)
+	
+	const ENDPOINT_URL = 'http://maps.google.com/maps/geo'; // Endpoint URL for the Gmap v2 API
+	
+	// List of valid countries for Google Maps geocoder.
+	// @todo: Find out where this is used.
+	const COUNTRIES_LIST_URL = 'http://spreadsheets.google.com/feeds/list/p9pdwsai2hDMsLkXsoM05KQ/default/public/values';
 
+	/**
+	 * Class constructor.
+	 * Requires API key for Google Maps v2 API.
+	 * 
+	 * @param string $pKey
+	 *   The API key
+	 * 
+	 * @throws Exception
+	 */
 	function __construct($pKey) {
 	  if(is_string($pKey) && !empty($pKey)) {
 	    // Sets the API key based on what was passed in.
@@ -19,8 +34,8 @@ class GoogleGeocoder {
 	  	// @todo: Also throw an exception if the API key is not valid for this domain.
 	  	throw new Exception('Invalid Gmap API key.');
 	  }
-	}
-
+	}	
+	
 	/**
 	 * Performs geocoding on a location array, using the Google v2 geocoding API.
 	 * 
@@ -37,76 +52,132 @@ class GoogleGeocoder {
 	 *   was google_geocode_location()
 	 */
 	public function geocodeLocation(array $location, $reverse = FALSE) {
-	    $key = $this->key;
+	    // Build query.
+	    $query = $this->_buildQuery($location, $reverse);
 	
-		if($reverse == TRUE) {
-			$gmap_q = $this->_flattenQuery($location, TRUE);
+		$google_geocode_data = array();
+		
+		// Make the HTTP request.
+		$response = make_http_request(self::ENDPOINT_URL, $query);
+		
+		// Parse the response (expects JSON).
+		if($response->code = 200 && !empty($response->body)) {
+		  $json_response = $this->_parseJsonResponse($response->body);
 		}
-		else {
-			$gmap_q = $this->_flattenQuery($location);
-		}
+		//dpm($json_response, 'Google-returned json array');
+	    
+		$api_status = $this->_checkResponseStatus($json_response);
+		
+		// If this was a valid response, then parse for the location.
+		// An empty array will be returned if no valid location could be found.
+        if($api_status == TRUE) {
+          $location = $this->_parseLocation($json_response);
+        }
+        
+        return $location;
+	}
 	
+	/**
+	 * Builds the query for a request to Google Maps.
+	 *
+	 * @param array $location
+	 *   The location array
+	 * @param bool $reverse
+	 *   Whether reverse geocoding is needed
+	 */
+	private function _buildQuery(array $pLocation, $pReverse = FALSE) {
+		$key = $this->key;
+		 
+		$query = array();
+		 
+		$gmap_q = $this->_flattenQuery($pLocation, $pReverse);
+		 
+		// Query parameters must be in associative array to be used with HttpRequest.
 		$query = array(
 				'key' => $key,
 				'sensor' => 'false', // Required by TOS.
 				'output' => 'json',
 				//'ll' => 0,
 				//'spn' => 0,
-				'gl' => $location['country'],
 				'q' => $gmap_q,
 		);
-	
-		$url = 'http://maps.google.com/maps/geo';
-	
-		$google_geocode_data = array();
-		$json_response = '';
-		$r = new HttpRequest($url, HttpRequest::METH_GET);
-		$r->addQueryData($query);
-		try {
-		  $r->send();
-		  $responseCode = $r->getResponseCode();
-		  dpm($r->getRawRequestMessage(), 'raw request');
-		  if($responseCode == 200) {
-		  	$json_response = $r->getResponseBody();
-		  }
-		  else {
-		  	dpm($responseCode, 'error response code');
-		  }
+		if(!empty($pLocation['country'])) {
+			$query['gl'] = $pLocation['country'];
 		}
-		catch(HttpException $e) {
-		  echo 'Exception on request: ' . $e;
-		}
-		dpm($r, 'http request object');
-		dpm($json_response, 'http response');
-		$google_geocode_data = $this->_getJSONarray($json_response);
-		dpm($google_geocode_data, 'Google-returned json array');
+		return $query;
+	}
 	
-		$status_code = $google_geocode_data['Status']['code'];
-		if ($status_code != 200) {
-			if ($status_code == 620) {
-				echo 'Google geocoding returned status code: ' . $status_code . ' This usually means you have been making too many requests within a short window of time.';
+	/**
+	 * Checks whether this is a JSON response from Google
+	 * that can be parsed into a location array.
+	 *
+	 * @param array $pJsonResponse
+	 */
+	private function _checkResponseStatus($pJsonResponse) {
+		$lStatus = TRUE; // If true, then can continue in main geocoding method.
+		if(is_array($pJsonResponse) && isset($pJsonResponse['Status']['code'])) {
+			$status_code = $pJsonResponse['Status']['code'];
+			if ($status_code != 200) {
+				if ($status_code == 620) {
+					echo 'Google geocoding returned status code: ' . $status_code . ' This usually means you have been making too many requests within a short window of time.';
+				}
+				else if ($status_code == 602) {
+					echo 'Google geocoding return status code: ' . $status_code . ' This usually means that the format you used for the address was incorrect.';
+				}
+				else {
+					echo 'Google geocoding returned status code:  ' . $status_code;
+				}
+				$lStatus = FALSE;
 			}
-			else if ($status_code == 602) {
-				echo 'Google geocoding return status code: ' . $status_code . ' This usually means that the format you used for the address was incorrect.';
-			}
-			else {
-				echo 'Google geocoding returned status code:  ' . $status_code;
-			}
-			return NULL;
 		}
+		return $lStatus;
+	}
 	
-		dpm($google_geocode_data, 'google geocode data for location');
-		// Location data is returned as an associative array from the JSON response of the Google geocoder.
-		return array(
-				'latitude' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][1],
-				'longitude' => $google_geocode_data['Placemark'][0]['Point']['coordinates'][0],
-				'street' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'],
-				'city' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'],
-				'province' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'],
-				'geocoded_country' => $google_geocode_data['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'],
-				//'geocoded_accuracy' => $google_geocode_data['Placemark'][0]['AddressDetails']['Accuracy'],
-				'postal_code' =>$google_geocode_data['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber']
-		);
+	/**
+	 * Parses out a location from a v2 Google Maps API response.
+	 *
+	 * @param array $pJsonResponse
+	 */
+	private function _parseLocation($pJsonResponse) {
+		$geocoded_location = array();
+		//dpm($google_geocode_data, 'google geocode data for location');
+		/**
+		 * Parse relevant location data:
+		 * Location data is returned as an associative array from the JSON response of the Google geocoder.
+		 */
+		// Latitude
+		if(isset($pJsonResponse['Placemark'][0]['Point']['coordinates'][1])) {
+			$geocoded_location['latitude'] = $pJsonResponse['Placemark'][0]['Point']['coordinates'][1];
+		}
+		// Longitude
+		if(isset($pJsonResponse['Placemark'][0]['Point']['coordinates'][0])) {
+			$geocoded_location['latitude'] = $pJsonResponse['Placemark'][0]['Point']['coordinates'][0];
+		}
+		// Street
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'])) {
+			$geocoded_location['street'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'];
+		}
+		// City
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'])) {
+			$geocoded_location['city'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'];
+		}
+		// Province
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'])) {
+			$geocoded_location['province'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'];
+		}
+		// Postal Code
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'])) {
+			$geocoded_location['province'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'];
+		}
+		// Country
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'])) {
+			$geocoded_location['country'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'];
+		}
+		// Accuracy (by Google's standards)
+		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Accuracy'])) {
+			$geocoded_location['accuracy'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Accuracy'];
+		}
+		return $geocoded_location;
 	}
 
 	
@@ -464,13 +535,13 @@ class GoogleGeocoder {
 	 */
 	private function _listCountriesXml() {
 		// Get the google data from the feed.
-		$source = make_http_request('http://spreadsheets.google.com/feeds/list/p9pdwsai2hDMsLkXsoM05KQ/default/public/values');
+		$response = make_http_request('http://spreadsheets.google.com/feeds/list/p9pdwsai2hDMsLkXsoM05KQ/default/public/values');
 
 		if (!defined('LIBXML_VERSION') || (version_compare(phpversion(), '5.1.0', '<'))) {
-			$xml = simplexml_load_string($source->data, NULL);
+			$xml = simplexml_load_string($response->body, NULL);
 		}
 		else {
-			$xml = simplexml_load_string($source->data, NULL, LIBXML_NOERROR | LIBXML_NOWARNING);
+			$xml = simplexml_load_string($response->body, NULL, LIBXML_NOERROR | LIBXML_NOWARNING);
 		}
 
 		return $xml;
@@ -495,7 +566,8 @@ class GoogleGeocoder {
 			return '';
 		}
 
-		// If reverse geocoding is wanted, check to see if there's a lat/lon & build query string parameter off of these.
+		// If reverse geocoding is wanted, check to see if there's a lat/lon
+		// & build query string parameter off of these.
 		if($reverse == TRUE) {
 			$address = '';
 			if(!empty($location['latitude']) && !empty($location['longitude'])) {
@@ -544,8 +616,8 @@ class GoogleGeocoder {
 	}
 
 	/**
-	 * Given JSON data, will return an associative array of the data.
-	 *  @param $google_json_contents
+	 * Given JSON data as string, will return an associative array of the data.
+	 *  @param string $pResponse
 	 *    The contents of the JSON response from Google's geocoder.
 	 *  @return
 	 *    the JSON response converted to an associative array.
@@ -553,209 +625,54 @@ class GoogleGeocoder {
 	 *  was function _google_geocode_get_JSON_array
 	 */
 
-	private function _getJSONarray ($google_json_contents) {
-		$geocode_google_data = json_decode($google_json_contents, TRUE);
-		return $geocode_google_data;
+	private function _getJsonResponse ($pResponse) {
+		$lJsonResponse = json_decode($pResponse, TRUE);
+		return $lJsonResponse;
 	}
 }
 
 /**
- *  Based on Drupal 6 drupal_http_request:
- *  http://api.drupal.org/api/drupal/includes%21common.inc/function/drupal_http_request/6
- *  Modified to remove additional dependencies on Drupal.
- *  This includes the code to handle retries and timeouts.
+ *  Make an HTTP Request, using the PECL HTTP library.
+ *  
+ *  @return string
+ *    Either the value or the error code.
  */
-function make_http_request($url, $headers = array(), $method = 'GET', $data = NULL) {
-	$result = new stdClass();
-
-	// Parse the URL and make sure we can handle the schema.
-	$uri = parse_url($url);
-
-	if ($uri == FALSE) {
-		$result->error = 'unable to parse URL';
-		$result->code = -1001;
-		return $result;
-	}
-
-	if (!isset($uri['scheme'])) {
-		$result->error = 'missing schema';
-		$result->code = -1002;
-		return $result;
-	}
-
-	switch ($uri['scheme']) {
-		case 'http':
-		case 'feed':
-			$port = isset($uri['port']) ? $uri['port'] : 80;
-			$host = $uri['host'] . ($port != 80 ? ':' . $port : '');
-			$fp = @fsockopen($uri['host'], $port, $errno, $errstr, $timeout);
-			break;
-		case 'https':
-			// Note: Only works for PHP 4.3 compiled with OpenSSL.
-			$port = isset($uri['port']) ? $uri['port'] : 443;
-			$host = $uri['host'] . ($port != 443 ? ':' . $port : '');
-			$fp = @fsockopen('ssl://' . $uri['host'], $port, $errno, $errstr, $timeout);
-			break;
-		default:
-			$result->error = 'invalid schema ' . $uri['scheme'];
-			$result->code = -1003;
-			return $result;
-	}
-
-	// Make sure the socket opened properly.
-	if (!$fp) {
-		// When a network error occurs, we use a negative number so it does not
-		// clash with the HTTP status codes.
-		$result->code = -$errno;
-		$result->error = trim($errstr);
-
-		return $result;
-	}
-
-	// Construct the path to act on.
-	$path = isset($uri['path']) ? $uri['path'] : '/';
-	if (isset($uri['query'])) {
-		$path .= '?' . $uri['query'];
-	}
-
-	// Create HTTP request.
-	$defaults = array(
-			// RFC 2616: "non-standard ports MUST, default ports MAY be included".
-			// We don't add the port to prevent from breaking rewrite rules checking the
-			// host that do not take into account the port number.
-			'Host' => "Host: $host",
-			'User-Agent' => 'User-Agent: ChristianVolunteering Feeds (+http://www.christianvolunteering.org/)',
-	);
-
-	// Only add Content-Length if we actually have any content or if it is a POST
-	// or PUT request. Some non-standard servers get confused by Content-Length in
-	// at least HEAD/GET requests, and Squid always requires Content-Length in
-	// POST/PUT requests.
-	$content_length = strlen($data);
-	if ($content_length > 0 || $method == 'POST' || $method == 'PUT') {
-		$defaults['Content-Length'] = 'Content-Length: ' . $content_length;
-	}
-
-	// If the server url has a user then attempt to use basic authentication
-	if (isset($uri['user'])) {
-		$defaults['Authorization'] = 'Authorization: Basic ' . base64_encode($uri['user'] . (!empty($uri['pass']) ? ":" . $uri['pass'] : ''));
-	}
-
-	foreach ($headers as $header => $value) {
-		$defaults[$header] = $header . ': ' . $value;
-	}
-
-	$request = $method . ' ' . $path . " HTTP/1.0\r\n";
-	$request .= implode("\r\n", $defaults);
-	$request .= "\r\n\r\n";
-	$request .= $data;
-
-	$result->request = $request;
-
-	// Fetch response.
-	$response = '';
-	while (!feof($fp)) {
-		$chunk = fread($fp, 1024);
-		$response .= $chunk;
-	}
-	fclose($fp);
-
-	// Parse response.
-	list($split, $result->data) = explode("\r\n\r\n", $response, 2);
-	$split = preg_split("/\r\n|\n|\r/", $split);
-
-	list($protocol, $code, $status_message) = explode(' ', trim(array_shift($split)), 3);
-	$result->protocol = $protocol;
-	$result->status_message = $status_message;
-
-	$result->headers = array();
-
-	// Parse headers.
-	while ($line = trim(array_shift($split))) {
-		list($header, $value) = explode(':', $line, 2);
-		if (isset($result->headers[$header]) && $header == 'Set-Cookie') {
-			// RFC 2109: the Set-Cookie response header comprises the token Set-
-			// Cookie:, followed by a comma-separated list of one or more cookies.
-			$result->headers[$header] .= ',' . trim($value);
-		}
-		else {
-			$result->headers[$header] = trim($value);
-		}
-	}
-
-	$responses = array(
-			100 => 'Continue',
-			101 => 'Switching Protocols',
-			200 => 'OK',
-			201 => 'Created',
-			202 => 'Accepted',
-			203 => 'Non-Authoritative Information',
-			204 => 'No Content',
-			205 => 'Reset Content',
-			206 => 'Partial Content',
-			300 => 'Multiple Choices',
-			301 => 'Moved Permanently',
-			302 => 'Found',
-			303 => 'See Other',
-			304 => 'Not Modified',
-			305 => 'Use Proxy',
-			307 => 'Temporary Redirect',
-			400 => 'Bad Request',
-			401 => 'Unauthorized',
-			402 => 'Payment Required',
-			403 => 'Forbidden',
-			404 => 'Not Found',
-			405 => 'Method Not Allowed',
-			406 => 'Not Acceptable',
-			407 => 'Proxy Authentication Required',
-			408 => 'Request Time-out',
-			409 => 'Conflict',
-			410 => 'Gone',
-			411 => 'Length Required',
-			412 => 'Precondition Failed',
-			413 => 'Request Entity Too Large',
-			414 => 'Request-URI Too Large',
-			415 => 'Unsupported Media Type',
-			416 => 'Requested range not satisfiable',
-			417 => 'Expectation Failed',
-			500 => 'Internal Server Error',
-			501 => 'Not Implemented',
-			502 => 'Bad Gateway',
-			503 => 'Service Unavailable',
-			504 => 'Gateway Time-out',
-			505 => 'HTTP Version not supported',
-	);
-	// RFC 2616 states that all unknown HTTP codes must be treated the same as the
-	// base code in their class.
-	if (!isset($responses[$code])) {
-		$code = floor($code / 100) * 100;
-	}
-
-	switch ($code) {
-		case 200: // OK
-		case 304: // Not modified
-			break;
-		case 301: // Moved permanently
-		case 302: // Moved temporarily
-		case 307: // Moved temporarily
-			$location = $result->headers['Location'];
-			$result->redirect_url = $location;
-			break;
-		default:
-			$result->error = $status_message;
-	}
-
-	$result->code = $code;
-	return $result;
+function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET) {
+  if(class_exists('HttpRequest')) {
+    $r = new HttpRequest($pUrl, HttpRequest::METH_GET);
+    $lResponse = new stdClass();
+    // Set the query string data, if any.
+    if(count($pQuery) > 0) {
+      $r->addQueryData($pQuery);
+    }
+    try {
+	  $r->send();
+	  $lResponse->message = $r->getRawRequestMessage();
+	  $lResponse->code = $r->getResponseCode();
+	  if($lResponseCode == 200) {
+		$lResponse->body = $r->getResponseBody();
+	  }
+	  else {
+	  	$lResponse->body = NULL;
+	  }
+    }
+    catch(HttpException $e) {
+	  $lResponse->code = $e->getMessage();
+	  $lResponse->body = NULL;
+    } 
+  }
+  else {
+    throw new Exception('Class does not exist: HttpRequest');
+  }
 }
 
 /* Temp: Wrapper around krumo */
 function dpm($var, $label = 'variable') {
-	if(function_exists('krumo')) {
-		krumo(array($label => $var));
-	}
-	else {
-		echo $label . ': ' . $var;
-	}
+  if(function_exists('krumo')) {
+	krumo(array($label => $var));
+  }
+  else {
+	echo $label . ': ' . $var;
+  }
 }
 

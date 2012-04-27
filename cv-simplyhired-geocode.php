@@ -54,18 +54,30 @@ if (class_exists( 'CV_SimplyHired_API')) {
   
   // Location fields from SimplyHired:
   // id, street, city, province, postal_code, country
+  $updated_jobs = array();
   if(is_object($jobs) && get_class($jobs) == 'PDOStatement') {
   	if($jobs->rowCount() == 0) {
   	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
   	}
   	else {
   	  foreach($jobs as $job) {
-  	    $jobCoded = $geocoder->geocodeLocation($job, FALSE);
-  	    krumo($job);
-  	    krumo($jobCoded);
+  	    $location = $geocoder->geocodeLocation($job, FALSE);
+  	    // Add the latitude if a valid one was returned.
+  	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
+  	      $job['latitude'] = $location['latitude'];
+  	    }
+  	    // Add the longitude if a valid one was returned.
+  	    if(!empty($location['longitude']) && is_numeric($location['longitude']) && $location['longitude'] != 0) {
+  	      $job['longitude'] = $location['longitude'];
+  	    }
+  	    // Add to the array of jobs to update if geocoding was successful for both latitude and longitude.
+  	    if(!empty($location['latitude']) && !empty($location['longitude'])) {
+  	      $updated_jobs[$job['id']] = $job;
+  	    }
   	  }
   	}
   }
+  krumo($updated_jobs);
 }
 
 ?>
