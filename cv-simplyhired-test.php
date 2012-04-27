@@ -27,8 +27,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
 	$cvsha = new CV_SimplyHired_API($options);
 	//$cvsha->setQuery('Christian'); // search Christian jobs. (not needed - b/c class has default query)
-	$cvsha->setIsUsa(TRUE);           // search US jobs.
-	$cvsha->setLocation('02124');    // search zipcode 02124
+	$cvsha->setIsUsa(FALSE);           // search non-US jobs.
+	$cvsha->setCountry('en-ca');  // search jobs in Canada
+	$cvsha->setLocation('QC');    // search jobs in Quebec.
 	
 	// $results = $cvsha->doSearch(100);
 	// krumo($cvsha);
