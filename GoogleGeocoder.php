@@ -72,8 +72,8 @@ class GoogleGeocoder {
 		catch(HttpException $e) {
 		  echo 'Exception on request: ' . $e;
 		}
-		dpm($http_reply, 'http response');
-		$google_geocode_data = $this->_getJSONarray($http_reply->data);
+		dpm($json_response, 'http response');
+		$google_geocode_data = $this->_getJSONarray($json_response);
 		dpm($google_geocode_data, 'Google-returned json array');
 	
 		$status_code = $google_geocode_data['Status']['code'];
