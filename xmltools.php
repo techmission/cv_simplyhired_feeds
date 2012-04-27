@@ -75,7 +75,7 @@ if(!function_exists('make_http_request')) {
 		}
 		try {
 	  $r->send();
-	  $lResponse->message = $r->getRawRequestMessage();
+	  $lResponse->request = $r->getRawRequestMessage();
 	  $lResponse->code = $r->getResponseCode();
 	  if($lResponse->code == 200) {
 	  	$lResponse->body = $r->getResponseBody();

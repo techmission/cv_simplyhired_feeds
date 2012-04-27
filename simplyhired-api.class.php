@@ -167,13 +167,13 @@ class SimplyHired_API {
 	  // Set the "search style" parameter (ssty) based on whether
 	  // the searched location is in the US or not.
 	  if($this->is_usa == TRUE) {
-	    $ssty = '&ssty=2';
+	    $ssty = '2';
 	    if(empty($this->country)) {
 	      $this->setCountry('en-us');
 	    }
 	  }
 	  else {
-	  	$ssty = '&ssty=3';
+	  	$ssty = '3';
 	  	$this->_setEndpointByCountry();
 	  }
 	  
