@@ -67,20 +67,20 @@ class GoogleGeocoder {
 	 *   
 	 *   was google_geocode_location()
 	 */
-	public function geocodeLocation(array $location, $reverse = FALSE) {
+	public function geocodeLocation(array $pLocation, $pReverse = FALSE) {
 		// Sleep 200ms before request, so as to avoid being throttled by Google's API.
 		// Cf. https://developers.google.com/maps/documentation/geocoding/#Limits
 		// The sleep happens first since this may have been requested multiple times.
 		usleep(200000);
 		
 		// Sets location variable to default to empty array.
-		$location = array();
+		$retLocation = array();
 		
 		// Only make a request if you have not already made over the limit.
 		krumo(array('numRequests' => $this->numRequests));
 		if($this->numRequests < 2499) {
 	      // Builds query.
-	      $query = $this->_buildQuery($location, $reverse);
+	      $query = $this->_buildQuery($pLocation, $pReverse);
 	    
 	      // Sets json_response variable to default to empty array.
 		  $json_response = array();
@@ -124,7 +124,7 @@ class GoogleGeocoder {
 		  $this->numRequestsOverLimit++;
 		}
 
-        return $location;
+        return $retLocation;
 	}
 	
 	/**
