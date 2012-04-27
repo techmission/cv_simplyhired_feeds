@@ -55,24 +55,24 @@ class GoogleGeocoder {
 	 *   was google_geocode_location()
 	 */
 	public function geocodeLocation(array $location, $reverse = FALSE) {
-	    // Build query.
+	    // Builds query.
 	    $query = $this->_buildQuery($location, $reverse);
 	    
-	    // Set location and json_response variable to default to empty array.
+	    // Sets location and json_response variable to default to empty array.
 		$location = array();
 		$json_response = array();
 		
-		// Make the HTTP request.
+		// Makes the HTTP request.
 		$response = make_http_request(self::ENDPOINT_URL, $query);
 		dpm($response, 'http response');
 		
-		// Parse the response (expects JSON).
+		// Parses the response using json_decode (expects a JSON string).
 		if($response->code = 200 && !empty($response->body)) {
-		  $json_response = $this->_parseJsonResponse($response->body);
+		  $json_response = json_decode($response->body, TRUE);
 		}
 		dpm($json_response, 'Google-returned json array');
 	    
-		// Check whether Google says this is a valid request.
+		// Checks whether Google says this is a valid request.
 		$api_status = $this->_checkResponseStatus($json_response);
 		dpm($api_status, 'api status');
 		
@@ -625,21 +625,6 @@ class GoogleGeocoder {
 		}
 
 		return $address;
-	}
-
-	/**
-	 * Given JSON data as string, will return an associative array of the data.
-	 *  @param string $pResponse
-	 *    The contents of the JSON response from Google's geocoder.
-	 *  @return
-	 *    the JSON response converted to an associative array.
-	 *
-	 *  was function _google_geocode_get_JSON_array
-	 */
-
-	private function _getJsonResponse ($pResponse) {
-		$lJsonResponse = json_decode($pResponse, TRUE);
-		return $lJsonResponse;
 	}
 }
 
