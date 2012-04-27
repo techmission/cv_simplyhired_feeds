@@ -661,7 +661,7 @@ function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpReques
 	  $r->send();
 	  $lResponse->message = $r->getRawRequestMessage();
 	  $lResponse->code = $r->getResponseCode();
-	  if($lResponseCode == 200) {
+	  if($lResponse->code == 200) {
 		$lResponse->body = $r->getResponseBody();
 	  }
 	  else {
