@@ -568,7 +568,7 @@ class JobsDB {
   private function _buildValues($pRecord) {
     $lPdoValues = array();
     foreach($pRecord as $fieldName => $value) {
-      $value = utf8_encode($value);
+      $value = utf8_decode($value);
       $lPdoValues[':' . $fieldName] = $value;
     }
     return $lPdoValues;
