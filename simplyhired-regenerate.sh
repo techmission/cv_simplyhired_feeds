@@ -3,6 +3,7 @@
 SCRIPT_PATH=/home/techmi5/public_html/gospelpedia/simplyhired-feed
 SCRIPT=cv-simplyhired-cli.php
 DELETE_SCRIPT=cv-simplyhired-delete.php
+GEOCODE_SCRIPT=cv-simplyhired-geocode.php
 
 # First, delete what is currently stored.
 php $SCRIPT_PATH/$DELETE_SCRIPT
@@ -170,6 +171,9 @@ php $SCRIPT_PATH/$SCRIPT SA -f:en-au                # South Australia           
 php $SCRIPT_PATH/$SCRIPT TAS -f:en-au               # Tasmania                         - 18, x
 php $SCRIPT_PATH/$SCRIPT VIC -f:en-au               # Victoria                         - 150, x
 php $SCRIPT_PATH/$SCRIPT WA -f:en-au                # Western Australia                - 44, x
+
+# Finally, geocode the newly-added items.
+php $SCRIPT_PATH/$GEOCODE_SCRIPT
 
 # Non-English-speaking countries
 # These are not working with the country name or ISO code, so commented out for now.
