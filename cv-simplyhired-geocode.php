@@ -42,7 +42,10 @@ if (class_exists( 'CV_SimplyHired_API')) {
   
   // Get back all the jobs results, as a PDO result set.
   //$jobs = $jobsDb->selectAllRecords($jobsDb::RECORDS_JOB, $jobsDb::FIELDS_LOCATION, FALSE);
-  $jobs = $jobsDb->selectRecords('id', array(13022, 13023), $jobsDb::TYPE_INT, $jobsDb::FIELDS_LOCATION, $jobsDb::RECORDS_JOB, FALSE);
+  $fields = $jobsDb->buildSelectFields($jobsDb::FIELDS_LOCATION);
+  if(!is_null($jobsDb->dbh)) {
+    $stmt = $jobsDb->dbh->query('SELECT ' . $fields . ' FROM ' . $jobsDb->tableName . ' WHERE latitude IS NULL AND longitude IS NULL LIMIT 10');
+  }
   
   // Initialize the geocoder.
   try {
@@ -55,12 +58,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
   // Location fields from SimplyHired:
   // id, street, city, province, postal_code, country
   $updated_jobs = array();
-  if(is_object($jobs) && get_class($jobs) == 'PDOStatement') {
-  	if($jobs->rowCount() == 0) {
+  if(is_object($stmt) && get_class($stmt) == 'PDOStatement') {
+  	if($stmt->rowCount() == 0) {
   	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
   	}
   	else {
-  	  foreach($jobs as $job) {
+  	  foreach($stmt as $job) {
   	    $location = $geocoder->geocodeLocation($job, FALSE);
   	    // Add the latitude if a valid one was returned.
   	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
@@ -77,7 +80,21 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  }
   	}
   }
-  krumo($updated_jobs);
+  //krumo($updated_jobs);
+  try {
+    $jobsDb->dbh->beginTransaction();
+    foreach($updated_jobs as $job) {
+  	  $stmt = $jobsDb->dbh('UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude WHERE id = :id');
+  	  $stmt->bindValue(':latitude', $latitude, PDO::PARAM_INT);
+  	  $stmt->bindValue(':longitude', $latitude, PDO::PARAM_INT);
+  	  $stmt->bindValue(':id', $latitude, PDO::PARAM_INT);
+    }
+    $jobsDb->dbh->commit();
+  }
+  catch(PDOException $e) {
+  	$db->rollback;
+  	echo $e->getMessage();
+  }
 }
 
 ?>

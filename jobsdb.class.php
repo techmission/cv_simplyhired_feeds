@@ -52,7 +52,7 @@ class JobsDB {
   public $isDryRun = FALSE; // boolean: whether this is just a dry run - i.e., no CUD functions executed on DB
 
   public $tableName; // string: the table to which to write
-  public $dbh = NULL; // resource: the database handle (used to do writes)
+  public $dbh = NULL; // resource: the database handle (used to do writes and reads)
 
   /**
    * Constructor gets the database ready for connection.
@@ -103,6 +103,8 @@ class JobsDB {
   	catch(PDOException $e) {
   		echo $e->getMessage();
   	}
+  	// Set the default table name (tbl_feeds_jobs)
+  	$this->tableName = $this->_lookupTableName();
   }
   
   /**
@@ -449,7 +451,7 @@ class JobsDB {
   	return $retRecords;
   }
 
-  private function _buildSelectFields($pSelectFields) {
+  function buildSelectFields($pSelectFields) {
   	$lFields = '';
   	// Set the fields to select.
   	if($pSelectFields == self::FIELDS_ALL) {
@@ -478,7 +480,7 @@ class JobsDB {
   private function _buildSelectAllStmt($pTableName, $pSelectFields) {
   	$lPdoSql = '';
   	// Set the fields to select.
-  	$lFields = $this->_buildSelectFields($pSelectFields);
+  	$lFields = $this->buildSelectFields($pSelectFields);
   	// Build the statement itself.
   	$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName;
   	return $lPdoSql;	
@@ -487,7 +489,7 @@ class JobsDB {
   private function _buildSelectStmt($pTableName, $pFieldName, $pValue, $pFieldType, $pSelectFields, $pOperator) {
   	$lPdoSql = '';
   	// Set the fields to select.
-  	$lFields = $this->_buildSelectFields($pSelectFields);
+  	$lFields = $this->buildSelectFields($pSelectFields);
   	if($pOperator == self::OP_IN) {
   		$lInClause = $this->_buildInClause($pValue, $pType);
   		$lPdoSql = 'SELECT ' . $lFields . ' FROM ' . $pTableName . ' WHERE ' . $pFieldName . ' IN ' . $lInClause;

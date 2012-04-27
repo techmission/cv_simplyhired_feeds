@@ -13,6 +13,12 @@ class GoogleGeocoder {
 
 	private $key = ''; // the API key (must be set to valid for domain to work)
 	
+	// Keep track of requests, successes, failures, and number of requests over daily limit.
+	public $numRequestsOverLimit = 0;
+	public $numRequests = 0;
+	public $numSuccesses = 0;
+	public $numFailures = 0;
+	
 	const IS_LOGGING = FALSE; // whether or not to log to the screen
 	
 	const ENDPOINT_URL = 'http://maps.google.com/maps/geo'; // Endpoint URL for the Gmap v2 API
@@ -57,34 +63,52 @@ class GoogleGeocoder {
 	 *   was google_geocode_location()
 	 */
 	public function geocodeLocation(array $location, $reverse = FALSE) {
-	    // Builds query.
-	    $query = $this->_buildQuery($location, $reverse);
-	    
-	    // Sets location and json_response variable to default to empty array.
+		// Sleep 200ms before request, so as to avoid being throttled by Google's API.
+		// Cf. https://developers.google.com/maps/documentation/geocoding/#Limits
+		// The sleep happens first since this may have been requested multiple times.
+		usleep(200000);
+		
+		// Sets location variable to default to empty array.
 		$location = array();
-		$json_response = array();
 		
-		// Makes the HTTP request.
-		$response = make_http_request(self::ENDPOINT_URL, $query);
-		dpm($response, 'http response');
-		
-		// Parses the response using json_decode (expects a JSON string).
-		if($response->code = 200 && !empty($response->body)) {
-		  $json_response = json_decode($response->body, TRUE);
-		}
-		dpm($json_response, 'Google-returned json array');
+		// Only make a request if you have not already made
+		if($this->numRequests > 2499) {
+	      // Builds query.
+	      $query = $this->_buildQuery($location, $reverse);
 	    
-		// Checks whether Google says this is a valid request.
-		$api_status = $this->_checkResponseStatus($json_response);
-		dpm($api_status, 'api status');
+	      // Sets json_response variable to default to empty array.
+		  $json_response = array();
 		
-		// If this was a valid response, then parse for the location.
-		// An empty array will be returned if no valid location could be found.
-        if($api_status == TRUE) {
-          $location = $this->_parseLocation($json_response);
-        }
-        dpm($location, 'location array');
+		  // Makes the HTTP request.
+		  $response = make_http_request(self::ENDPOINT_URL, $query);
+		
+		  // Parses the response using json_decode (expects a JSON string).
+		  if($response->code = 200 && !empty($response->body)) {
+		    $json_response = json_decode($response->body, TRUE);
+		  }
+	    
+		  // Checks whether Google says this is a valid request.
+		  $api_status = $this->_checkResponseStatus($json_response);
+		
+		  // If this was a valid response, then parse for the location.
+		  // An empty array will be returned if no valid location could be found.
+          if($api_status == TRUE) {
+            $location = $this->_parseLocation($json_response);
+          }
         
+          // Keep track of number of requests. Google limits to 2500 a day.
+          $this->numRequests++;
+        
+          // Keep track of geocoding successes and failures.
+          if($location['latitude'] && !empty($location['longitude'])) {
+            $this->numSuccesses++;
+          }
+          else {
+            $this->numFailures++;
+          }
+		}
+		$this->numRequestsOverLimit++;
+
         return $location;
 	}
 	
