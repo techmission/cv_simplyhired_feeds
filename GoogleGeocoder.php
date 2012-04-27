@@ -61,7 +61,17 @@ class GoogleGeocoder {
 		dpm($url, 'Geocode URL');
 	
 		$google_geocode_data = array();
-		$http_reply = make_http_request($url);
+		$r = new HttpRequest($url, HttpRequest::METH_GET);
+		$r->addQueryData($query);
+		try {
+		  $r->send();
+		  if($r->getResponseCode() == 200) {
+		  	$json_response = $r->getResponseBody();
+		  }
+		}
+		catch(HttpException $e) {
+		  echo 'Exception on request: ' . $e;
+		}
 		dpm($http_reply, 'http response');
 		$google_geocode_data = $this->_getJSONarray($http_reply->data);
 		dpm($google_geocode_data, 'Google-returned json array');
@@ -70,6 +80,9 @@ class GoogleGeocoder {
 		if ($status_code != 200) {
 			if ($status_code == 620) {
 				echo 'Google geocoding returned status code: ' . $status_code . ' This usually means you have been making too many requests within a short window of time.';
+			}
+			else if ($status_code == 602) {
+				echo 'Google geocoding return status code: ' . $status_code . ' This usually means that the format you used for the address was incorrect.';
 			}
 			else {
 				echo 'Google geocoding returned status code:  ' . $status_code;
