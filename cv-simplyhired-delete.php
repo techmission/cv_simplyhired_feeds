@@ -21,7 +21,7 @@ ini_set('display_errors', TRUE);
  * Initializes the class for SimplyHired CV.org integration, 
  * set up search query, get back results, then save results to DB table.
  */
-if (IS_CLI) {
+if (IS_CLI && class_exists( 'JobsDb')) {
 	// Initialize the database handler.
 	try {
 	  $jobsDb = new JobsDB();
