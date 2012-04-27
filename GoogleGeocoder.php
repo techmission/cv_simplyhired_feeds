@@ -670,7 +670,7 @@ function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpReques
 /**
  * Temp: Wrapper around krumo 
  * @todo: Make this a separate logging class for the whole project.
- * /
+ */
 function dpm($var, $label = 'variable') {
   if(GoogleGeocoder::isLogging == TRUE) {
     if(function_exists('krumo')) {
