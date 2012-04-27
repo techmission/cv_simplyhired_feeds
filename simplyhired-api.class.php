@@ -125,7 +125,6 @@ class SimplyHired_API {
 		if(!empty($this->apicall)) {
 		  $response = make_http_request($this->apicall, $this->querystring);
 		}
-		krumo($response);
 		
 		// Parse the response into XML.
 		$xml = $this->_parseResponse($response);
@@ -140,7 +139,6 @@ class SimplyHired_API {
 		  }
 	    }
 		
-	    krumo($xml);
 		// Return SimpleXMLElement tree of results.
 		return $xml;
 	}
