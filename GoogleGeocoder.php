@@ -59,20 +59,23 @@ class GoogleGeocoder {
 		
 		// Make the HTTP request.
 		$response = make_http_request(self::ENDPOINT_URL, $query);
+		dpm($response, 'http response');
 		
 		// Parse the response (expects JSON).
 		if($response->code = 200 && !empty($response->body)) {
 		  $json_response = $this->_parseJsonResponse($response->body);
 		}
-		//dpm($json_response, 'Google-returned json array');
+		dpm($json_response, 'Google-returned json array');
 	    
 		$api_status = $this->_checkResponseStatus($json_response);
+		dpm($api_status, 'api status');
 		
 		// If this was a valid response, then parse for the location.
 		// An empty array will be returned if no valid location could be found.
         if($api_status == TRUE) {
           $location = $this->_parseLocation($json_response);
         }
+        dpm($location, 'location array');
         
         return $location;
 	}
