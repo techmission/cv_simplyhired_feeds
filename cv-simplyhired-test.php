@@ -47,7 +47,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	$jobsDb->connect();
 	
 	// Set to log at database layer.
-	$jobsDb->isLogging = FALSE;
+	$jobsDb->isLogging = TRUE;
 	
 	$numInserted = $jobsDb->createRecords($jobs);
 	
