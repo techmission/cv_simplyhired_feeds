@@ -77,7 +77,6 @@ class GoogleGeocoder {
 		$retLocation = array();
 		
 		// Only make a request if you have not already made over the limit.
-		krumo(array('numRequests' => $this->numRequests));
 		if($this->numRequests < 2499) {
 	      // Builds query.
 	      $query = $this->_buildQuery($pLocation, $pReverse);
@@ -96,7 +95,6 @@ class GoogleGeocoder {
 	    
 		  // Checks whether Google says this is a valid request.
 		  $api_status = $this->_checkResponseStatus($json_response);
-		  krumo($api_status);
 		  
 		  // If this was a valid response, then parse for the location.
 		  // An empty array will be returned if no valid location could be found.

@@ -64,8 +64,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	}
   	else {
   	  foreach($stmt as $job) {
-  	  	krumo($job);
+  	  	//krumo($job);
   	    $location = $geocoder->geocodeLocation($job, FALSE);
+  	    krumo($location);
   	    // Add the latitude if a valid one was returned.
   	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
   	      $job['latitude'] = $location['latitude'];
@@ -86,10 +87,12 @@ if (class_exists( 'CV_SimplyHired_API')) {
   try {
     $jobsDb->dbh->beginTransaction();
     foreach($updated_jobs as $job) {
-  	  $stmt = $jobsDb->dbh('UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude WHERE id = :id');
+      $pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude WHERE id = :id';	
+  	  $stmt = $jobsDb->dbh($pdoSql);
   	  $stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
+  	  krumo(array('sql' => $pdoSql, 'vars' => array(':latitude' => $job['latitude'], ':longitude' => $job['longitude'], ':id' => $job['id'])));
   	  $stmt->execute();
     }
     $jobsDb->dbh->commit();
