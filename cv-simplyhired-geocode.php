@@ -64,6 +64,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	}
   	else {
   	  foreach($stmt as $job) {
+  	  	krumo($job);
   	    $location = $geocoder->geocodeLocation($job, FALSE);
   	    // Add the latitude if a valid one was returned.
   	    if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
