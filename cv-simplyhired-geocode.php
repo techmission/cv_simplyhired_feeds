@@ -15,8 +15,7 @@ define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
 ini_set('display_errors', TRUE);
 
 /**
- * Initializes the class for SimplyHired CV.org integration,
- * queries the database for all existing records, and prints them out.
+ * Geocodes all non-geocoded jobs, up to 2500.
  */
 if (IS_CLI && class_exists( 'JobsDb')) {
   // Initialize the database handler.
