@@ -113,6 +113,18 @@ class GoogleGeocoder {
 	}
 	
 	/**
+	 * Gets overall geocoding results as array.
+	 */
+	public function returnGeocodingResults() {
+		return array(
+				'numSucceses' => $this->numSuccesses, 
+				'numFailures' => $this->numFailures, 
+				'numRequests' => $this->numRequests, 
+				'numRequestsOverLimit' => $this->numRequestsOverLimit,
+		);
+	}
+	
+	/**
 	 * Builds the query for a request to Google Maps.
 	 *
 	 * @param array $location

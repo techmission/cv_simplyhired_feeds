@@ -81,6 +81,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  }
   	}
   }
+  krumo($geocoder->returnGeocodingResults);
   krumo($updated_jobs);
   try {
     $jobsDb->dbh->beginTransaction();
