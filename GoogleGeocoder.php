@@ -56,9 +56,7 @@ class GoogleGeocoder {
 				'q' => $gmap_q,
 		);
 	
-		$url = 'http://maps.google.com/maps/geo' . '?' . implode('&', $query);
-	
-		dpm($url, 'Geocode URL');
+		$url = 'http://maps.google.com/maps/geo';
 	
 		$google_geocode_data = array();
 		$json_response = '';
