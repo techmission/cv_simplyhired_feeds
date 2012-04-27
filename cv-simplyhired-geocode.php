@@ -90,6 +90,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  $stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
   	  $stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
+  	  $stmt->execute();
     }
     $jobsDb->dbh->commit();
   }
