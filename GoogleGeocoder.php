@@ -64,6 +64,7 @@ class GoogleGeocoder {
 		$http_reply = make_http_request($url);
 		// dpm($http_reply->data);
 		$google_geocode_data = $this->_getJSONarray($http_reply->data);
+		dpm($google_geocode_data, 'Google-returned json array');
 	
 		$status_code = $google_geocode_data['Status']['code'];
 		if ($status_code != 200) {
