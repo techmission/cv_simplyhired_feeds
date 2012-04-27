@@ -274,7 +274,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
 		  // Teaser should have same value as description, for this provider.
 		  $lJobsArray[$i]['teaser'] = $lJobsArray[$i]['description'];
-		  krumo($lJobsArray[$i]);
 		  $i++;
 		}
 		
