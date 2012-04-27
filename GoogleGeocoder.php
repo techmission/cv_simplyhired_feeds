@@ -99,14 +99,14 @@ class GoogleGeocoder {
 		  // If this was a valid response, then parse for the location.
 		  // An empty array will be returned if no valid location could be found.
           if($api_status == TRUE) {
-            $location = $this->_parseLocation($json_response);
+            $retLocation = $this->_parseLocation($json_response);
           }
         
           // Keep track of number of requests. Google limits to 2500 a day.
           $this->numRequests++;
         
           // Keep track of geocoding successes and failures.
-          if($location['latitude'] && !empty($location['longitude'])) {
+          if($retLocation['latitude'] && !empty($retLocation['longitude'])) {
             $this->numSuccesses++;
           }
           else {
