@@ -71,8 +71,8 @@ class GoogleGeocoder {
 		// Sets location variable to default to empty array.
 		$location = array();
 		
-		// Only make a request if you have not already made
-		if($this->numRequests > 2499) {
+		// Only make a request if you have not already made over the limit.
+		if($this->numRequests < 2499) {
 	      // Builds query.
 	      $query = $this->_buildQuery($location, $reverse);
 	    
