@@ -91,7 +91,7 @@ class SimplyHired_API {
 	public $radius = 25;
 	
 	public $apicall  = '';
-	public $query = array();
+	public $querystring = array();
 	public $results = '';
 	
 	/* Note that there is no constructor, since it must be initialized from a subclass. 
@@ -114,7 +114,7 @@ class SimplyHired_API {
 		$this->apicall = $this->_buildApiCall($number, $start);
 
 		// Get the result XML.
-		$response = make_http_request($this->apicall, $this->query);
+		$response = make_http_request($this->apicall, $this->querystring);
 		if($response->body != null ) {
 		  $xml = new SimpleXMLElement($response->body);
 	     }
@@ -184,7 +184,7 @@ class SimplyHired_API {
 	  
 	  /* Build the actual API call. */
 	  $this->apicall = $lEndpoint . $lParams;
-	  $this->query =  $lQueryString;
+	  $this->querystring =  $lQueryString;
 	  return $lApiCall;
 	}
 	
