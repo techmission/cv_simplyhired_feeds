@@ -58,6 +58,19 @@ function xt_getAttrVal($element)
     return $stripped;
 }
 
+// Converts XML to an array, recursively.
+// From http://www.php.net/manual/en/book.simplexml.php#108039
+function xt_xml_to_array(SimpleXMLElement $xml) {
+  $array = json_decode(json_encode($xml), TRUE);
+
+  foreach ( array_slice($array, 0) as $key => $value ) {
+	if ( empty($value) ) $array[$key] = NULL;
+	  elseif ( is_array($value) ) $array[$key] = xt_xml_to_array($value);
+	}
+
+  return $array;
+}
+
 /**
  *  Make an HTTP Request, using the PECL HTTP library.
  *

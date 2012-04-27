@@ -142,11 +142,12 @@ class SimplyHired_API {
 	}
 	
 	private function _parseResponse($response) {
-	  $response_body = null;
+	  $xml_response = null;
 	  if(isset($response->body) && !empty($response->body)) {
-	  	$response_body = new SimpleXMLElement($response->body);
+	  	$response_body = utf8_encode($response->body);
+	  	$xml_response = new SimpleXMLElement($response->body);
 	  } 
-	  return $response_body;
+	  return $xml_response;
 	}
 	
 	/**
