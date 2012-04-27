@@ -110,26 +110,38 @@ class SimplyHired_API {
 	}
 
 	function doSearch($number = 10, $start = 1) {
-		// Build the SimplyHired API call from parameters.
-		$this->apicall = $this->_buildApiCall($number, $start);
-
-		// Get the result XML.
-		$response = make_http_request($this->apicall, $this->querystring);
-		if($response->body != null ) {
-		  $xml = new SimpleXMLElement($response->body);
-	     }
-		if( empty($xml) || $xml == null ) {
-		  return null;
+		// Build the SimplyHired API call and query string from parameters.
+		$this->_buildApiCall($number, $start);
+         
+	    $response = new stdClass();	
+		// Get the result XML, using HttpRequest PECL extension.
+		if(!empty($this->apicall)) {
+		  $response = make_http_request($this->apicall, $this->querystring);
 		}
-		$this->results = $xml;
 		
-		// Set the search error if there was an error.
-		if($xml->error) {
-		  $this->search_error = $xml->error->asXML();
-		}
+		// Parse the response into XML.
+		$xml = $this->_parseResponse($response);
+		
+		// If it is valid XML, then set the results class variable.
+		if(is_object($xml) && get_class($xml) == 'SimpleXMLElement') {
+		  $this->results = $xml;
+		
+		  // Set the search error if there was an error.
+		  if($xml->error) {
+			$this->search_error = $xml->error->asXML();
+		  }
+	    }
 		
 		// Return SimpleXMLElement tree of results.
 		return $xml;
+	}
+	
+	private function _parseResponse($response) {
+	  $response_body = null;
+	  if(isset($response->body) && !empty($response->body)) {
+	  	$response_body = new SimpleXMLElement($response->body);
+	  } 
+	  return $response_body;
 	}
 	
 	/**
@@ -138,6 +150,10 @@ class SimplyHired_API {
 	 */
 	private function _buildApiCall($number, $start) {
 	  /* Initial value-setting. */
+		
+	  // Reset the class variables being built.
+	  $this->apicall = '';
+	  $this->querystring = array();
 
 	  // Set the O*Net filter (if any)
 	  if(!empty($this->onet)) {
