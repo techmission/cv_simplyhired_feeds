@@ -58,37 +58,38 @@ if (IS_CLI && class_exists( 'JobsDb')) {
   	}
   	// Otherwise, geocode the jobs and insert records.
   	else {
-  		try {
-  			$jobsDb->dbh->beginTransaction();
-  			foreach($stmt as $job) {
-  				$location = $geocoder->geocodeLocation($job, FALSE);
-  				// Add the latitude if a valid one was returned.
-  				if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
-  					$job['latitude'] = $location['latitude'];
-  				}
-  				// Add the longitude if a valid one was returned.
-  				if(!empty($location['longitude']) && is_numeric($location['longitude']) && $location['longitude'] != 0) {
-  					$job['longitude'] = $location['longitude'];
-  				}
-  				// Write values to database if geocoding was successful for both latitude and longitude.
-  				if(!empty($location['latitude']) && !empty($location['longitude']) 
-  						&& is_numeric($location['latitude']) && is_numeric($location['longitude'])
-  					    && $location['latitude'] != 0 && $location['longitude'] != 0) {
-  					$pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude ';
-  					$pdoSql .= ' WHERE id = :id';
-  					$stmt = $jobsDb->dbh->prepare($pdoSql);
-  					$stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
-  					$stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
-  					$stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
-  					$stmt->execute();
-  				}
-  			}
-  			$jobsDb->dbh->commit();
+  	  try {
+  	    $jobsDb->dbh->beginTransaction();
+  		foreach($stmt as $job) {
+  		  $location = $geocoder->geocodeLocation($job, FALSE);
+  		  // Add the latitude if a valid one was returned.
+  		  if(!empty($location['latitude']) && is_numeric($location['latitude']) && $location['latitude'] != 0) {
+  			$job['latitude'] = $location['latitude'];
+  		  }
+  		  // Add the longitude if a valid one was returned.
+  		  if(!empty($location['longitude']) && is_numeric($location['longitude']) && $location['longitude'] != 0) {
+  			$job['longitude'] = $location['longitude'];
+  		  }
+  		  // Write values to database if geocoding was successful for both latitude and longitude.
+  		  // This is done rather than doing them all in one batch for the sake of saving PHP memory.
+  		  if(!empty($location['latitude']) && !empty($location['longitude']) 
+  			  && is_numeric($location['latitude']) && is_numeric($location['longitude'])
+  			  && $location['latitude'] != 0 && $location['longitude'] != 0) {
+  			$pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude ';
+  			$pdoSql .= ' WHERE id = :id';
+  			$stmt = $jobsDb->dbh->prepare($pdoSql);
+  			$stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
+  			$stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
+  			$stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
+  			$stmt->execute();
+  		  }
   		}
-  		catch(PDOException $e) {
-  			$db->rollback;
-  			echo $e->getMessage();
-  		}
+  		$jobsDb->dbh->commit();
+  	  }
+  	  catch(PDOException $e) {
+  		$db->rollback;
+  		echo $e->getMessage();
+  	  }
   	}
   }
   // Debug the results on successes and failures.
