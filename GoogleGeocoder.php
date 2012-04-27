@@ -122,7 +122,7 @@ class GoogleGeocoder {
 	 */
 	public function returnGeocodingResults() {
 		return array(
-				'numSucceses' => $this->numSuccesses, 
+				'numSuccesses' => $this->numSuccesses, 
 				'numFailures' => $this->numFailures, 
 				'numRequests' => $this->numRequests, 
 				'numRequestsOverLimit' => $this->numRequestsOverLimit,
