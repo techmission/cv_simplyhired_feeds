@@ -43,7 +43,7 @@ require_once(dirname(__FILE__) . '/xmltools.php');
 
 /* This file contains a class that fixes garbled UTF-8. */
 /* @todo: Find out why it gets garbled in the request process. */
-require_once(dirname(__FILE__) . '/encoding.class.php');
+//require_once(dirname(__FILE__) . '/encoding.class.php');
 
 /**
  *  Modifications to the class by Evan Donovan.
@@ -148,8 +148,8 @@ class SimplyHired_API {
 	private function _parseResponse($response) {
 	  $xml_response = null;
 	  if(isset($response->body) && !empty($response->body)) {
-	  	$response_body = Encoding::fixUTF8($response->body);
-	  	krumo($response_body);
+	  	//$response_body = Encoding::fixUTF8($response->body);
+	  	//krumo($response_body);
 	  	$xml_response = new SimpleXMLElement($response->body);
 	  } 
 	  return $xml_response;
