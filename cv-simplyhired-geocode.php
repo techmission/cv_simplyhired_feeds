@@ -72,8 +72,8 @@ if (IS_CLI && class_exists( 'JobsDb')) {
   				}
   				// Write values to database if geocoding was successful for both latitude and longitude.
   				if(!empty($location['latitude']) && !empty($location['longitude']) 
-  						&& is_numeric($location['latitude'] && is_numeric($location['longitude'])
-  					    && $location['latitude'] != 0 && $location['longitude'] != 0)) {
+  						&& is_numeric($location['latitude']) && is_numeric($location['longitude'])
+  					    && $location['latitude'] != 0 && $location['longitude'] != 0) {
   					$pdoSql = 'UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude ';
   					$pdoSql .= ' WHERE id = :id';
   					$stmt = $jobsDb->dbh->prepare($pdoSql);
