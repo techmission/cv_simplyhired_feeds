@@ -67,7 +67,7 @@ class GoogleGeocoder {
 		try {
 		  $r->send();
 		  $responseCode = $r->getResponseCode();
-		  dpm($r->getRawRequestMessage, 'raw request');
+		  dpm($r->getRawRequestMessage(), 'raw request');
 		  if($responseCode == 200) {
 		  	$json_response = $r->getResponseBody();
 		  }
