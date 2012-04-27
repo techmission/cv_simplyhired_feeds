@@ -26,9 +26,6 @@ Based on Webstractions plugin.
 /* This class extends the SimplyHired_API class wrapper. */
 require_once(dirname(__FILE__) . '/simplyhired-api.class.php');
 
-/* This file contains utility functions for parsing XML. */
-require_once(dirname(__FILE__) . '/xmltools.php');
-
 /**
  * Main plugin class
  */

@@ -57,3 +57,41 @@ function xt_getAttrVal($element)
     $stripped = html_entity_decode($stripped);
     return $stripped;
 }
+
+/**
+ *  Make an HTTP Request, using the PECL HTTP library.
+ *
+ *  @return string
+ *    Either the value or the error code.
+ */
+if(!function_exists('make_http_request')) {
+  function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET) {
+	if(class_exists('HttpRequest')) {
+		$r = new HttpRequest($pUrl, HttpRequest::METH_GET);
+		$lResponse = new stdClass();
+		// Set the query string data, if any.
+		if(count($pQuery) > 0) {
+			$r->addQueryData($pQuery);
+		}
+		try {
+	  $r->send();
+	  $lResponse->message = $r->getRawRequestMessage();
+	  $lResponse->code = $r->getResponseCode();
+	  if($lResponse->code == 200) {
+	  	$lResponse->body = $r->getResponseBody();
+	  }
+	  else {
+	  	$lResponse->body = NULL;
+	  }
+		}
+		catch(HttpException $e) {
+	  $lResponse->code = $e->getMessage();
+	  $lResponse->body = NULL;
+		}
+	}
+	else {
+		throw new Exception('Class does not exist: HttpRequest');
+	}
+	return $lResponse;
+  }
+}

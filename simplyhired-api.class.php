@@ -1,4 +1,5 @@
 <?php
+
 /***************************************************************/
 /* 
 	SimplyHiredAPI - a PHP class wrapper to access the SimplyHired API
@@ -36,6 +37,9 @@
 
 */
 /***************************************************************/
+
+/* This file contains utility functions for parsing XML, as well as the HTTP request function. */
+require_once(dirname(__FILE__) . '/xmltools.php');
 
 /**
  *  Modifications to the class by Evan Donovan.
@@ -87,6 +91,7 @@ class SimplyHired_API {
 	public $radius = 25;
 	
 	public $apicall  = '';
+	public $query = array();
 	public $results = '';
 	
 	/* Note that there is no constructor, since it must be initialized from a subclass. 
@@ -109,9 +114,9 @@ class SimplyHired_API {
 		$this->apicall = $this->_buildApiCall($number, $start);
 
 		// Get the result XML.
-		$xmlstr = @file_get_contents($this->apicall);
-		if(!$xmlstr == null ) {
-		  $xml = new SimpleXMLElement($xmlstr);
+		$response = make_http_request($this->apicall, $this->query);
+		if($response->body != null ) {
+		  $xml = new SimpleXMLElement($response->body);
 	     }
 		if( empty($xml) || $xml == null ) {
 		  return null;
@@ -167,14 +172,19 @@ class SimplyHired_API {
 	  }
 	  
 	  /* Set the query string. */
-	  $lQueryString = 'pshid=' . $this->pshid .  $ssty . '&cflg=r&clip=' . $this->clip;
+	  $lQueryString = array();
+	  $lQueryString['pshid'] = $this->pshid;
+	  $lQueryString['ssty'] = $ssty;
+	  $lQueryString['cflg'] = 'r';
+	  $lQueryString['clip'] = $this->clip;
 	  // The job board (jbd) parameter is only valid within the US.
 	  if($this->country == 'en-us') {
-	  	$lQueryString .= '&jbd=' . $this->jbd;
+	  	$lQueryString['jbd'] = $this->jbd;
 	  }
 	  
 	  /* Build the actual API call. */
-	  $lApiCall = $lEndpoint . $lParams . '?' . $lQueryString;
+	  $this->apicall = $lEndpoint . $lParams;
+	  $this->query =  $lQueryString;
 	  return $lApiCall;
 	}
 	
