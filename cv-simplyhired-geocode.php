@@ -87,9 +87,9 @@ if (class_exists( 'CV_SimplyHired_API')) {
     $jobsDb->dbh->beginTransaction();
     foreach($updated_jobs as $job) {
   	  $stmt = $jobsDb->dbh('UPDATE ' . $jobsDb->tableName . ' SET  latitude = :latitude, longitude = :longitude WHERE id = :id');
-  	  $stmt->bindValue(':latitude', $latitude, PDO::PARAM_INT);
-  	  $stmt->bindValue(':longitude', $latitude, PDO::PARAM_INT);
-  	  $stmt->bindValue(':id', $latitude, PDO::PARAM_INT);
+  	  $stmt->bindValue(':latitude', $job['latitude'], PDO::PARAM_INT);
+  	  $stmt->bindValue(':longitude', $job['longitude'], PDO::PARAM_INT);
+  	  $stmt->bindValue(':id', $job['id'], PDO::PARAM_INT);
     }
     $jobsDb->dbh->commit();
   }
