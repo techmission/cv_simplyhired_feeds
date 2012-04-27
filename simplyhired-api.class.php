@@ -43,7 +43,7 @@ require_once(dirname(__FILE__) . '/xmltools.php');
 
 /* This file contains a class that fixes garbled UTF-8. */
 /* @todo: Find out why it gets garbled in the request process. */
-require_once(dirname(__FILE__) . 'encoding.class.php');
+require_once(dirname(__FILE__) . '/encoding.class.php');
 
 /**
  *  Modifications to the class by Evan Donovan.
