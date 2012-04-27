@@ -12,7 +12,8 @@
 class GoogleGeocoder {
 
 	private $key = ''; // the API key (must be set to valid for domain to work)
-	public static $isLogging = FALSE; // whether or not to log to the screen
+	
+	const IS_LOGGING = FALSE; // whether or not to log to the screen
 	
 	const ENDPOINT_URL = 'http://maps.google.com/maps/geo'; // Endpoint URL for the Gmap v2 API
 	
@@ -672,7 +673,7 @@ function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpReques
  * @todo: Make this a separate logging class for the whole project.
  */
 function dpm($var, $label = 'variable') {
-  if(GoogleGeocoder::isLogging == TRUE) {
+  if(GoogleGeocoder::IS_LOGGING == TRUE) {
     if(function_exists('krumo')) {
 	  krumo(array($label => $var));
     }
