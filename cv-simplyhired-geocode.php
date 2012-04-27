@@ -80,7 +80,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   	  }
   	}
   }
-  //krumo($updated_jobs);
+  krumo($updated_jobs);
   try {
     $jobsDb->dbh->beginTransaction();
     foreach($updated_jobs as $job) {
