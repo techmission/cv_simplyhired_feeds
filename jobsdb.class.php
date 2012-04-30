@@ -458,7 +458,7 @@ class JobsDB {
   		$lFields = '*';
   	}
   	else if($pSelectFields == self::FIELDS_CORE) {
-  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, street, city, province, postal_code, country, created, changed, description';
+  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, street, city, province, postal_code, country, latitude, longitude, created, changed, description';
   	}
   	else if($pSelectFields == self::FIELDS_GUID) {
   		$lFields = 'id, guid, title';
