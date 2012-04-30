@@ -162,6 +162,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             11 => '"Faith Technologies"',
 	  		             12 => '"Church\'s Chicken"',
 	  		             13 => '"Garden of the Gods"',
+	  		             14 => '"Christ Church"',
 	  		           );
 	  return $lQryArray;
 	}
