@@ -153,10 +153,10 @@ php $SCRIPT_PATH/$SCRIPT Scotland -f:en-gb          # Scotland                  
 php $SCRIPT_PATH/$SCRIPT Craigavon -f:en-gb         # Center of Northern Ireland       - 438, 169
 
 # Major cities of Ireland
-php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie                                               - 4, x
-php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie                                               - 46, x
-php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie                                             - 43, x
-php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie                                                 - 5, x
+php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie            #                                  - 4, x
+php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie            #                                  - 46, x
+php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie          #                                  - 43, x
+php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie              #                                  - 5, x
 
 # Australian provinces (http://www.citypopulation.de/Australia-UC.html)
 
