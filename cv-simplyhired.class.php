@@ -271,7 +271,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
 		  $country_code = xt_getAttrVal($res->loc['country']);
 		  // Correct the country code for Great Britain.
-		  $gb_countries = array('EN', 'SC', 'NO'); // England, Scotland, Northern Ireland
+		  $gb_countries = array('ENGLAND', 'SCOTLAND', 'NORTHERN IRELAND'); // England, Scotland, Northern Ireland
 		  if(in_array($country_code, $gb_countries)) {
 		  	echo 'Scotland was matched.';
 		  	$country_code = 'GB';
