@@ -109,13 +109,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lQryArray = array(0 => 'pastor',
 	  		             1 => 'church',
 	  		             2 => 'chaplain',
-	  		             3 => 'minister',
+	  		             3 => 'minister',            /* only in US */
 	  		             4 => 'christian', 
 	  		             5 => 'jesus', 
 	  		             6 => 'gospel', 
 	  		             7 => 'catholic',
-	  		             8 => 'ministry',
-	  		             //9 => 'religious', /* too generic */
+	  		             8 => 'ministry',            /* only in US */
+	  		             //9 => 'religious',         /* too generic */
 	  		             10 => 'evangelical',
 	  		             11 => 'christ',
 	  		             12 => 'faith',
@@ -137,17 +137,32 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             28 => '"born again"',
 	  		             29 => 'orthodox',
 	  		             30 => 'anglican',
-	  		             31 => 'reformed', 
+	  		             //31 => 'reformed',          /* word stemming was causing this to be "reform" */
 	  		             32 => 'god',
 	  		             33 => 'apostolic',
 	  		             34 => 'worship',
 	  		             35 => 'choir',
+	  		             36 => 'chaplain',           /* added */
+	  		             37 => 'chapel',             /* added */
 	  		         );
 	  return $lQryArray; 	
 	}
 	
 	private function _getDefaultQueryExcludes() {
-	  $lQryArray = array(1 => 'Muslim', 2 => 'Jewish', 3 => 'hospital');
+	  $lQryArray = array(1 => 'Muslim', 
+	  		             2 => 'Jewish',
+	  		             3 => 'Unitarian',
+	  		             4 => 'Mormon',
+	  		             5 => 'hospital',            /* maybe add this back */
+	  		             6 => 'LGBT',                /* would be a source of controversy */
+	  		             7 => '"Falls Church"',
+	  		             8 => '"Church Street"',
+	  		             9 => '"Church Road"',
+	  		             10 => '"Gospel Street"',
+	  		             11 => '"Faith Technologies"',
+	  		             12 => '"Church\'s Chicken"',
+	  		             13 => '"Garden of the Gods"',
+	  		           );
 	  return $lQryArray;
 	}
 
