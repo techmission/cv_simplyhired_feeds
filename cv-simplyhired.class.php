@@ -273,10 +273,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  // Correct the country code for Great Britain.
 		  $gb_countries = array('ENGLAND', 'SCOTLAND', 'NORTHERN IRELAND'); // England, Scotland, Northern Ireland
 		  if(in_array($country_code, $gb_countries)) {
-		  	echo 'Scotland was matched.';
 		  	$country_code = 'GB';
 		  }
-		  echo 'Country code: ' . $country_code;
 		  $lJobsArray[$i]['country'] = $country_code;
 		  // Get the created and changed dates.
 		  $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
