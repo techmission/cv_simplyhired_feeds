@@ -85,8 +85,11 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
 	  $lQryIncludesArray = $this->_getDefaultQueryIncludes();
+	  // Leave out certain terms outside the US
 	  if($this->country != 'en-us') {
-	  	unset($lQryIncludesArray[8]); // leave out "ministry" for non-US
+	  	unset($lQryIncludesArray[8]);    // "ministry" - b/c used in gov't jobs
+	  	unset($lQryIncludesArray[3]);    // "minister" - b/c used in gov't jobs
+	  	unset($lQryIncludesArray[12]);   // "faith" - shows up in non-discrimination statements
 	  }
 	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
 	  // Put spaces around the operator.
@@ -266,7 +269,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		  //$lJobsArray[$i]['city'] = $res->loc['cty']->asXML();
 		  $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
 		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
-		  $lJobsArray[$i]['country'] = xt_getAttrVal($res->loc['country']);
+		  $country_code = xt_getAttrVal($res->loc['country']);
+		  // Correct the country code for Great Britain.
+		  $gb_countries = array('EN', 'SC', 'NO'); // England, Scotland, Northern Ireland
+		  if(in_array($country_code, $gb_countries)) {
+		  	$country_code = 'GB';
+		  }
+		  $lJobsArray[$i]['country'] = $country_code;
 		  // Get the created and changed dates.
 		  $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
 		  $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
