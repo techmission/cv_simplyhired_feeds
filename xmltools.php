@@ -82,10 +82,10 @@ if(!function_exists('make_http_request')) {
 		if(class_exists('HttpRequest')) {			
 			if($pDebug == TRUE) {
 				echo "<pre>";
-				echo print_r(array('url' => $lUrl, 'query' => $pQuery), TRUE);
+				echo print_r(array('url' => $pUrl, 'query' => $pQuery), TRUE);
 				echo "</pre>";
 			}
-			$r = new HttpRequest($lUrl, HttpRequest::METH_GET);
+			$r = new HttpRequest($pUrl, HttpRequest::METH_GET);
 			$lResponse = new stdClass();
 			// Set the query string data, if any.
 			if(count($pQuery) > 0) {
