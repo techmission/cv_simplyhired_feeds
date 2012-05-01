@@ -159,7 +159,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             51 => '"Covenant House"',
 	  		             52 => '"Campus Crusade"',
 	  		             //53 => '"Christian Missionary Alliance"',
-	  		             54 => '"Trinity Broadcasting"',
+	  		             //54 => '"Trinity Broadcasting"',
 	  		             //55 => '"Christian Broadcasting"',
 	  		             //56 => '"Young Life"',
 	  		             //57 => '"Focus on the Family"',
