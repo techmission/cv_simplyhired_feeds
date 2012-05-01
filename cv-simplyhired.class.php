@@ -103,6 +103,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes;
 	  // urlencode the query
 	  $lDefaultQuery = urlencode($lDefaultQuery);
+	  echo $lDefaultQuery;
 	  return $lDefaultQuery;
 	}
 	
