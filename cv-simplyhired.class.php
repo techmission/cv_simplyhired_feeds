@@ -189,7 +189,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             79 => '"Mission Aviation Fellowship"',
 	  		             80 => '"Alliance Defense Fund"',
 	  		             81 => '"Blessings International"',
-	  		             82 => '"Eternal World Television"',
+	  		             82 => '"Eternal Word Television"',
 	  		             //83 => '"American Bible Society"',		             
 	  		         );
 	  return $lQryArray; 	
