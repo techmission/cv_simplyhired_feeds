@@ -298,43 +298,43 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		// Iterates over the r elements in the rs node of the XML document, setting the job values for each.
 		$numJobs = 0;
 		$lJobsArray = array();
-		foreach($results->rs->r as $res) {
-		  // Source is always 'simplyhired'
-		  $lJobsArray[$i]['source'] = self::SOURCE_NAME;
-		  // Get the title.
-		  $lJobsArray[$i]['title'] = xt_getInnerXML($res->jt);
-		  // Get the organization name.
-		  // If it is not in the cn tag, then check the src tag.
-		  $cn_inner = xt_getInnerXML($res->cn);
-		  $src_inner = xt_getInnerXML($res->src);
-		  $lJobsArray[$i]['org_name'] = (!empty($cn_inner)) ? $cn_inner : $src_inner;
-		  // Get the original URL from the url attribute on the src element.
-		  $lJobsArray[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
-		  // Get the source GUID from that URL.
-		  $lJobsArray[$i]['source_guid'] = $this->_getSourceGuid($lJobsArray[$i]['referralurl']);
-		  // Get the location values from the attributes on loc element.
-		  // All of these don't necessarily have values all of the time.
-		  $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
-		  //$lJobsArray[$i]['city'] = $res->loc['cty']->asXML();
-		  $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
-		  $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
-		  $country_code = xt_getAttrVal($res->loc['country']);
-		  // Correct the country code for Great Britain.
-		  $gb_countries = array('ENGLAND', 'SCOTLAND', 'NORTHERN IRELAND'); // England, Scotland, Northern Ireland
-		  if(in_array($country_code, $gb_countries)) {
-		  	$country_code = 'GB';
+		if(isset($results->rs->r)) {
+		  foreach($results->rs->r as $res) {
+		    // Source is always 'simplyhired'
+		    $lJobsArray[$i]['source'] = self::SOURCE_NAME;
+		    // Get the title.
+		    $lJobsArray[$i]['title'] = xt_getInnerXML($res->jt);
+		    // Get the organization name.
+		    // If it is not in the cn tag, then check the src tag.
+		    $cn_inner = xt_getInnerXML($res->cn);
+		    $src_inner = xt_getInnerXML($res->src);
+		    $lJobsArray[$i]['org_name'] = (!empty($cn_inner)) ? $cn_inner : $src_inner;
+		    // Get the original URL from the url attribute on the src element.
+		    $lJobsArray[$i]['referralurl'] = xt_getAttrVal($res->src['url']);
+		    // Get the source GUID from that URL.
+		    $lJobsArray[$i]['source_guid'] = $this->_getSourceGuid($lJobsArray[$i]['referralurl']);
+		    // Get the location values from the attributes on loc element.
+		    // All of these don't necessarily have values all of the time.
+		    $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
+		    $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
+		    $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
+		    $country_code = xt_getAttrVal($res->loc['country']);
+		    // Correct the country code for Great Britain.
+		    $gb_countries = array('ENGLAND', 'SCOTLAND', 'NORTHERN IRELAND'); // England, Scotland, Northern Ireland
+		    if(in_array($country_code, $gb_countries)) {
+		  	  $country_code = 'GB';
+		    }
+		    $lJobsArray[$i]['country'] = $country_code;
+		    // Get the created and changed dates.
+		    $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
+		    $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
+		    // Get the job description.
+		    $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
+		    // Teaser should have same value as description, for this provider.
+		    $lJobsArray[$i]['teaser'] = $lJobsArray[$i]['description'];
+		    $i++;
 		  }
-		  $lJobsArray[$i]['country'] = $country_code;
-		  // Get the created and changed dates.
-		  $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
-		  $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
-		  // Get the job description.
-		  $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
-		  // Teaser should have same value as description, for this provider.
-		  $lJobsArray[$i]['teaser'] = $lJobsArray[$i]['description'];
-		  $i++;
 		}
-		
 		// Return the number of jobs in the array.
 		return $lJobsArray;
 	}
