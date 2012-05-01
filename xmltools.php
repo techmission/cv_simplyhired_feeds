@@ -78,10 +78,15 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
  *    Either the value or the error code.
  */
 if(!function_exists('make_http_request')) {
-	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET) {
+	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET, $pDebug = FALSE) {
 		if(class_exists('HttpRequest')) {
 			// url-encode the string
 			$lUrl = urlencode($pUrl);
+			if($pDebug == TRUE) {
+				echo "<pre>";
+				echo print_r(array('url' => $lUrl, 'query' => $pQuery), TRUE);
+				echo "</pre>";
+			}
 			$r = new HttpRequest($lUrl, HttpRequest::METH_GET);
 			$lResponse = new stdClass();
 			// Set the query string data, if any.

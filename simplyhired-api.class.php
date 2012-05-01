@@ -119,10 +119,7 @@ class SimplyHired_API {
 	    $response = new stdClass();	
 		// Get the result XML, using HttpRequest PECL extension.
 		if(!empty($this->apicall)) {
-		  echo "<pre>";
-		  echo print_r(array('apicall' => $this->apicall, 'querystring' => $this->querystring), TRUE);
-		  echo "</pre>";
-		  $response = make_http_request($this->apicall, $this->querystring);
+		  $response = make_http_request($this->apicall, $this->querystring, HttpRequest::METH_GET, TRUE);
 		}
 		
 		// Parse the response into XML.
