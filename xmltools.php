@@ -79,9 +79,7 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
  */
 if(!function_exists('make_http_request')) {
 	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET, $pDebug = FALSE) {
-		if(class_exists('HttpRequest')) {
-			// url-encode the string
-			$lUrl = urlencode($pUrl);
+		if(class_exists('HttpRequest')) {			
 			if($pDebug == TRUE) {
 				echo "<pre>";
 				echo print_r(array('url' => $lUrl, 'query' => $pQuery), TRUE);
