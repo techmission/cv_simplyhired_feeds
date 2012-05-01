@@ -142,8 +142,38 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             33 => 'apostolic',
 	  		             34 => 'worship',
 	  		             35 => 'choir',
-	  		             36 => 'chaplain',           /* added */
-	  		             37 => 'chapel',             /* added */
+	  		             37 => 'chapel',             /* added this & those below */
+	  		             38 => 'diocese',
+	  		             39 => 'parish',
+	  		             40 => '"Assemblies of God"',
+	  		             41 => 'discipleship',
+	  		             42 => '"Catholic Charities"',
+	  		             43 => '"Volunteers of America"',
+	  		             44 => '"Catholic Relief"',
+	  		             45 => '"Food for the Poor"',
+	  		             46 => '"Samaritan\'s Purse"',
+	  		             47 => '"Christian Aid"',
+	  		             48 => '"Compassion International"',
+	  		             49 => '"Christian Children\'s Fund"',
+	  		             50 => '"Catholic Medical Mission Board"',
+	  		             51 => '"Covenant House"',
+	  		             52 => '"Campus Crusade"',
+	  		             53 => '"Christian Missionary Alliance"',
+	  		             54 => '"Trinity Broadcasting"',
+	  		             55 => '"Christian Broadcasting"',
+	  		             56 => '"Young Life"',
+	  		             57 => '"Focus on the Family"',
+	  		             58 => '"Wycliffe Bible Translators"',
+	  		             59 => '"Billy Graham"',
+	  		             60 => '"Christian Blind Mission"',
+	  		             61 => '"Interchurch Medical Assistance"',
+	  		             62 => '"Christa Ministries"',
+	  		             63 => '"In Touch Ministries"',
+	  		             64 => '"InterVarsity Christian Fellowship"',
+	  		             65 => '"Fellowship of Christian Athletes"',
+	  		             66 => '"Willow Creek Community Church"',
+	  		             67 => '"Christian Reformed Church"',     // replace "reformed"
+	  		             
 	  		         );
 	  return $lQryArray; 	
 	}
@@ -163,6 +193,9 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             12 => '"Church\'s Chicken"',
 	  		             13 => '"Garden of the Gods"',
 	  		             14 => '"Christ Church"',
+	  		             15 => 'ChristianVolunteering.org',
+	  		             16 => 'healthcare',
+	  		             17 => '"medical center"',
 	  		           );
 	  return $lQryArray;
 	}
