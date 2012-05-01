@@ -141,8 +141,10 @@ class SimplyHired_API {
 	
 	private function _parseResponse($response) {
 	  $xml_response = null;
+	  krumo(array('response' => $response));
 	  if(isset($response->body) && !empty($response->body)) {
 	  	$xml_response = new SimpleXMLElement($response->body);
+	  	krumo(array('xml_response' => $xml_response));
 	  } 
 	  return $xml_response;
 	}
