@@ -175,7 +175,23 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             //64 => '"InterVarsity Christian Fellowship"',
 	  		             //65 => '"Fellowship of Christian Athletes"',
 	  		             //66 => '"Willow Creek Community Church"',
-	  		             //67 => '"Christian Reformed Church"',     // replace "reformed"	  		             
+	  		             67 => '"Operation Blessing"',
+	  		             68 => '"Prison Fellowship"',
+	  		             //69 => '"Church World Service"',
+	  		             70 => '"Medical Teams International"',
+	  		             71 => '"MAP International"',
+	  		             72 => '"Kingsway Charities"',
+	  		             73 => '"Gideons International"',
+	  		             //74 => '"Christian Appalachian Project"',
+	  		             75 => 'Biblica',
+	  		             76 => '"Life Outreach"',
+	  		             77 => '"World Relief"',
+	  		             78 => '"Trans World Radio"',
+	  		             79 => '"Mission Aviation Fellowship"',
+	  		             80 => '"Alliance Defense Fund"',
+	  		             81 => '"Blessings International"',
+	  		             82 => '"Eternal World Television"',
+	  		             //83 => '"American Bible Society"',		             
 	  		         );
 	  return $lQryArray; 	
 	}

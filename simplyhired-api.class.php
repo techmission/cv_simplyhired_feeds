@@ -119,7 +119,7 @@ class SimplyHired_API {
 	    $response = new stdClass();	
 		// Get the result XML, using HttpRequest PECL extension.
 		if(!empty($this->apicall)) {
-		  $response = make_http_request($this->apicall, $this->querystring, HttpRequest::METH_GET, TRUE);
+		  $response = make_http_request($this->apicall, $this->querystring);
 		}
 		
 		// Parse the response into XML.
@@ -141,7 +141,6 @@ class SimplyHired_API {
 	
 	private function _parseResponse($response) {
 	  $xml_response = null;
-	  krumo(array('response' => $response));
 	  if(isset($response->body) && !empty($response->body)) {
 	  	// Do a try/catch on parsing to XML.
 	  	try {
@@ -150,7 +149,6 @@ class SimplyHired_API {
 	  	  $xml_response = new SimpleXMLElement($response->body);
 	  	}
 	  	catch (Exception $e) {}
-	  	krumo(array('xml_response' => $xml_response));
 	  } 
 	  return $xml_response;
 	}
