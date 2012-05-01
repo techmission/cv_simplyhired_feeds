@@ -151,7 +151,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             43 => '"Volunteers of America"',
 	  		             //44 => '"Catholic Relief"',
 	  		             45 => '"Food for the Poor"',
-	  		             46 => '"Samaritan\'s Purse"',
+	  		             //46 => '"Samaritan\'s Purse"',
 	  		             //47 => '"Christian Aid"',
 	  		             48 => '"Compassion International"',
 	  		             //49 => '"Christian Children\'s Fund"',
