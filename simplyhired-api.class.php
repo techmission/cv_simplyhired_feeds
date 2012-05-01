@@ -143,7 +143,11 @@ class SimplyHired_API {
 	  $xml_response = null;
 	  krumo(array('response' => $response));
 	  if(isset($response->body) && !empty($response->body)) {
-	  	$xml_response = new SimpleXMLElement($response->body);
+	  	// Do a try/catch on XML.
+	  	try {
+	  	  $xml_response = new SimpleXMLElement($response->body);
+	  	}
+	  	catch (Exception $e) {}
 	  	krumo(array('xml_response' => $xml_response));
 	  } 
 	  return $xml_response;
