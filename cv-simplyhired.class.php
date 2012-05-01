@@ -164,7 +164,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             54 => '"Trinity Broadcasting"',
 	  		             //55 => '"Christian Broadcasting"',
 	  		             56 => '"Young Life"',
-	  		             //57 => '"Focus on the Family"',
+	  		             57 => '"Focus on the Family"',
 	  		             58 => 'bible',
 	  		             59 => '"Billy Graham"',
 	  		             //60 => '"Christian Blind Mission"',
