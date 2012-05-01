@@ -135,7 +135,8 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	  	$count = $cvsha->fetchCount();
 	  	
 	  	/* Print the API call. */
-	  	echo "API call: " . $cvsha->apicall . "?" . implode("&", $cvsha->querystring) . "\n";
+	  	$apicall = $cvsha->returnApiCall();
+	  	echo "API call: " . $apicall . "\n";
 	  	
 	  	/* Print the count of jobs results. */
 	  	echo "This query returns the following number of results: " . $count . "\n";

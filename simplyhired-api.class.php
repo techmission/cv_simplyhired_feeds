@@ -203,7 +203,7 @@ class SimplyHired_API {
 	  
 	  /* Build the actual API call. */
 	  $this->apicall = $lEndpoint . $lParams;
-	  $this->querystring =  $lQueryString;
+	  $this->querystring = $lQueryString;
 	  return $lApiCall;
 	}
 	
@@ -320,8 +320,28 @@ class SimplyHired_API {
 		echo $output;
 	 }
 	 
+	 function returnApiCall() {
+	   $lApiCall = $this->apicall;
+	   if(!empty($this->querystring)) {
+	   	 $lQuery = implode('&', $this->_flattenParams($this->querystring));
+	     $lApiCall .= '?' . $lQuery;
+	   }
+	   return $lApiCall;
+	 }
+	 
+	 function _flattenParams($pQs) {
+	   $lParams = array();
+	   if(is_array($pQs) && count($pQs) > 0) {
+	     foreach($pQs as $param => $value) {
+	       $lParams[] = $param . '=' . $value;
+	     }
+	   }
+	   return $lParams;
+	 }
+	 
 	 function printApiCall( $echo=true ) {
-	   $html = '<span class="apicall" style="float:right;"><a href="' . $this->apicall . '" target="_blank">View XML</a></span>';
+	   $lApiCall = $this->returnApiCall();
+	   $html = '<span class="apicall" style="float:right;"><a href="' . $lApiCall . '" target="_blank">View XML</a></span>';
 	   if ( $echo )
 		 echo $html; 
 	   else 
