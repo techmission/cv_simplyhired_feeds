@@ -120,7 +120,7 @@ class SimplyHired_API {
 		// Get the result XML, using HttpRequest PECL extension.
 		if(!empty($this->apicall)) {
 		  echo "<pre>";
-		  print_r(array('apicall' => $this->apicall, 'querystring' => $this->querystring), TRUE);
+		  echo print_r(array('apicall' => $this->apicall, 'querystring' => $this->querystring), TRUE);
 		  echo "</pre>";
 		  $response = make_http_request($this->apicall, $this->querystring);
 		}
