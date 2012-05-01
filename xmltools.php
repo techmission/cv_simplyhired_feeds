@@ -98,7 +98,7 @@ if(!function_exists('make_http_request')) {
 				}
 			}
 			catch(HttpException $e) {
-				$lResponse->code = $e->getMessage();
+				$lResponse->code = get_class($e) . ' ' . $e->getMessage();
 				$lResponse->body = NULL;
 			}
 		}
