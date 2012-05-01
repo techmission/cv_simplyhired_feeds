@@ -80,7 +80,9 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
 if(!function_exists('make_http_request')) {
 	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET) {
 		if(class_exists('HttpRequest')) {
-			$r = new HttpRequest($pUrl, HttpRequest::METH_GET);
+			// url-encode the string
+			$lUrl = urlencode($pUrl);
+			$r = new HttpRequest($lUrl, HttpRequest::METH_GET);
 			$lResponse = new stdClass();
 			// Set the query string data, if any.
 			if(count($pQuery) > 0) {
