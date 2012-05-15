@@ -189,7 +189,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             80 => '"Alliance Defense Fund"',
 	  		             81 => '"Blessings International"',
 	  		             82 => '"Eternal Word Television"',
-	  		             //83 => '"American Bible Society"',
+	  		             83 => 'cathedral',
 	                     84 => 'Chi Alpha',
 	                     85 => '"Church World Service"',
 	                     86 => 'clergy',
