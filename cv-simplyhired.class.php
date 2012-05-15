@@ -190,11 +190,11 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  		             81 => '"Blessings International"',
 	  		             82 => '"Eternal Word Television"',
 	  		             //83 => '"American Bible Society"',
-	                     /* 84 => 'Chi Alpha',
-	                     85 => 'Church World Service',
+	                     84 => 'Chi Alpha',
+	                     85 => '"Church World Service"',
 	                     86 => 'clergy',
 	                     87 => 'congregational',
-	                     88 => 'crisis pregnancy',
+	                     88 => '"crisis pregnancy"',
 	                     89 => 'deacon',
 	                     90 => 'diaconal',
 	                     91 => 'disciple',
@@ -219,7 +219,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	                     111 => 'vicar',
 	                     112 => 'Wesleyan',
 	                     113 => 'worship',
-	                     114 => 'holiness', */
+	                     114 => 'holiness',
 	  		         );
 	  return $lQryArray; 	
 	}
