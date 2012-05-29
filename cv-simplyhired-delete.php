@@ -10,7 +10,7 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
-define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // name of jobs table
+define('TABLE_FEEDS_JOBS', 'tbl_feeds'); // name of jobs table
 
 define('DEFAULT_LOGFILE', 'cli-results.csv');  // name of log file for results
 

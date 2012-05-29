@@ -14,7 +14,7 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 require_once(dirname(__FILE__) . '/krumo/class.krumo.php');
 
 // Define constants.
-define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs');
+define('TABLE_FEEDS_JOBS', 'tbl_feeds');
 
 // Temporarily display runtime errors to the screen.
 ini_set('display_errors', TRUE);
@@ -44,7 +44,7 @@ if (class_exists( 'CV_SimplyHired_API')) {
   // country, created, changed, description
   if(is_object($jobs) && get_class($jobs) == 'PDOStatement') {
   	if($jobs->rowCount() == 0) {
-  	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds_jobs table.</p>";
+  	  echo "<p>There are no jobs currently in the urbmi5_data.tbl_feeds table.</p>";
   	}
   	else {
       foreach($jobs as $job) {

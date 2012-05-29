@@ -103,7 +103,7 @@ class JobsDB {
   	catch(PDOException $e) {
   		echo $e->getMessage();
   	}
-  	// Set the default table name (tbl_feeds_jobs)
+  	// Set the default table name (tbl_feeds)
   	$this->tableName = $this->_lookupTableName();
   }
   
@@ -118,7 +118,7 @@ class JobsDB {
    * Return the tables that are currently part of the jobs feeds system, with their associated record types. 
    */
   public function getTables() {
-  	return array('tbl_feeds_jobs' => self::RECORDS_JOB);
+  	return array('tbl_feeds' => self::RECORDS_JOB);
   }
   
   /**
@@ -577,11 +577,11 @@ class JobsDB {
   /* Lookup the database table name by record type. */
   private function _lookupTableName($type = self::RECORDS_JOB) {
     $lTableName = '';
-    // By default, use tbl_feeds_jobs.
+    // By default, use tbl_feeds.
     switch($type) {
       case self::RECORDS_JOB:
       default:
-        $lTableName = 'tbl_feeds_jobs'; 
+        $lTableName = 'tbl_feeds'; 
     }
     return $lTableName;
   }
@@ -679,7 +679,7 @@ class JobsDB {
   public function getSchema($pTableName = '') {
    // Array of table schemas.
    // Concept borrowed from Drupal.
-   $schema = array('tbl_feeds_jobs' =>
+   $schema = array('tbl_feeds' =>
                 array('id' =>
                   array('type' => TYPE_INT,
                         'required' => FALSE,

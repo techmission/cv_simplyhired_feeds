@@ -12,7 +12,7 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
-define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // name of jobs table
+define('TABLE_FEEDS_JOBS', 'tbl_feeds'); // name of jobs table
 
 define('DEFAULT_LOGFILE', 'cli-results.csv');
 
@@ -108,7 +108,7 @@ if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
 	    // Set the table name to count/insert, etc. Not strictly necessary.
 	    //$jobsDb->tableName = TABLE_FEEDS_JOBS;
 	
-	    // Write the jobs records to the tbl_feeds_jobs table.
+	    // Write the jobs records to the tbl_feeds table.
 	    $numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
 	    if($logging == TRUE) {
 	      if(!is_int($numInserted)) {

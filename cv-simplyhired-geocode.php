@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . '/jobsdb.class.php');
 require_once(dirname(__FILE__) . '/GoogleGeocoder.php');
 
 // Define constants.
-define('TABLE_FEEDS_JOBS', 'tbl_feeds_jobs'); // jobs table
+define('TABLE_FEEDS_JOBS', 'tbl_feeds'); // jobs table
 define('GMAP_KEY', 'ABQIAAAADF2STd2FFyIZbSoiWXIbaxR7PiuzwriKPLyzR6zyLjSn6oZVURSUPbbY1cObAiEF0-t2-A1LNN8x1w'); // Gmap v2 API key
 
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
