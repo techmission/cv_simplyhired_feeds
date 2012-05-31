@@ -5,6 +5,8 @@ SCRIPT=cv-simplyhired-cli.php
 DELETE_SCRIPT=cv-simplyhired-delete.php
 GEOCODE_SCRIPT=cv-simplyhired-geocode.php
 
+cd $SCRIPT_PATH
+
 # First, delete what is currently stored.
 php $SCRIPT_PATH/$DELETE_SCRIPT
 
