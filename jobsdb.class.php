@@ -154,7 +154,7 @@ class JobsDB {
   /**
    * Delete all records from a table.
    */
-  public function truncate($pObjType = self::RECORDS_JOB) {
+  public function truncate($pObjType = self::RECORDS_JOB, $pSource = 'simplyhired') {
     $lNumRows = FALSE; // Assume error condition to start.
   	// Connect if no database handle.
   	if($this->dbh == NULL) {
@@ -169,7 +169,7 @@ class JobsDB {
   	try {
   		// Begin a transaction.
   		$this->dbh->beginTransaction();
-  		$lPdoSql = 'DELETE FROM ' . $this->tableName;
+  		$lPdoSql = 'DELETE FROM ' . $this->tableName . 'WHERE source = "' . $pSource . '"';
   		if($this->isLogging && function_exists('krumo')) {
   		  krumo($lPdoSql);
   		}
