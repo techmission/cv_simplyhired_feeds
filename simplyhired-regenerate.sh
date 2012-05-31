@@ -4,6 +4,8 @@ SCRIPT_PATH=/home/techmi5/public_html/gospelpedia/simplyhired-feed
 SCRIPT=cv-simplyhired-cli.php
 DELETE_SCRIPT=cv-simplyhired-delete.php
 
+cd $SCRIPT_PATH
+
 # First, delete what is currently stored.
 php $SCRIPT_PATH/$DELETE_SCRIPT
 
