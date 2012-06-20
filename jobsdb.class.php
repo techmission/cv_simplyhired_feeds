@@ -9,10 +9,12 @@
  *
  * Requires PHP Data Objects (PDO) for connection.
  */
+
+// Load the base class that extends PDO.
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdo_ext.class.php');
+
 class JobsDB {
   /* Define constants. */
-
-  // Default database configuration file.
 
   /* Record types that can be inserted/deleted. */
   const RECORDS_JOB = 0; // Job records - default.
@@ -760,9 +762,9 @@ class JobsDB {
   }
   
   private function _setCfgFile($pCfgFile) {
-  	$default = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'dbconfig.ini';
+  	$cfg_file_default = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'dbconfig.ini';
   	if(empty($pCfgFile)) {
-  	  $this->cfgFile = $default;
+  	  $this->cfgFile = $cfg_file_default;
   	}
   	else {
   	  // Only read .ini files that exist.
@@ -770,7 +772,7 @@ class JobsDB {
   		$this->cfgFile = $pCfgFile;
   	  }
   	  else {
-  		$this->cfgFile = $default;
+  		$this->cfgFile = $cfg_file_default;
   	  }
   	}
   }

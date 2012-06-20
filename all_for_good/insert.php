@@ -5,8 +5,8 @@
    *  All For Good feed data.
    */
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'pdo_ext.class.php');
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
+// Load the class for making HTTP requests and parsing XML.
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'xmltools.php');
 
 // Define constants.
