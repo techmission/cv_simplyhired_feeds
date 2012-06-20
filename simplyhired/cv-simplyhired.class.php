@@ -24,7 +24,7 @@ Based on Webstractions plugin.
 /* Constants - none as yet. */
 
 /* This class extends the SimplyHired_API class wrapper. */
-require_once(dirname(__FILE__) . '/simplyhired-api.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'simplyhired-api.class.php');
 
 /**
  * Main plugin class
@@ -361,23 +361,23 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		    $lJobsArray[$i]['source_guid'] = $this->_getSourceGuid($lJobsArray[$i]['referralurl']);
 		    // Get the location values from the attributes on loc element.
 		    // All of these don't necessarily have values all of the time.
-		    $lJobsArray[$i]['city'] = xt_getAttrVal($res->loc['cty']);
-		    $lJobsArray[$i]['province'] = xt_getAttrVal($res->loc['st']);
-		    $lJobsArray[$i]['postal_code'] = xt_getAttrVal($res->loc['postal']);
+		    $lJobsArray[$i]['location_city'] = xt_getAttrVal($res->loc['cty']);
+		    $lJobsArray[$i]['location_province'] = xt_getAttrVal($res->loc['st']);
+		    $lJobsArray[$i]['location_postal_code'] = xt_getAttrVal($res->loc['postal']);
 		    $country_code = xt_getAttrVal($res->loc['country']);
 		    // Correct the country code for Great Britain.
 		    $gb_countries = array('ENGLAND', 'SCOTLAND', 'NORTHERN IRELAND'); // England, Scotland, Northern Ireland
 		    if(in_array($country_code, $gb_countries)) {
 		  	  $country_code = 'GB';
 		    }
-		    $lJobsArray[$i]['country'] = $country_code;
+		    $lJobsArray[$i]['location_country'] = $country_code;
 		    // Get the created and changed dates.
-		    $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
-		    $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
+		    $lJobsArray[$i]['created_date'] = strtotime(xt_getInnerXML($res->dp));
+		    $lJobsArray[$i]['changed_date'] = strtotime(xt_getInnerXML($res->ls));
 		    // Get the job description.
 		    $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
 		    // Teaser should have same value as description, for this provider.
-		    $lJobsArray[$i]['teaser'] = $lJobsArray[$i]['description'];
+		    $lJobsArray[$i]['short_description'] = $lJobsArray[$i]['description'];
 		    $i++;
 		  }
 		}

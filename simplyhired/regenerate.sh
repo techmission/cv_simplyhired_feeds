@@ -1,16 +1,20 @@
 #!/bin/bash
 
-SCRIPT_PATH=/home/techmi5/public_html/gospelpedia/simplyhired-feed
-SCRIPT=cv-simplyhired-cli.php
-DELETE_SCRIPT=cv-simplyhired-delete.php
-GEOCODE_SCRIPT=cv-simplyhired-geocode.php
+# Define shorthand names for the scripts so they can be called more efficiently.
+SCRIPT_PATH=/home/techmi5/public_html/gospelpedia/feed_importers/simplyhired
+SCRIPT=insert.php
+DELETE_SCRIPT=delete.php
+GEOCODE_SCRIPT=geocode.php
 
 cd $SCRIPT_PATH
 
-# First, delete what is currently stored.
+# Step 1: Delete what is currently stored.
 php $SCRIPT_PATH/$DELETE_SCRIPT
 
-# Request for the same 100-mile radius zipcode points used for the AllForGood feed
+# Step 2: Request new jobs.
+
+# Step 2a: US jobs -
+# Request for the same 100-mile radius US zipcode points used for the AllForGood feed
 # (see saved Excel spreadsheet of these)
 # See distribution at http://batchgeo.com/map/589ea74668cbbf7a7d10ffa6d274d14d
 # For initial results, see http://batchgeo.com/map/8ef41c18859e44e3f8944082ef8b9c67
@@ -126,10 +130,10 @@ php $SCRIPT_PATH/$SCRIPT 99762                       #  Nome, AK (99762)        
 # Tried to put in the North Slope of Alaska, but there were no zipcodes up there.
 # Probably not any Christian jobs either :)
 
-# English-speaking countries (non-US)
+## English-speaking countries (non-US) ##
 
+# Step 2b -
 # Canadian provinces (http://en.wikipedia.org/wiki/Provinces_and_territories_of_Canada)
-# Result distribution is at: 
 
 php $SCRIPT_PATH/$SCRIPT AB -f:en-ca                # Alberta                          - 410, 211
 php $SCRIPT_PATH/$SCRIPT BC -f:en-ca                # British Columbia                 - 337, 140
@@ -145,21 +149,26 @@ php $SCRIPT_PATH/$SCRIPT QC -f:en-ca                # Quebec                    
 php $SCRIPT_PATH/$SCRIPT SK -f:en-ca                # Saskatchewan                     - 437, 233
 php $SCRIPT_PATH/$SCRIPT YT -f:en-ca                # Yukon                            - 5, 5
 
+# Step 2c -
 # United Kingdom countries
 # (administrative regions were too complex to use
 # - cf. http://www.geonames.org/GB/administrative-division-united-kingdom.html)
 # (could go by their "region names" or counties, but that is the full name
 # - still complex to figure out what that should be) 
+
 php $SCRIPT_PATH/$SCRIPT England -f:en-gb           # England                          - 991, 792
 php $SCRIPT_PATH/$SCRIPT Scotland -f:en-gb          # Scotland                         - 460, 262
 php $SCRIPT_PATH/$SCRIPT Craigavon -f:en-gb         # Center of Northern Ireland       - 438, 169
 
+# Step 2d -
 # Major cities of Ireland
+
 php $SCRIPT_PATH/$SCRIPT Galway -f:en-ie            #                                  - 4, x
 php $SCRIPT_PATH/$SCRIPT Dublin -f:en-ie            #                                  - 46, x
 php $SCRIPT_PATH/$SCRIPT Limerick -f:en-ie          #                                  - 43, x
 php $SCRIPT_PATH/$SCRIPT Cork -f:en-ie              #                                  - 5, x
 
+# Step 2e -
 # Australian provinces (http://www.citypopulation.de/Australia-UC.html)
 
 php $SCRIPT_PATH/$SCRIPT ACT -f:en-au               # Australian Capital Territory     - 72, 72
@@ -174,8 +183,14 @@ php $SCRIPT_PATH/$SCRIPT TAS -f:en-au               # Tasmania                  
 php $SCRIPT_PATH/$SCRIPT VIC -f:en-au               # Victoria                         - 150, x
 php $SCRIPT_PATH/$SCRIPT WA -f:en-au                # Western Australia                - 44, x
 
-# Finally, geocode the newly-added items.
+# Step 3: Geocode the newly-added items.
+# Note, this will not get through all the geocoding.
+# The rest will need to be geocoded via separate calls to this script on the cron tab.
+# Typically, 4 calls separated by 10 mins or so should do it.
+
 php $SCRIPT_PATH/$GEOCODE_SCRIPT
+
+## LEGACY ##
 
 # Non-English-speaking countries
 # These are not working with the country name or ISO code, so commented out for now.

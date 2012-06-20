@@ -74,8 +74,11 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
 /**
  *  Make an HTTP Request, using the PECL HTTP library.
  *
- *  @return string
- *    Either the value or the error code.
+ *  @return stdClass object
+ *    An object with the following properties:
+ *      - request: the raw request (GET or POST)
+ *      - code: either the HTTP response code (200, 301, etc.), or the HttpRequest exception message
+ *      - body: the response body (only set if the response code was 200)
  */
 if(!function_exists('make_http_request')) {
 	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET, $pDebug = FALSE) {

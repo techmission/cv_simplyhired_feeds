@@ -102,7 +102,7 @@ class JobsDB {
   	catch(PDOException $e) {
   		echo $e->getMessage();
   	}
-  	// Set the default table name (tbl_feeds)
+  	// Set the default table name (tbl_opportunities)
   	$this->tableName = $this->_lookupTableName();
   }
   
@@ -117,7 +117,7 @@ class JobsDB {
    * Return the tables that are currently part of the jobs feeds system, with their associated record types. 
    */
   public function getTables() {
-  	return array('tbl_feeds' => self::RECORDS_JOB);
+  	return array('tbl_opportunities' => self::RECORDS_JOB);
   }
   
   /**
@@ -457,13 +457,13 @@ class JobsDB {
   		$lFields = '*';
   	}
   	else if($pSelectFields == self::FIELDS_CORE) {
-  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, street, city, province, postal_code, country, latitude, longitude, created, changed, description';
+  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, location_street, location_city, location_province, location_postal_code, location_country, latitude, longitude, created_date, changed_date, description';
   	}
   	else if($pSelectFields == self::FIELDS_GUID) {
   		$lFields = 'id, guid, title';
   	}
   	else if($pSelectFields == self::FIELDS_LOCATION) {
-  		$lFields = 'id, title, street, city, province, postal_code, country, latitude, longitude';
+  		$lFields = 'id, title, location_street, location_city, location_province, location_postal_code, location_country, latitude, longitude';
   	}
   	else {
   		if(is_array($pSelectFields)) {
@@ -576,11 +576,11 @@ class JobsDB {
   /* Lookup the database table name by record type. */
   private function _lookupTableName($type = self::RECORDS_JOB) {
     $lTableName = '';
-    // By default, use tbl_feeds.
+    // By default, use tbl_opportunities.
     switch($type) {
       case self::RECORDS_JOB:
       default:
-        $lTableName = 'tbl_feeds'; 
+        $lTableName = 'tbl_opportunities'; 
     }
     return $lTableName;
   }
@@ -678,7 +678,7 @@ class JobsDB {
   public function getSchema($pTableName = '') {
    // Array of table schemas.
    // Concept borrowed from Drupal.
-   $schema = array('tbl_feeds' =>
+   $schema = array('tbl_opportunities' =>
                 array('id' =>
                   array('type' => TYPE_INT,
                         'required' => FALSE,

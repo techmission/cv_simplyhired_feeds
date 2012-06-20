@@ -1,15 +1,15 @@
 <?php
 
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . '/jobsdb.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
 // Load the Google geocoder class.
-require_once(dirname(__FILE__) . '/GoogleGeocoder.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'GoogleGeocoder.php');
 
 // Define constants.
-define('TABLE_FEEDS_JOBS', 'tbl_feeds'); // jobs table
+define('TABLE_FEEDS_JOBS', 'tbl_opportunities'); // denormalized table for inserts
 define('GMAP_KEY', 'ABQIAAAADF2STd2FFyIZbSoiWXIbaxR7PiuzwriKPLyzR6zyLjSn6oZVURSUPbbY1cObAiEF0-t2-A1LNN8x1w'); // Gmap v2 API key
 
-define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
+define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context (not used)
 
 // Temporarily display runtime errors to the screen.
 ini_set('display_errors', TRUE);
@@ -17,7 +17,7 @@ ini_set('display_errors', TRUE);
 /**
  * Geocodes all non-geocoded jobs, up to 2500.
  */
-if (IS_CLI && class_exists( 'JobsDb')) {
+if (class_exists( 'JobsDb')) {
   // Initialize the database handler.
   try {
 	$jobsDb = new JobsDB();

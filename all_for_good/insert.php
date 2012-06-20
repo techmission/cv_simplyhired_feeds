@@ -26,13 +26,7 @@ $logging = FALSE;
  * 
  * Usage examples:
  * 
- * php cv-simplyhired-cli.php 02124               # query and insert, no logging
- * php cv-simplyhired-cli.php 02124 -l            # query and insert, with logging
- * php cv-simplyhired-cli.php London -f:en_gb     # query for results in the city of London (foreign country), no logging
- * php cv-simplyhired-cli.php England -f:en_gb    # query for results in England (foreign country), no logging
- * php cv-simplyhired-cli.php 02124 -c            # just get the count of results
- * php cv-simplyhired-cli.php London -f -l        # query and insert for London, with logging
- * php cv-simplyhired-cli.php London -f -c -l     # counts only for London, with logging
+ * php insert.php 54 45
  */
 if(!empty($argv[1]) && !empty($argv[2])) {
   $lat = $argv[1];
@@ -89,21 +83,21 @@ function fetchOpps($lat, $long) {
                 $opportunities[] = array(
 			"title"       => $opp['title'],
 			"description" => $opp['description'],
-			"teaser"      => $opp['description'],
-			"source"      => "All For Good",
+			"short_description"      => $opp['description'],
+			"source"      => "All For Good", // can this be lowercase w/underscores ~ead
 			"org_name"    => $opp['sponsoringOrganizationName'],
 			"referralurl" => $opp['xml_url'],
 			"source_guid" => $opp['id'],
-			"city"        => $opp['city'],
-			"province"    => $opp['region'],
-			"postal_code" => $opp['postalCode'],
+			"location_city"        => $opp['city'], // do these actually have values? i think you may need to
+			"location_province"    => $opp['region'], // reverse-geocode to get these ~ead
+			"location_postal_code" => $opp['postalCode'],
 			"country"     => $opp['country'],
 			"start_date"  => $opp['startDate'],
 			"end_date"    => strtotime($opp['endDate']),
 			"latitude"    => $coords[0],
 			"longitude"   => $coords[1],
-			"created"     => time(),
-			"changed"     => time()
+			"created_date"     => time(), // is there nothing in the feed to correlate with this? ~ead
+			"changed_date"     => time()
 		);
 	}
 	return $opportunities;

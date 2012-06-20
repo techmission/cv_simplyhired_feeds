@@ -3,11 +3,15 @@
 /**
  * @file
  * Google geocoder.
- * Object-oriented version of the Google geocoder included as part of the Drupal Location module.
+ * Object-oriented version of the Google geocoder that was
+ * included as part of the Drupal Location module, and licensed under GPL v2.
  * 
  * @todo Add more robust logging.
  * 
  */
+
+/* This file contains utility functions for parsing XML, as well as the HTTP request function. */
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'xmltools.php');
 
 class GoogleGeocoder {
 
@@ -216,23 +220,23 @@ class GoogleGeocoder {
 		}
 		// Street
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'])) {
-			$geocoded_location['street'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'];
+			$geocoded_location['location_street'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'];
 		}
 		// City
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'])) {
-			$geocoded_location['city'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'];
+			$geocoded_location['location_city'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName'];
 		}
 		// Province
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'])) {
-			$geocoded_location['province'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'];
+			$geocoded_location['location_province'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName'];
 		}
 		// Postal Code
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'])) {
-			$geocoded_location['postal_code'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'];
+			$geocoded_location['location_postal_code'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['PostalCode']['PostalCodeNumber'];
 		}
 		// Country
 		if(isset($pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'])) {
-			$geocoded_location['country'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'];
+			$geocoded_location['location_country'] = $pJsonResponse['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'];
 		}
 		// Accuracy (by Google's standards)
 		// @todo: Use this somehow?
@@ -676,42 +680,6 @@ class GoogleGeocoder {
 
 		return $address;
 	}
-}
-
-/**
- *  Make an HTTP Request, using the PECL HTTP library.
- *  
- *  @return string
- *    Either the value or the error code.
- */
-function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET) {
-  if(class_exists('HttpRequest')) {
-    $r = new HttpRequest($pUrl, HttpRequest::METH_GET);
-    $lResponse = new stdClass();
-    // Set the query string data, if any.
-    if(count($pQuery) > 0) {
-      $r->addQueryData($pQuery);
-    }
-    try {
-	  $r->send();
-	  $lResponse->request = $r->getRawRequestMessage();
-	  $lResponse->code = $r->getResponseCode();
-	  if($lResponse->code == 200) {
-		$lResponse->body = $r->getResponseBody();
-	  }
-	  else {
-	  	$lResponse->body = NULL;
-	  }
-    }
-    catch(HttpException $e) {
-	  $lResponse->code = $e->getMessage();
-	  $lResponse->body = NULL;
-    } 
-  }
-  else {
-    throw new Exception('Class does not exist: HttpRequest');
-  }
-  return $lResponse;
 }
 
 /**

@@ -39,7 +39,7 @@
 /***************************************************************/
 
 /* This file contains utility functions for parsing XML, as well as the HTTP request function. */
-require_once(dirname(__FILE__) . '/xmltools.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'xmltools.php');
 
 /**
  *  Modifications to the class by Evan Donovan.

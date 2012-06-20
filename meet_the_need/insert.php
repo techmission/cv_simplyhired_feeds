@@ -26,13 +26,7 @@ $logging = FALSE;
  * 
  * Usage examples:
  * 
- * php cv-simplyhired-cli.php 02124               # query and insert, no logging
- * php cv-simplyhired-cli.php 02124 -l            # query and insert, with logging
- * php cv-simplyhired-cli.php London -f:en_gb     # query for results in the city of London (foreign country), no logging
- * php cv-simplyhired-cli.php England -f:en_gb    # query for results in England (foreign country), no logging
- * php cv-simplyhired-cli.php 02124 -c            # just get the count of results
- * php cv-simplyhired-cli.php London -f -l        # query and insert for London, with logging
- * php cv-simplyhired-cli.php London -f -c -l     # counts only for London, with logging
+ * php insert.php 45 54
  */
 if(!empty($argv[1]) && !empty($argv[2])) {
   $lat = $argv[1];
@@ -80,25 +74,28 @@ function fetchOpps() {
     	$opps[] = array(
     		"title" => $need->Description,
     		"description" => $need->Description,
-    		"teaser" => $need->Description,
-    		"source" => "Meet The Need",
+    		"short_description" => $need->Description,
+    		"source" => "Meet The Need", // can we make this all lower-case and use underscores? ~ead
     		"org_name" => $org->Name,
     		"referralurl" => "",
     		"source_guid" => $need->ID,
-    	    "city" => $org->City,
-    		"province" => $org->State,
-    		"postal_code" => $org->PostalCode,
-    		"country" => "us",
+    	    "location_city" => $org->City,
+    		"location_province" => $org->State,
+    		"location_postal_code" => $org->PostalCode,
+    		"location_country" => "us",
     		"start_date" => "",
     	    "end_date" => "",
     		"latitude" => $need->Latitude,
     		"longitude" => $need->Longitude,
-    		"created" => strtotime($need->Meta->Added),
-    		"changed" => strtotime($need->Meta->Added)
+    		"created_date" => strtotime($need->Meta->Added),
+    		"changed_date" => strtotime($need->Meta->Added) // same as created
     	);
     }
-        $opps = array();
-	foreach($xml->channel->item as $o) {
+
+    // why is this code from AFG in here? ~ead
+	/* 
+	   $opps = array();
+	   foreach($xml->channel->item as $o) {
         $opp = array();
           foreach($o->children('fp', true) as $k => $v) $opp[$k] = $v;
           foreach($o->children() as $k => $v) $opp[$k] = $v;
@@ -125,8 +122,8 @@ function fetchOpps() {
 			"created"     => time(),
 			"changed"     => time()
 		);
-	}
-	return $opportunities;
+	} */
+	return $opps;
 }
 
 function getFeed($type) {

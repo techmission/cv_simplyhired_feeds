@@ -6,7 +6,7 @@
    */
 
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . '/jobsdb.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context

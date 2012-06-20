@@ -1,17 +1,17 @@
 <?php
 
-  /**
-   *  @file: A PHP command-line script for parsing and storing
-   *  SimplyHired feed data.
-   */
+/**
+ *  @file: A PHP command-line script for parsing and storing
+ *  SimplyHired feed data.
+ */
 
 // Load the class that does the actual requests to SimplyHired, via the API.
-require_once(dirname(__FILE__) . '/cv-simplyhired.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cv-simplyhired.class.php');
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . '/jobsdb.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
 
 // Define constants.
-define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
+define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context: unused currently
 define('TABLE_FEEDS_JOBS', 'tbl_feeds'); // name of jobs table
 
 define('DEFAULT_LOGFILE', 'cli-results.csv');
@@ -39,7 +39,7 @@ ini_set('display_errors', TRUE);
  * php cv-simplyhired-cli.php London -f -l        # query and insert for London, with logging
  * php cv-simplyhired-cli.php London -f -c -l     # counts only for London, with logging
  */
-if (class_exists( 'CV_SimplyHired_API') && IS_CLI) {
+if (class_exists( 'CV_SimplyHired_API')) {
     if(!empty($argv[1])) {
 	  $options = array('publisher_id' => 30845,
 	                 'jobboard_url' => 'christianjobsdirectory.jobamatic.com');
