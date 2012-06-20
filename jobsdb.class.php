@@ -168,7 +168,7 @@ class JobsDB {
   	try {
   		// Begin a transaction.
   		$this->dbh->beginTransaction();
-  		$lPdoSql = 'DELETE FROM ' . $this->tableName . 'WHERE source = "' . $pSource . '"';
+  		$lPdoSql = 'DELETE FROM ' . $this->tableName . ' WHERE source = "' . $pSource . '"';
   		if($this->isLogging && function_exists('krumo')) {
   		  krumo($lPdoSql);
   		}
