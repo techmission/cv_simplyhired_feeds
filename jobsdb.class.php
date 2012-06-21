@@ -13,7 +13,6 @@ class JobsDB {
   /* Define constants. */
 
   // Default database configuration file.
-  const CFG_FILE_DEFAULT = 'dbconfig.ini';
 
   /* Record types that can be inserted/deleted. */
   const RECORDS_JOB = 0; // Job records - default.
@@ -169,7 +168,7 @@ class JobsDB {
   	try {
   		// Begin a transaction.
   		$this->dbh->beginTransaction();
-  		$lPdoSql = 'DELETE FROM ' . $this->tableName . 'WHERE source = "' . $pSource . '"';
+  		$lPdoSql = 'DELETE FROM ' . $this->tableName . ' WHERE source = "' . $pSource . '"';
   		if($this->isLogging && function_exists('krumo')) {
   		  krumo($lPdoSql);
   		}
@@ -608,10 +607,10 @@ class JobsDB {
     if(!empty($record_type_error)) {
       $validation_errors[] = $record_type_error;
       // Compare the record values to the table schema.
-      $schema_errors = _checkSchema($records);
+      /* $schema_errors = _checkSchema($records);
       if(is_array($schema_errors) && count($schema_errors) > 0) {
         $validation_errors[] += $schema_errors;
-      }
+      } */
     }
     return $validation_errors;
   }
@@ -747,8 +746,8 @@ class JobsDB {
   	}
   	
   	// The pdo_ext.class.php file is required.
-  	if(file_exists('pdo_ext.class.php')) {
-  	  require_once(dirname(__FILE__) . '/pdo_ext.class.php');
+  	if(file_exists('..' . DIRECTORY_SEPARATOR . 'pdo_ext.class.php')) {
+  	  require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdo_ext.class.php');
   	}
   	else {
   	  throw new Exception('PDO_Ext class file not present.');
@@ -761,8 +760,9 @@ class JobsDB {
   }
   
   private function _setCfgFile($pCfgFile) {
+  	$default = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'dbconfig.ini';
   	if(empty($pCfgFile)) {
-  	  $this->cfgFile = self::CFG_FILE_DEFAULT;
+  	  $this->cfgFile = $default;
   	}
   	else {
   	  // Only read .ini files that exist.
@@ -770,7 +770,7 @@ class JobsDB {
   		$this->cfgFile = $pCfgFile;
   	  }
   	  else {
-  		$this->cfgFile = self::CFG_FILE_DEFAULT;
+  		$this->cfgFile = $default;
   	  }
   	}
   }

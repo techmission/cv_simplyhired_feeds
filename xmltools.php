@@ -65,7 +65,7 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
 
   foreach ( array_slice($array, 0) as $key => $value ) {
 	if ( empty($value) ) $array[$key] = NULL;
-	  elseif ( is_array($value) ) $array[$key] = xt_xml_to_array($value);
+	  elseif ( !is_array($value) ) $array[$key] = xt_xml_to_array($value);
 	}
 
   return $array;
@@ -78,14 +78,14 @@ function xt_xml_to_array(SimpleXMLElement $xml) {
  *    Either the value or the error code.
  */
 if(!function_exists('make_http_request')) {
-	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET, $pDebug = FALSE) {
+	function make_http_request($pUrl, array $pQuery = array(), $pMethod = HttpRequest::METH_GET, $pDebug = FALSE, $options = array('redirect' => 1)) {
 		if(class_exists('HttpRequest')) {			
 			if($pDebug == TRUE) {
 				echo "<pre>";
 				echo print_r(array('url' => $pUrl, 'query' => $pQuery), TRUE);
 				echo "</pre>";
 			}
-			$r = new HttpRequest($pUrl, HttpRequest::METH_GET);
+			$r = new HttpRequest($pUrl, HttpRequest::METH_GET, $options);
 			$lResponse = new stdClass();
 			// Set the query string data, if any.
 			if(count($pQuery) > 0) {
