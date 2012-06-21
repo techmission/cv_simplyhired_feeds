@@ -11,7 +11,7 @@
  */
 
 // Load the base class that extends PDO.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdo_ext.class.php');
+require_once(dirname(__FILE__) . '/pdo_ext.class.php');
 
 class JobsDB {
   /* Define constants. */
@@ -155,7 +155,7 @@ class JobsDB {
   /**
    * Delete all records from a table.
    */
-  public function truncate($pObjType = self::RECORDS_JOB, $pSource = 'simplyhired') {
+  public function truncate($pSource, $pObjType = self::RECORDS_JOB) {
     $lNumRows = FALSE; // Assume error condition to start.
   	// Connect if no database handle.
   	if($this->dbh == NULL) {
@@ -608,6 +608,7 @@ class JobsDB {
     $record_type_error = $this->_checkRecordType($type);
     if(!empty($record_type_error)) {
       $validation_errors[] = $record_type_error;
+      // @todo: Add a schema validation. (Pulling from the actual DB schema?)
       // Compare the record values to the table schema.
       /* $schema_errors = _checkSchema($records);
       if(is_array($schema_errors) && count($schema_errors) > 0) {
@@ -675,70 +676,6 @@ class JobsDB {
   	}
   	return $retRecords;
   }
-  
-  /*
-  public function getSchema($pTableName = '') {
-   // Array of table schemas.
-   // Concept borrowed from Drupal.
-   $schema = array('tbl_opportunities' =>
-                array('id' =>
-                  array('type' => TYPE_INT,
-                        'required' => FALSE,
-                        'description' => 'Autoincrement')),
-                array('title' =>
-                  array('type' => TYPE_STRING,
-                        'required' => TRUE,
-                        'description' => 'Title of job')),
-                array('changed' =>
-                   array('type' => TYPE_UNIXTIME,
-                         'required' => TRUE,
-                         'description' => 'Date job changed')),
-                array('teaser' =>
-                   array('type' => TYPE_STRING,
-                         'required' => FALSE,
-                         'description' => 'Short version of description')),
-                array('description' =>
-                   array('type' => TYPE_STRING,
-                         'required' => TRUE,
-                         'description' => 'Job description.')),
-                array('requirements' =>
-                   array('type' => TYPE_STRING,
-                         'required' => FALSE,
-                         'description' => 'Job requirements.')),
-                array('org_name' =>
-                   array('type' => TYPE_STRING,
-                         'required' => TRUE,
-                         'description' => 'Organization name.')),
-                array('start_date' =>
-                   array('type' => TYPE_UNIXTIME,
-                         'required' => FALSE,
-                         'description' => 'Start date of job.')),
-                array('end_date' =>
-                   array('type' => TYPE_UNIXTIME,
-                         'required' => FALSE,
-                         'description' => 'End date of job.')),
-                array('source' =>
-                   array('type' => TYPE_STRING,
-                         'required' => TRUE,
-                         'description' => 'Source of feed data.')),
-                array('url_alias' =>
-                   array('type' => TYPE_STRING,
-                         'required' => FALSE,
-                         'description' => 'Short URL alias.')),
-                array('full_url_alias' =>
-                    array('type' => TYPE_STRING,
-                          'required' => FALSE,
-                          'description' => 'Full URL alias.')),
-    );
-    if(empty($lTableName)) {
-      return $schema;
-    }
-    else {
-      if(array_key_exists($lTableName, $schema)) {
-        return $schema[$lTableName];
-      }
-    }
-  } */ 
 
   /* Checks the requirements for the class. */
   private function _checkRequirements() {
@@ -748,8 +685,8 @@ class JobsDB {
   	}
   	
   	// The pdo_ext.class.php file is required.
-  	if(file_exists('..' . DIRECTORY_SEPARATOR . 'pdo_ext.class.php')) {
-  	  require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdo_ext.class.php');
+  	if(file_exists(dirname(__FILE__) . '/pdo_ext.class.php')) {
+  	  require_once(dirname(__FILE__) . '/pdo_ext.class.php');
   	}
   	else {
   	  throw new Exception('PDO_Ext class file not present.');

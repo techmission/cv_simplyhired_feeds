@@ -24,14 +24,14 @@ Based on Webstractions plugin.
 /* Constants - none as yet. */
 
 /* This class extends the SimplyHired_API class wrapper. */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'simplyhired-api.class.php');
+require_once(dirname(__FILE__) . '/simplyhired-api.class.php');
 
 /**
  * Main plugin class
  */
 class CV_SimplyHired_API extends SimplyHired_API {
 	/* Constants. */
-	const SOURCE_NAME = 'simplyhired'; // source name for database
+	const SOURCE_NAME = 'SimplyHired'; // source name for database (gets displayed, potentially)
 	
 	const QRY_DEFAULT = TRUE; // if the default query should be used
 	const LOCATION_DEFAULT = '02124'; // default search location
@@ -84,14 +84,14 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * Sets a default query for the system, using ORs for all our faith terms.
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
-	  $lQryIncludesArray = $this->_getDefaultQueryIncludes();
+	  $lQryIncludesArray = _get_include_terms(); // terms shared between classes
 	  // Leave out certain terms outside the US
 	  if($this->country != 'en-us') {
 	  	unset($lQryIncludesArray[8]);    // "ministry" - b/c used in gov't jobs
 	  	unset($lQryIncludesArray[3]);    // "minister" - b/c used in gov't jobs
 	  	unset($lQryIncludesArray[12]);   // "faith" - shows up in non-discrimination statements
 	  }
-	  $lQryExcludesArray = $this->_getDefaultQueryExcludes();
+	  $lQryExcludesArray = _get_exclude_terms(); // terms shared between classes
 	  // Put spaces around the operator.
 	  $lOperator = ' ' . $pOperator . ' ';
 	  $lDefaultQueryIncludes = '(' . implode($lOperator, $lQryIncludesArray) . ')';
@@ -104,146 +104,6 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  // urlencode the query
 	  $lDefaultQuery = urlencode($lDefaultQuery);
 	  return $lDefaultQuery;
-	}
-	
-	/* Defines the default query to be used for Christian job searches. */
-	private function _getDefaultQueryIncludes() {
-	  $lQryArray = array(0 => 'pastor',
-	  		             1 => 'church',
-	  		             2 => 'chaplain',
-	  		             3 => 'minister',            /* only in US */
-	  		             4 => 'christian', 
-	  		             5 => 'jesus', 
-	  		             6 => 'gospel', 
-	  		             7 => 'catholic',
-	  		             8 => 'ministry',            /* only in US */
-	  		             //9 => 'religious',         /* too generic */
-	  		             10 => 'evangelical',
-	  		             11 => 'christ',
-	  		             12 => 'faith',
-	  		             13 => 'Protestant',
-	  		             15 => '"rescue mission"',
-	  		             16 => '"Union Mission"',
-	  		             17 => '"Salvation Army"',
-	  		             18 => '"World Vision"',
-	  		             19 => 'missionary',
-	  		             20 => 'baptist',
-	  		             21 => 'lutheran',
-	  		             22 => 'methodist',
-	  		             23 => 'presbyterian',
-	  		             24 => 'pentecostal',
-	  		             25 => 'denominational',
-	  		             26 => 'evangelical',
-	  		             27 => 'calvary',
-	  		             28 => '"born again"',
-	  		             29 => 'orthodox',
-	  		             30 => 'anglican',
-	  		             //31 => 'reformed',          /* word stemming was causing this to be "reform" */
-	  		             32 => 'god',
-	  		             33 => 'apostolic',
-	  		             34 => 'worship',
-	  		             35 => 'choir',
-	  		             37 => 'chapel',             /* added this & those below */
-	  		             38 => 'diocese',
-	  		             39 => 'parish',
-	  		             40 => '"Assemblies of God"',
-	  		             41 => 'discipleship',
-	  		             //42 => '"Catholic Charities"',
-	  		             43 => '"Volunteers of America"',
-	  		             //44 => '"Catholic Relief"',
-	  		             45 => '"Food for the Poor"',
-	  		             46 => '"Samaritan\'s Purse"',
-	  		             //47 => '"Christian Aid"',
-	  		             48 => '"Compassion International"',
-	  		             //49 => '"Christian Children\'s Fund"',
-	  		             //50 => '"Catholic Medical Mission Board"',
-	  		             51 => '"Covenant House"',
-	  		             52 => '"Campus Crusade"',
-	  		             //53 => '"Christian Missionary Alliance"',
-	  		             54 => '"Trinity Broadcasting"',
-	  		             //55 => '"Christian Broadcasting"',
-	  		             56 => '"Young Life"',
-	  		             57 => '"Focus on the Family"',
-	  		             58 => 'bible',
-	  		             59 => '"Billy Graham"',
-	  		             //60 => '"Christian Blind Mission"',
-	  		             61 => '"Interchurch Medical Assistance"',
-	  		             62 => '"Christa Ministries"',
-	  		             63 => '"In Touch Ministries"',
-	  		             //64 => '"InterVarsity Christian Fellowship"',
-	  		             //65 => '"Fellowship of Christian Athletes"',
-	  		             //66 => '"Willow Creek Community Church"',
-	  		             67 => '"Operation Blessing"',
-	  		             68 => '"Prison Fellowship"',
-	  		             //69 => '"Church World Service"',
-	  		             70 => '"Medical Teams International"',
-	  		             71 => '"MAP International"',
-	  		             72 => '"Kingsway Charities"',
-	  		             73 => '"Gideons International"',
-	  		             //74 => '"Christian Appalachian Project"',
-	  		             75 => 'Biblica',
-	  		             76 => '"Life Outreach"',
-	  		             77 => '"World Relief"',
-	  		             78 => '"Trans World Radio"',
-	  		             79 => '"Mission Aviation Fellowship"',
-	  		             80 => '"Alliance Defense Fund"',
-	  		             81 => '"Blessings International"',
-	  		             82 => '"Eternal Word Television"',
-	  		             83 => 'cathedral',
-	                     84 => 'Chi Alpha',
-	                     85 => '"Church World Service"',
-	                     86 => 'clergy',
-	                     87 => 'congregational',
-	                     88 => '"crisis pregnancy"',
-	                     89 => 'deacon',
-	                     90 => 'diaconal',
-	                     91 => 'disciple',
-	                     92 => 'Episcopal',
-	                     93 => '"Feed the Children"',
-	                     94 => '"Focus on the Family"',
-	                     96 => 'Gideons',
-	                     97 => '"Here\'s Life Inner City"',
-	                     98 => 'holiness',
-	                     99 => 'intercession',
-	                     100 => 'Intervarsity',
-	                     101 => 'liturgy',
-	                     102 => 'Mennonite',
-	                     103 => 'monastery',
-	                     104 => 'Nazarene',
-	                     105 => 'priest',
-	                     106 => 'Quaker',
-	                     107 => 'RUF',
-	                     108 => '"spiritual director"',
-	                     109 => 'theologian',
-	                     110 => 'UYWI',
-	                     111 => 'vicar',
-	                     112 => 'Wesleyan',
-	                     113 => 'worship',
-	                     114 => 'holiness',
-	  		         );
-	  return $lQryArray; 	
-	}
-	
-	private function _getDefaultQueryExcludes() {
-	  $lQryArray = array(1 => 'Muslim', 
-	  		             2 => 'Jewish',
-	  		             3 => 'Unitarian',
-	  		             4 => 'Mormon',
-	  		             5 => 'hospital',            /* maybe add this back */
-	  		             6 => 'LGBT',                /* would be a source of controversy */
-	  		             7 => '"Falls Church"',
-	  		             8 => '"Church Street"',
-	  		             9 => '"Church Road"',
-	  		             10 => '"Gospel Street"',
-	  		             11 => '"Faith Technologies"',
-	  		             12 => '"Church\'s Chicken"',
-	  		             13 => '"Garden of the Gods"',
-	  		             14 => '"Christ Church"',
-	  		             15 => 'ChristianVolunteering.org',
-	  		             16 => 'healthcare',
-	  		             17 => '"medical center"',
-	  		           );
-	  return $lQryArray;
 	}
 
 	/**

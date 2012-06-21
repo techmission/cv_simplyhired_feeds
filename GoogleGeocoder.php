@@ -11,7 +11,7 @@
  */
 
 /* This file contains utility functions for parsing XML, as well as the HTTP request function. */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'xmltools.php');
+require_once(dirname(__FILE__) . '/xmltools.php');
 
 class GoogleGeocoder {
 
@@ -200,7 +200,8 @@ class GoogleGeocoder {
 	/**
 	 * Parses out a location from a v2 Google Maps API response.
 	 * Location data is returned as an associative array from the JSON response of the Google geocoder.
-	 * This collapses the 
+	 * This collapses the response from Google into a single association array that can be stored in 
+	 * the database.
 	 *
 	 * @param array $pJsonResponse
 	 * 
@@ -696,4 +697,3 @@ function dpm($var, $label = 'variable') {
     }
   }
 }
-

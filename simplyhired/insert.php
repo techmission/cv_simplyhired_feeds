@@ -6,9 +6,9 @@
  */
 
 // Load the class that does the actual requests to SimplyHired, via the API.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cv-simplyhired.class.php');
+require_once(dirname(__FILE__) . '/cv-simplyhired.class.php');
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
+require_once(dirname(__FILE__) . '/../jobsdb.class.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context: unused currently

@@ -39,7 +39,7 @@
 /***************************************************************/
 
 /* This file contains utility functions for parsing XML, as well as the HTTP request function. */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'xmltools.php');
+require_once(dirname(__FILE__) . '/../xmltools.php');
 
 /**
  *  Modifications to the class by Evan Donovan.
@@ -311,18 +311,18 @@ class SimplyHired_API {
 	 function getFooterScripts() {
 	 	$lDomain = $this->_getAPIDomain();
 		$output = '
-<!-- SimplyHired click tracking -->		
-<script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
-';
+          <!-- SimplyHired click tracking -->		
+          <script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
+        ';
 		return $output;
 	 }
 	 
 	 function printFooterScripts() {
 	 	$lDomain = $this->_getAPIDomain();
 		$output = '
-<!-- SimplyHired click tracking -->		
-<script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
-';
+          <!-- SimplyHired click tracking -->		
+          <script type="text/javascript" src="' . $lDomain . '/c/jobs-api/js/xml-v2.js"></script>
+        ';
 		echo $output;
 	 }
 	 

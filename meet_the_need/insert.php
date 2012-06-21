@@ -5,9 +5,9 @@
    *  All For Good feed data.
    */
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
+require_once(dirname(__FILE__) . '/../jobsdb.class.php');
 // Load the class for making HTTP requests and parsing XML.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'xmltools.php');
+require_once(dirname(__FILE__) . '/../xmltools.php');
 
 // Define constants.
 define('IS_CLI', PHP_SAPI === 'cli'); // whether this is command-line context
@@ -26,131 +26,105 @@ $logging = FALSE;
  * 
  * Usage examples:
  * 
- * php insert.php 45 54
+ * php insert.php
  */
-if(!empty($argv[1]) && !empty($argv[2])) {
-  $lat = $argv[1];
-  $long = $argv[2];
-  insertOpps(fetchOpps($lat, $long));
-  exit(0);
-}
-else {
-  echo "This is a command line script. \n";
-  echo "Usage: \n";
-  echo "php " . $argv[0] . " <latitude> <logitude>" . "\n";
-  exit(1); // Exit with error status code.
+insertOpps(fetchOpps());
+exit(0);
+
+/* Make HTTP request for feed. */
+function getFeed($type) {
+ $response = make_http_request(
+   'https://meettheneed.org/connect/v1/' . $type,
+   array(
+     'key'    => 'aea0214e4fd160562a9c128bcccfd3c9',
+     'type'   => 'xml',
+   )
+ );
+ if(isset($response->body) && !empty($response->body)) {
+  // Do a try/catch on parsing to XML.
+  try {
+   // Turn off LibXML errorsi.
+   libxml_use_internal_errors(FALSE);
+   return new SimpleXMLElement($response->body);
+  }
+  catch (Exception $e) {
+   echo 'error parsing XML';
+   return null;
+  }
+ }
+ return null;
 }
 
+/* Parse feed. */
 function fetchOpps() {
-    $needs = getFeed('needs')->Need;
-    $_orgs = getFeed('orgs')->Organization;
+    $needs = xt_xml_to_array(getFeed('needs'));
+    $needs = $needs['Need'];
+    $_orgs = xt_xml_to_array(getFeed('organizations'));
+    $_orgs = $_orgs['Organization'];
     $orgs = array();
     foreach($_orgs as $o) {
-    	$orgs[$o->ID] = $o;
+    	$orgs[$o['ID']] = $o;
     }
-	
     $opps = array();
     foreach($needs as $need) {
-    	if($need->QuantityType != 'Volunteers') continue;  	
-    	$org = $orgs[$need->OrganizationID];
-    	$timing_type = array_keys($need->Timing->children());
-    	$timing_type = $timing_types[0];
-    	$start_date = "";
-    	$end_date = "";
-    	switch($timingType) {
+    	if($need['QuantityType'] != 'Volunteers') continue;  	
+    	$org = $orgs[$need['OrganizationID']];
+    	$timing_type = array_keys($need['Timing']);
+        $timing_type = $timing_type[0];
+    	$start_date = null;
+    	$end_date = null;
+        echo $timing_type;
+    	switch($timing_type) {
     		case "SingleDay":
-    			$start_date = $need->Timing->SingleDay->Date;
-    			$end_date = $need->Timing->SingleDay->Date;
+    			$start_date = $need['Timing']['SingleDay']['Date'];
+    			$end_date = $need['Timing']['SingleDay']['Date'];
     			break;
     		case "Recurring":
-    			$start_date = $need->Timing->Recurring->StartDate;
-    			$end_date = $need->Timing->Recurring->EndDate;
+    			$start_date = $need['Timing']['Recurring']['StartDate'];
+    			$end_date = $need['Timing']['Recurring']['EndDate'];
     			break;
     		case "Ongoing":
-    			$end_date = $need->Timing->Ongoing->EndDate;
+    			$end_date = $need['Timing']['Ongoing']['EndDate'];
     			break;
-    	}
-    	
+    	}    	
+        if($start_date) $start_date = strtotime($start_date);
+        if($end_date) $end_date = strtotime($end_date);
+
     	$opps[] = array(
-    		"title" => $need->Description,
-    		"description" => $need->Description,
-    		"short_description" => $need->Description,
-    		"source" => "Meet The Need", // can we make this all lower-case and use underscores? ~ead
-    		"org_name" => $org->Name,
-    		"referralurl" => "",
-    		"source_guid" => $need->ID,
-    	    "location_city" => $org->City,
-    		"location_province" => $org->State,
-    		"location_postal_code" => $org->PostalCode,
-    		"location_country" => "us",
-    		"start_date" => "",
-    	    "end_date" => "",
-    		"latitude" => $need->Latitude,
-    		"longitude" => $need->Longitude,
-    		"created_date" => strtotime($need->Meta->Added),
-    		"changed_date" => strtotime($need->Meta->Added) // same as created
+            "position_type_tid_1" => 4794,
+            "published"           => 1,
+    		"title"               => $need['Title'],
+    		"description"         => $need['Description'],
+    		"short_description"   => $need['Description'],
+    		"source"              => "Meet The Need",
+    		"org_name"            => $org['Name'],
+    		"referralurl"         => $need['URL'],
+    		"source_guid"         => $need['ID'],
+         	"location_city"       => $org['City'],
+    		"location_province"   => $org['State'],
+    		"location_postal_code" => $org['PostalCode'],
+    		"location_country"     => "us",
+    		"start_date"          => $start_date,
+    	    "end_date"            => $end_date,
+    		"latitude"            => $need['Latitude'],
+    		"longitude"           => $need['Longitude'],
+    		"created_date"        => strtotime($need['Meta']['Added']),
+    		"changed_date"        => strtotime($need['Meta']['Added'])
     	);
     }
-
-    // why is this code from AFG in here? ~ead
-	/* 
-	   $opps = array();
-	   foreach($xml->channel->item as $o) {
-        $opp = array();
-          foreach($o->children('fp', true) as $k => $v) $opp[$k] = $v;
-          foreach($o->children() as $k => $v) $opp[$k] = $v;
-          $opps[] = $opp;
-        }
-        foreach($opps as $opp) {
-                $coords = explode(",", $opp['latlong']);
-                $opportunities[] = array(
-			"title"       => $opp['title'],
-			"description" => $opp['description'],
-			"teaser"      => $opp['description'],
-			"source"      => "All For Good",
-			"org_name"    => $opp['sponsoringOrganizationName'],
-			"referralurl" => $opp['xml_url'],
-			"source_guid" => $opp['id'],
-			"city"        => $opp['city'],
-			"province"    => $opp['region'],
-			"postal_code" => $opp['postalCode'],
-			"country"     => $opp['country'],
-			"start_date"  => $opp['startDate'],
-			"end_date"    => strtotime($opp['endDate']),
-			"latitude"    => $coords[0],
-			"longitude"   => $coords[1],
-			"created"     => time(),
-			"changed"     => time()
-		);
-	} */
-	return $opps;
+    return $opps;
 }
 
-function getFeed($type) {
-	$response = make_http_request(
-		'https://meettheneed.org/connect/v1/' . $type,
-		array(
-			'key'    => 'aea0214e4fd160562a9c128bcccfd3c9',
-			'type'   => 'xml',
-		)
-	);
-	if(isset($response->body) && !empty($response->body)) {
-		// Do a try/catch on parsing to XML.
-		try {
-			// Turn off LibXML errors.
-			libxml_use_internal_errors(FALSE);
-			return new SimpleXMLElement($response->body);
-		}
-		catch (Exception $e) {
-			echo 'error parsing xml';
-			return null;
-		}
+/* Insert opportunities. */
+function insertOpps($opps) {
+	try {
+      $db = new JobsDB();
 	}
-	return null;
-}
-
-function insertOpps($jobs) {
-	$db = new JobsDB();
+	catch(Exception $e) {
+	 // Print error and exit.
+	 echo "Exception: " . $e->getMessage() . "\n";
+	 exit(1);
+	}
 	$db->connect();
-	$db->createRecords($jobs);
+	$db->createRecords($opps);
 }
