@@ -91,8 +91,8 @@ function fetchOpps() {
         if($end_date) $end_date = strtotime($end_date);
 
     	$opps[] = array(
-            "position_type_tid_1" => 4794,
-            "published"           => 1,
+                "position_type"       => 4794,
+                "status"              => 1,
     		"title"               => $need['Title'],
     		"description"         => $need['Description'],
     		"short_description"   => $need['Description'],
@@ -105,11 +105,11 @@ function fetchOpps() {
     		"location_postal_code" => $org['PostalCode'],
     		"location_country"     => "us",
     		"start_date"          => $start_date,
-    	    "end_date"            => $end_date,
+    	        "end_date"            => $end_date,
     		"latitude"            => $need['Latitude'],
     		"longitude"           => $need['Longitude'],
-    		"created_date"        => strtotime($need['Meta']['Added']),
-    		"changed_date"        => strtotime($need['Meta']['Added'])
+    		"created"        => strtotime($need['Meta']['Added']),
+    		"changed"        => strtotime($need['Meta']['Added'])
     	);
     }
     return $opps;

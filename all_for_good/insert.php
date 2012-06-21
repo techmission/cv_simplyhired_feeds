@@ -99,11 +99,11 @@ function fetchOpps($lat, $long) {
 			"location_postal_code" => $opp['postalCode'],
 			"location_country"     => $opp['country'],
 			"start_date"  => $opp['startDate'],
-			"end_date"    => strtotime($opp['endDate']),
+			"end_date"    => $opp['endDate'],
 			"latitude"    => $coords[0],
 			"longitude"   => $coords[1],
-			"created_date"     => time(), // is there nothing in the feed to correlate with this? ~ead
-			"changed_date"     => time()
+			"created"     => strftime('%Y-%m-%d %H:%M:%S'), // is there nothing in the feed to correlate with this? ~ead
+			"changed"     => strftime('%Y-%m-%d %H:%M:%S')
 		);
 	}
 	return $opportunities;

@@ -418,6 +418,7 @@ class JobsDB {
           if(!$this->isDryRun) {
             $stmt->execute($lPdoValues);
             $lResult = $stmt->rowCount();
+            if($lResult == 0) var_dump($stmt->errorInfo());
             $lNumRows = $lNumRows + $lResult;
           }
         }
