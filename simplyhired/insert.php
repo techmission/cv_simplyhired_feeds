@@ -85,7 +85,6 @@ if (class_exists( 'CV_SimplyHired_API')) {
         // In the background, run the query and turn the results into the proper format.
 	    $jobs = array();
 	    $jobs = $cvsha->fetchJobs(); // Will use the default query terms.
-	
 	    // Echo the jobs array.
 	    //var_dump($jobs);
     

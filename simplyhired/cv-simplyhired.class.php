@@ -85,11 +85,16 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 */
 	public function buildDefaultQuery($pOperator = self::OP_OR) {
 	  $lQryIncludesArray = _get_include_terms(); // terms shared between classes
+          // Leave out terms that are not explicitly Christian.
+          unset($lQryIncludesArray[116]);  // "group home"
+          unset($lQryIncludesArray[117]);  // "soup kitchen"
+          unset($lQryIncludesArray[118]);  // "food pantry"
+          unset($lQryIncludesArray[119]);   // "homeless shelter"
 	  // Leave out certain terms outside the US
 	  if($this->country != 'en-us') {
-	  	unset($lQryIncludesArray[8]);    // "ministry" - b/c used in gov't jobs
-	  	unset($lQryIncludesArray[3]);    // "minister" - b/c used in gov't jobs
-	  	unset($lQryIncludesArray[12]);   // "faith" - shows up in non-discrimination statements
+	    unset($lQryIncludesArray[8]);    // "ministry" - b/c used in gov't jobs
+	    unset($lQryIncludesArray[3]);    // "minister" - b/c used in gov't jobs
+	    unset($lQryIncludesArray[12]);   // "faith" - shows up in non-discrimination statements
 	  }
 	  $lQryExcludesArray = _get_exclude_terms(); // terms shared between classes
 	  // Put spaces around the operator.
@@ -232,8 +237,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		    }
 		    $lJobsArray[$i]['location_country'] = $country_code;
 		    // Get the created and changed dates.
-		    $lJobsArray[$i]['created_date'] = strtotime(xt_getInnerXML($res->dp));
-		    $lJobsArray[$i]['changed_date'] = strtotime(xt_getInnerXML($res->ls));
+		    $lJobsArray[$i]['created'] = strtotime(xt_getInnerXML($res->dp));
+		    $lJobsArray[$i]['changed'] = strtotime(xt_getInnerXML($res->ls));
 		    // Get the job description.
 		    $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
 		    // Teaser should have same value as description, for this provider.

@@ -168,20 +168,20 @@ class JobsDB {
   	}
   	// Execute the query.
   	try {
-  		// Begin a transaction.
-  		$this->dbh->beginTransaction();
-  		$lPdoSql = 'DELETE FROM ' . $this->tableName . ' WHERE source = "' . $pSource . '"';
-  		if($this->isLogging && function_exists('krumo')) {
-  		  krumo($lPdoSql);
-  		}
-  		// Only do the delete if this is not a dry run.
-  		if(!$this->isDryRun) {
-  	      $stmt = $this->dbh->prepare($lPdoSql);
-  		  $stmt->execute();
-  		  $lNumRows = $stmt->rowCount();
-  		}
-  		// End the transaction.
-  		$this->dbh->commit();
+  	 // Begin a transaction.
+  	 $this->dbh->beginTransaction();
+  	 $lPdoSql = 'DELETE FROM ' . $this->tableName . ' WHERE source = "' . $pSource . '"';
+  	 if($this->isLogging && function_exists('krumo')) {
+  	   krumo($lPdoSql);
+  	 }
+  	 // Only do the delete if this is not a dry run.
+  	 if(!$this->isDryRun) {
+  	   $stmt = $this->dbh->prepare($lPdoSql);
+  	   $stmt->execute();
+  	   $lNumRows = $stmt->rowCount();
+  	 }
+  	 // End the transaction.
+  	 $this->dbh->commit();
   	}
   	// Catch an error if there was one.
   	catch(PDOException $e) {
@@ -460,7 +460,7 @@ class JobsDB {
   		$lFields = '*';
   	}
   	else if($pSelectFields == self::FIELDS_CORE) {
-  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, location_street, location_city, location_province, location_postal_code, location_country, latitude, longitude, created_date, changed_date, description';
+  		$lFields = 'id, source_guid, guid, title, org_name, referralurl, location_street, location_city, location_province, location_postal_code, location_country, latitude, longitude, created, changed, description';
   	}
   	else if($pSelectFields == self::FIELDS_GUID) {
   		$lFields = 'id, guid, title';

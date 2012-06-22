@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # Define shorthand names for the scripts so they can be called more efficiently.
-SCRIPT_PATH=/home/techmi5/public_html/gospelpedia/feed_importers/simplyhired
+SCRIPT_PATH=`dirname $0`
 SCRIPT=insert.php
 DELETE_SCRIPT=delete.php
 GEOCODE_SCRIPT=geocode.php
-
-cd $SCRIPT_PATH
 
 # Step 1: Delete what is currently stored.
 php $SCRIPT_PATH/$DELETE_SCRIPT

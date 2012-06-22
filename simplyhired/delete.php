@@ -37,8 +37,9 @@ if (class_exists( 'JobsDb')) {
 	$jobsDb->connect();
 	
 	// Delete all old jobs records for compliance with SimplyHired API TOS.
-	$jobsDb->truncate('SimplyHired');
-	
+	$numDeleted = $jobsDb->truncate('SimplyHired');
+	//echo "Number deleted is: " . $numDeleted;
+
 	// Empty the log file.
 	// This will create it if it doesn't already exist.
 	$handle = @fopen(DEFAULT_LOGFILE, 'w');

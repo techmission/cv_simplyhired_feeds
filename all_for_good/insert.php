@@ -48,9 +48,6 @@ function fetchOpps($lat, $long) {
 	$include_terms = _get_include_terms();
 	$exclude_terms = _get_exclude_terms();
 
-    foreach($include_terms as $k => $v) $include_terms[$k] = '"' . $include_terms[$k] . '"'; 
-    foreach($exclude_terms as $k => $v) $exclude_terms[$k] = '"' . $exclude_terms[$k] . '"';
-
 	$response = make_http_request(
 	  'http://www.allforgood.org/api/volopps', 
 	  array(
