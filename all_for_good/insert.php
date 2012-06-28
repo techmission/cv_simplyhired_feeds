@@ -88,14 +88,18 @@ function fetchOpps($lat, $long) {
         }
         foreach($opps as $opp) {
           $coords = explode(",", $opp['latlong']);
+          
+          $url_pieces = explode('#', $opp['xml_url']);
+          $url = $url_pieces[0];
+
           $opportunities[] = array(
 			"title"       => $opp['title'],
                         "description"  => $opp['description'],
 			"short_description"  => $opp['description'],
 			"source"      => "All For Good", // can this be lowercase w/underscores ~ead
 			"org_name"    => $opp['sponsoringOrganizationName'],
-			"referralurl" => $opp['xml_url'],
-			"source_guid" => $opp['id'],
+			"referralurl" => $url,
+			"source_guid" => $url,
 			"location_city"        => $opp['city'], // do these actually have values? i think you may need to
 			"location_province"    => $opp['region'], // reverse-geocode to get these ~ead
 			"location_postal_code" => $opp['postalCode'],
