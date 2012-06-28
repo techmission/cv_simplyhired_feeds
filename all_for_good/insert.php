@@ -48,17 +48,22 @@ function fetchOpps($lat, $long) {
 	$include_terms = _get_include_terms();
 	$exclude_terms = _get_exclude_terms();
 
+        var_dump(count($include_terms));
+        var_dump(count($exclude_terms));
+
 	$response = make_http_request(
 	  'http://www.allforgood.org/api/volopps', 
 	  array(
 	         'key'       => 'christianvolunteering',
 	  	      'output'   => 'rss',
 	  	      'vol_loc'  => $lat . ',' . $long,
-	  	      'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 50)).  ') AND -(' . implode(' OR ', array_slice($exclude_terms, 0, 3)) . ')',
+	  	      'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 50)).  ') AND -(' . implode(' OR ', $exclude_terms) . ')',
 	  	      'num'      => '100',
 	  	      'vol_dist' => '100'
 	  )
 	);
+
+        var_dump($response);
 
 	if(isset($response->body) && !empty($response->body)) {
 		// Do a try/catch on parsing to XML.
@@ -85,7 +90,7 @@ function fetchOpps($lat, $long) {
           $coords = explode(",", $opp['latlong']);
           $opportunities[] = array(
 			"title"       => $opp['title'],
-            "description"  => $opp['description'],
+                        "description"  => $opp['description'],
 			"short_description"  => $opp['description'],
 			"source"      => "All For Good", // can this be lowercase w/underscores ~ead
 			"org_name"    => $opp['sponsoringOrganizationName'],
