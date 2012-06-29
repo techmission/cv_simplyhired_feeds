@@ -1,9 +1,9 @@
 <?php
 
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
 // Load the Google geocoder class.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'GoogleGeocoder.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GoogleGeocoder.php');
 
 // Define constants.
 define('TABLE_FEEDS_JOBS', 'tbl_opportunities'); // denormalized table for inserts
@@ -34,10 +34,21 @@ if (class_exists( 'JobsDb')) {
   // Get back all the jobs results with no latitude or longitude as a PDO resultset.
   if(!is_null($jobsDb->dbh)) {
     $pdoSql = 'SELECT id, latitude, longitude FROM ' . $jobsDb->tableName;
-    $pdoSql .= ' WHERE source in( \'All For Good\', \'Meet The Need\') LIMIT 2499'; // need to limit for Google API requests
+    $pdoSql .= ' WHERE  latitude is not null 
+                 and longitude is not null 
+                 and (location_street is null
+                   or location_city is null
+                   or location_province is null
+                   or location_postal_code is null
+                   or location_country is null
+                   or length(location_street) = 0 
+                   or length(location_city) = 0
+                   or length(location_province) = 0
+                   or length(location_postal_code) = 0
+                   or length(location_country) = 0)
+                limit 2499'; // need to limit for Google API requests
     $stmt = $jobsDb->dbh->query($pdoSql);
   }
-  
   // Initialize the geocoder.
   try {
     $geocoder = new GoogleGeocoder(GMAP_KEY);
@@ -45,7 +56,7 @@ if (class_exists( 'JobsDb')) {
   catch(Exception $e) {
     echo $e->getMessage();  	
   }
-  
+ 
   // Location fields from SimplyHired:
   // id, street, city, province, postal_code, country
   $updated_jobs = array();
