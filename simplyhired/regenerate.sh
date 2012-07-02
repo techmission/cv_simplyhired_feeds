@@ -6,8 +6,10 @@ SCRIPT=insert.php
 DELETE_SCRIPT=delete.php
 GEOCODE_SCRIPT=geocode.php
 
+PHP=/usr/local/bin/php
+
 # Step 1: Delete what is currently stored.
-php $SCRIPT_PATH/$DELETE_SCRIPT
+$PHP $SCRIPT_PATH/$DELETE_SCRIPT
 
 # Step 2: Request new jobs.
 
@@ -17,51 +19,51 @@ php $SCRIPT_PATH/$DELETE_SCRIPT
 # See distribution at http://batchgeo.com/map/589ea74668cbbf7a7d10ffa6d274d14d
 # For initial results, see http://batchgeo.com/map/8ef41c18859e44e3f8944082ef8b9c67
 
-php $SCRIPT_PATH/$SCRIPT 03846                       #  Jackson, NH (03846)            - 24, 24
-php $SCRIPT_PATH/$SCRIPT 06281                       #  Woodstock, CT (06281)          - 360, 155
-php $SCRIPT_PATH/$SCRIPT 13420                       #  Old Forge, NY (13420)          - 33, 27
-php $SCRIPT_PATH/$SCRIPT 14744                       #  Houghton, NY (14744)           - 23, 19
-php $SCRIPT_PATH/$SCRIPT 17228                       #  Harrisonville, PA (17228)      - 433, 233
-php $SCRIPT_PATH/$SCRIPT 18360                       #  Stroudsburg, PA (18360)        - 400, 165
-php $SCRIPT_PATH/$SCRIPT 19968                       #  Milton, DE (19968)             - 376, 28
-php $SCRIPT_PATH/$SCRIPT 23833                       #  Church Rd, VA (23833)          - 302, 101
-php $SCRIPT_PATH/$SCRIPT 25268                       #  Orma, WV (25268)               - 43, 40
-php $SCRIPT_PATH/$SCRIPT 28585                       #  Trenton, NC (28585)            - 42, 20
-php $SCRIPT_PATH/$SCRIPT 28634                       #  Harmony, NC (28634)            - 334, 122
-php $SCRIPT_PATH/$SCRIPT 29056                       #  Greeleyville, SC (29056)       - 56, 28
-php $SCRIPT_PATH/$SCRIPT 30240                       #  La Grange, GA (30240)          - 302, 104
-php $SCRIPT_PATH/$SCRIPT 30624                       #  Bowman, GA (30624)             - 304, 11
-php $SCRIPT_PATH/$SCRIPT 31563                       #  Surrency, GA (31563)           - 18, 16
-php $SCRIPT_PATH/$SCRIPT 32442                       #  Grand Ridge, FL (32442)        - 9, 8
-php $SCRIPT_PATH/$SCRIPT 33440                       #  Clewiston, FL (33440)          - 61, 61
-php $SCRIPT_PATH/$SCRIPT 34481                       #  Ocala, FL (34481)              - 302, 94
-php $SCRIPT_PATH/$SCRIPT 36524                       #  Coffeeville, AL (36524)        - 13, 12
-php $SCRIPT_PATH/$SCRIPT 37083                       #  Lafayette, TN (37083)          - 60, 60
-php $SCRIPT_PATH/$SCRIPT 38301                       #  Jackson, TN (38301)            - 360, 158
-php $SCRIPT_PATH/$SCRIPT 38774                       #  Shelby, MS (38774)             - 467, 151
-php $SCRIPT_PATH/$SCRIPT 41017                       #  Fort Mitchell, KY (41017)      - 322, 105
-php $SCRIPT_PATH/$SCRIPT 44450                       #  North Bloomfield, OH (44450)   - 78, 65
-php $SCRIPT_PATH/$SCRIPT 45840                       #  Findlay, OH (45840)            - 85, 46
-php $SCRIPT_PATH/$SCRIPT 48415                       #  Birch Run, MI (48415)          - 61, 31
-php $SCRIPT_PATH/$SCRIPT 49684                       #  Traverse City, MI (49684)      - 13, 8      
-php $SCRIPT_PATH/$SCRIPT 50060                       #  Corydon, IA (50060)            - 338, 140
-php $SCRIPT_PATH/$SCRIPT 50401                       #  Mason City, IA (50401)         - 82, 68
-php $SCRIPT_PATH/$SCRIPT 52031                       #  Bellevue, IA (52031)           - 38, 33
-php $SCRIPT_PATH/$SCRIPT 54473                       #  Rosholt, WI (54473)            - 70, 63
-php $SCRIPT_PATH/$SCRIPT 54893                       #  Webster, WI (54893)            - 343, 136
-php $SCRIPT_PATH/$SCRIPT 56241                       #  Granite Falls, MN (56241)      - 58, 43
-php $SCRIPT_PATH/$SCRIPT 56639                       #  Effie, MN (56639)              - 17, 17
-php $SCRIPT_PATH/$SCRIPT 57544                       #  Kennebec, SD (57544)           - 17, 17
-php $SCRIPT_PATH/$SCRIPT 57769                       #  Piedmont, SD (57769)           - 7, 7
-php $SCRIPT_PATH/$SCRIPT 58420                       #  Buchanan, ND (58420)           - 49, 49
-php $SCRIPT_PATH/$SCRIPT 58632                       #  Golva, ND (58632)              - 1, 1
-php $SCRIPT_PATH/$SCRIPT 59064                       #  Pompeys Pillar, Mt (59064)     - 14, 14
-php $SCRIPT_PATH/$SCRIPT 59501                       #  Havre, Mt (59501)              - 2, 2
-php $SCRIPT_PATH/$SCRIPT 59635                       #  East Helena, Mt (59635)        - 3, 2
-php $SCRIPT_PATH/$SCRIPT 59864                       #  Ronan, Mt (59864)              - 3, 3
-php $SCRIPT_PATH/$SCRIPT 60091                       #  Wilmette, IL (60091)           - 361, 144
-php $SCRIPT_PATH/$SCRIPT 61944                       #  Paris, IL (61944)              - 32, 18
-php $SCRIPT_PATH/$SCRIPT 62346                       #  La Prairie, IL (62346)         - 29, 8
+$PHP $SCRIPT_PATH/$SCRIPT 03846                       #  Jackson, NH (03846)            - 24, 24
+$PHP $SCRIPT_PATH/$SCRIPT 06281                       #  Woodstock, CT (06281)          - 360, 155
+$PHP $SCRIPT_PATH/$SCRIPT 13420                       #  Old Forge, NY (13420)          - 33, 27
+$PHP $SCRIPT_PATH/$SCRIPT 14744                       #  Houghton, NY (14744)           - 23, 19
+$PHP $SCRIPT_PATH/$SCRIPT 17228                       #  Harrisonville, PA (17228)      - 433, 233
+$PHP $SCRIPT_PATH/$SCRIPT 18360                       #  Stroudsburg, PA (18360)        - 400, 165
+$PHP $SCRIPT_PATH/$SCRIPT 19968                       #  Milton, DE (19968)             - 376, 28
+$PHP $SCRIPT_PATH/$SCRIPT 23833                       #  Church Rd, VA (23833)          - 302, 101
+$PHP $SCRIPT_PATH/$SCRIPT 25268                       #  Orma, WV (25268)               - 43, 40
+$PHP $SCRIPT_PATH/$SCRIPT 28585                       #  Trenton, NC (28585)            - 42, 20
+$PHP $SCRIPT_PATH/$SCRIPT 28634                       #  Harmony, NC (28634)            - 334, 122
+$PHP $SCRIPT_PATH/$SCRIPT 29056                       #  Greeleyville, SC (29056)       - 56, 28
+$PHP $SCRIPT_PATH/$SCRIPT 30240                       #  La Grange, GA (30240)          - 302, 104
+$PHP $SCRIPT_PATH/$SCRIPT 30624                       #  Bowman, GA (30624)             - 304, 11
+$PHP $SCRIPT_PATH/$SCRIPT 31563                       #  Surrency, GA (31563)           - 18, 16
+$PHP $SCRIPT_PATH/$SCRIPT 32442                       #  Grand Ridge, FL (32442)        - 9, 8
+$PHP $SCRIPT_PATH/$SCRIPT 33440                       #  Clewiston, FL (33440)          - 61, 61
+$PHP $SCRIPT_PATH/$SCRIPT 34481                       #  Ocala, FL (34481)              - 302, 94
+$PHP $SCRIPT_PATH/$SCRIPT 36524                       #  Coffeeville, AL (36524)        - 13, 12
+$PHP $SCRIPT_PATH/$SCRIPT 37083                       #  Lafayette, TN (37083)          - 60, 60
+$PHP $SCRIPT_PATH/$SCRIPT 38301                       #  Jackson, TN (38301)            - 360, 158
+$PHP $SCRIPT_PATH/$SCRIPT 38774                       #  Shelby, MS (38774)             - 467, 151
+$PHP $SCRIPT_PATH/$SCRIPT 41017                       #  Fort Mitchell, KY (41017)      - 322, 105
+$PHP $SCRIPT_PATH/$SCRIPT 44450                       #  North Bloomfield, OH (44450)   - 78, 65
+$PHP $SCRIPT_PATH/$SCRIPT 45840                       #  Findlay, OH (45840)            - 85, 46
+$PHP $SCRIPT_PATH/$SCRIPT 48415                       #  Birch Run, MI (48415)          - 61, 31
+$PHP $SCRIPT_PATH/$SCRIPT 49684                       #  Traverse City, MI (49684)      - 13, 8      
+$PHP $SCRIPT_PATH/$SCRIPT 50060                       #  Corydon, IA (50060)            - 338, 140
+$PHP $SCRIPT_PATH/$SCRIPT 50401                       #  Mason City, IA (50401)         - 82, 68
+$PHP $SCRIPT_PATH/$SCRIPT 52031                       #  Bellevue, IA (52031)           - 38, 33
+$PHP $SCRIPT_PATH/$SCRIPT 54473                       #  Rosholt, WI (54473)            - 70, 63
+$PHP $SCRIPT_PATH/$SCRIPT 54893                       #  Webster, WI (54893)            - 343, 136
+$PHP $SCRIPT_PATH/$SCRIPT 56241                       #  Granite Falls, MN (56241)      - 58, 43
+$PHP $SCRIPT_PATH/$SCRIPT 56639                       #  Effie, MN (56639)              - 17, 17
+$PHP $SCRIPT_PATH/$SCRIPT 57544                       #  Kennebec, SD (57544)           - 17, 17
+$PHP $SCRIPT_PATH/$SCRIPT 57769                       #  Piedmont, SD (57769)           - 7, 7
+$PHP $SCRIPT_PATH/$SCRIPT 58420                       #  Buchanan, ND (58420)           - 49, 49
+$PHP $SCRIPT_PATH/$SCRIPT 58632                       #  Golva, ND (58632)              - 1, 1
+$PHP $SCRIPT_PATH/$SCRIPT 59064                       #  Pompeys Pillar, Mt (59064)     - 14, 14
+$PHP $SCRIPT_PATH/$SCRIPT 59501                       #  Havre, Mt (59501)              - 2, 2
+$PHP $SCRIPT_PATH/$SCRIPT 59635                       #  East Helena, Mt (59635)        - 3, 2
+$PHP $SCRIPT_PATH/$SCRIPT 59864                       #  Ronan, Mt (59864)              - 3, 3
+$PHP $SCRIPT_PATH/$SCRIPT 60091                       #  Wilmette, IL (60091)           - 361, 144
+$PHP $SCRIPT_PATH/$SCRIPT 61944                       #  Paris, IL (61944)              - 32, 18
+$PHP $SCRIPT_PATH/$SCRIPT 62346                       #  La Prairie, IL (62346)         - 29, 8
 php $SCRIPT_PATH/$SCRIPT 63755                       #  Jackson, MO (63755)            - 56, 51
 php $SCRIPT_PATH/$SCRIPT 64730                       #  Butler, MO (64730)             - 37, 37
 php $SCRIPT_PATH/$SCRIPT 66850                       #  Elmdale, KS (66850)            - 27, 21
