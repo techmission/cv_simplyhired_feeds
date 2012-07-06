@@ -1,9 +1,9 @@
 <?php
 
 // Load the class for doing the inserts to the database.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'jobsdb.class.php');
+require_once(dirname(__FILE__) . '/../jobsdb.class.php');
 // Load the Google geocoder class.
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'GoogleGeocoder.php');
+require_once(dirname(__FILE__) . '/../GoogleGeocoder.php');
 
 // Define constants.
 define('TABLE_FEEDS_JOBS', 'tbl_opportunities'); // denormalized table for inserts
