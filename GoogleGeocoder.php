@@ -647,35 +647,35 @@ class GoogleGeocoder {
 		// Otherwise, build query string parameter off of address values.
 		else {
 			$address = '';
-			if (!empty($location['street'])) {
-				$address .= $location['street'];
+			if (!empty($location['location_street'])) {
+				$address .= $location['location_street'];
 			}
-			if (!empty($location['city'])) {
-				if (!empty($location['street'])) {
+			if (!empty($location['location_city'])) {
+				if (!empty($location['location_street'])) {
 					$address .= ', ';
 				}
-				$address .= $location['city'];
+				$address .= $location['location_city'];
 			}
 
-			if (!empty($location['province'])) {
-				if (!empty($location['street']) || !empty($location['city'])) {
+			if (!empty($location['location_province'])) {
+				if (!empty($location['location_street']) || !empty($location['location_city'])) {
 					$address .= ', ';
 				}
 				// @todo: Fix this!
-				if (substr($location['province'], 0, 3) == $location['country'] .'-') {
-					$address .= substr($location['province'], 3);
+				if (substr($location['location_province'], 0, 3) == $location['location_country'] .'-') {
+					$address .= substr($location['location_province'], 3);
 					//watchdog('Location', 'BUG: Country found in province attribute.');
 				}
 				else {
-					$address .= $location['province'];
+					$address .= $location['location_province'];
 				}
 			}
 
-			if (!empty($location['postal_code'])) {
+			if (!empty($location['location_postal_code'])) {
 				if (!empty($address)) {
 					$address .= ' ';
 				}
-				$address .= $location['postal_code'];
+				$address .= $location['location_postal_code'];
 			}
 		}
 
