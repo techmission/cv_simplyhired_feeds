@@ -26,7 +26,7 @@ $PHP $SCRIPT_PATH/$SCRIPT 14744                       #  Houghton, NY (14744)   
 $PHP $SCRIPT_PATH/$SCRIPT 17228                       #  Harrisonville, PA (17228)      - 433, 233
 $PHP $SCRIPT_PATH/$SCRIPT 18360                       #  Stroudsburg, PA (18360)        - 400, 165
 $PHP $SCRIPT_PATH/$SCRIPT 19968                       #  Milton, DE (19968)             - 376, 28
-$PHP $SCRIPT_PATH/$SCRIPT 23833                       #  Church Rd, VA (23833)          - 302, 101
+$PHP $SCRIPT_PATH/$SCRIPT 23832                       #  Chesterfield, VA (23833)          - 302, 101
 $PHP $SCRIPT_PATH/$SCRIPT 25268                       #  Orma, WV (25268)               - 43, 40
 $PHP $SCRIPT_PATH/$SCRIPT 28585                       #  Trenton, NC (28585)            - 42, 20
 $PHP $SCRIPT_PATH/$SCRIPT 28634                       #  Harmony, NC (28634)            - 334, 122
