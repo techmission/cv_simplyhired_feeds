@@ -129,7 +129,7 @@ function _get_include_terms() {
    6 => 'gospel', 
    7 => 'catholic',
    8 => 'ministry',            /* only in US */
-   10 => 'evangelical',
+   //10 => 'evangelical',
    11 => 'christ',
    12 => 'faith-based',
    13 => 'Protestant',
@@ -143,7 +143,7 @@ function _get_include_terms() {
    23 => 'presbyterian',
    24 => 'pentecostal',
    25 => 'denominational',
-   26 => 'evangelical',
+   //26 => 'evangelical',
    27 => 'calvary',
    28 => '"born again"',
    29 => 'orthodox',
