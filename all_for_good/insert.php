@@ -48,8 +48,8 @@ function fetchOpps($lat, $long) {
 	$include_terms = _get_include_terms();
 	$exclude_terms = _get_exclude_terms();
 
-        var_dump(count($include_terms));
-        var_dump(count($exclude_terms));
+        // var_dump(count($include_terms));
+        // var_dump(count($exclude_terms));
 
 	$response = make_http_request(
 	  'http://www.allforgood.org/api/volopps', 
@@ -57,13 +57,13 @@ function fetchOpps($lat, $long) {
 	         'key'       => 'christianvolunteering',
 	  	      'output'   => 'rss',
 	  	      'vol_loc'  => $lat . ',' . $long,
-	  	      'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 50)).  ') AND -(' . implode(' OR ', $exclude_terms) . ')',
+	  	      'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 25)).  ') AND -(' . implode(' OR ', array_slice($exclude_terms, 0, 10)) . ')',
 	  	      'num'      => '100',
 	  	      'vol_dist' => '100'
 	  )
 	);
 
-        var_dump($response);
+        // var_dump($response);
 
 	if(isset($response->body) && !empty($response->body)) {
 		// Do a try/catch on parsing to XML.
