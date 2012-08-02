@@ -17,7 +17,8 @@ class JobsDB {
   /* Define constants. */
 
   /* Record types that can be inserted/deleted. */
-  const RECORDS_JOB = 0; // Job records - default.
+  const RECORDS_JOB = 1; // Job records - default.
+  const RECORDS_OPP = 2; // Volunteer opportunity records.
 
   /* Constants for operators. */
   const OP_IN = 0;

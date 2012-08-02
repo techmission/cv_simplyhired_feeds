@@ -44,6 +44,9 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	
 	const MAX_OFFSET = 9; // the maximum number of pages beyond the first page of results to get (1000 results total)
 
+	const POSITION_TYPE_JOBS = 33389;
+	const POSITION_TYPE_OPPS = 4794;
+
 	/* Class variables. */
     
 	/* Options passed in when instantiating class. -
@@ -83,13 +86,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	/**
 	 * Sets a default query for the system, using ORs for all our faith terms.
 	 */
-	public function buildDefaultQuery($pOperator = self::OP_OR) {
+	public function buildDefaultQuery($pOperator = self::OP_OR, $pShowJobsOnly = TRUE) {
 	  $lQryIncludesArray = _get_include_terms(); // terms shared between classes
-          // Leave out terms that are not explicitly Christian.
-          unset($lQryIncludesArray[116]);  // "group home"
-          unset($lQryIncludesArray[117]);  // "soup kitchen"
-          unset($lQryIncludesArray[118]);  // "food pantry"
-          unset($lQryIncludesArray[119]);   // "homeless shelter"
+      // Leave out terms that are not explicitly Christian.
+      unset($lQryIncludesArray[116]);  // "group home"
+      unset($lQryIncludesArray[117]);  // "soup kitchen"
+      unset($lQryIncludesArray[118]);  // "food pantry"
+      unset($lQryIncludesArray[119]);   // "homeless shelter"
 	  // Leave out certain terms outside the US
 	  if($this->country != 'en-us') {
 	    unset($lQryIncludesArray[8]);    // "ministry" - b/c used in gov't jobs
@@ -105,7 +108,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	    $lDefaultQueryExcludes = ' AND NOT ' . implode(' AND NOT ', $lQryExcludesArray);
 	  }
 	  // Query has both inclusions and exclusions.
-	  $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes;
+	  // Also filter out volunteer and unpaid positions.
+	  if($pShowJobsOnly == TRUE) {
+	    $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes . ' AND NOT volunteer AND NOT unpaid';
+	  }
+	  else {
+	    $lDefaultQuery = $lDefaultQueryIncludes . $lDefaultQueryExcludes . ' AND (volunteer OR unpaid)';
+	  }
 	  // urlencode the query
 	  $lDefaultQuery = urlencode($lDefaultQuery);
 	  return $lDefaultQuery;
@@ -115,12 +124,12 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * Runs search, but only returns the number of items.
 	 * @todo: Condense this and fetchJobs into a single function, or wrap the functionality somehow?
 	 */
-	public function fetchCount($pQuery = self::QRY_DEFAULT) {
+	public function fetchCount($pQuery = self::QRY_DEFAULT, $pShowJobsOnly = TRUE) {
 	  $lCount = 0;
 	  // Set query.
 	  $lQuery = $pQuery;
 	  if($pQuery == self::QRY_DEFAULT) {
-	  	$lQuery = $this->buildDefaultQuery();
+	  	$lQuery = $this->buildDefaultQuery(self::OP_OR, $pShowJobsOnly);
 	  	$this->setQuery($lQuery);
 	  }
 	  else if(is_string($pQuery) && !empty($pQuery)) {
@@ -150,7 +159,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * @param int $pLimit
 	 *   The maximum number of results to return.
 	 */
-	public function fetchJobs($pQuery = self::QRY_DEFAULT, $pLimit = self::RES_SIZE_DEFAULT) {
+	public function fetchJobs($pQuery = self::QRY_DEFAULT, $pLimit = self::RES_SIZE_DEFAULT, $pShowJobsOnly = TRUE) {
 	  $lJobsArray = array();
 	  $lOffset = 0;
 	  $retJobsArray = array();
@@ -161,7 +170,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  // Set query.
 	  $lQuery = $pQuery;
 	  if($pQuery == self::QRY_DEFAULT) {
-	  	$lQuery = $this->buildDefaultQuery();
+	  	$lQuery = $this->buildDefaultQuery(self::OP_OR, $pShowJobsOnly);
 	  	$this->setQuery($lQuery);
 	  }
 	  else if(is_string($pQuery) && !empty($pQuery)) {
@@ -174,7 +183,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  // Fetch jobs.
 	  $lJobsArray = $retJobsArray = $this->_fetchJobs($pLimit);
 	  while(count($lJobsArray) == 100) {
-	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset);
+	  	$lJobsArray = $this->_fetchJobs($pLimit, $lOffset, $pShowJobsOnly);
 	  	$retJobsArray = array_merge($lJobsArray, $retJobsArray);
 	  	$lOffset++;
 	  	// Don't go over 10 pages (the maximum that a resultset will say that it has).
@@ -185,10 +194,15 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	  return $retJobsArray;
 	}
 	
+	// Fetch volunteer opportunities instead of jobs.
+	public function fetchOpps($pQuery = self::QRY_DEFAULT, $pLimit = self::RES_SIZE_DEFAULT) {
+	 return $this->fetchJobs($pQuery, $pLimit, FALSE);
+	}
+	
 	/* Private function to get job results. */
-	private function _fetchJobs($pLimit, $pOffset = 0) {
+	private function _fetchJobs($pLimit, $pOffset = 0, $pShowJobsOnly = TRUE) {
 	  $results = $this->doSearch($pLimit, $pOffset);
-	  $lJobsArray = $this->_buildJobsArray($results);
+	  $lJobsArray = $this->_buildJobsArray($results, $pShowJobsOnly);
 	  return $lJobsArray;
 	}
 	
@@ -200,7 +214,7 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	 * @return int|void
 	 *   The number of jobs in the array, or no return value if an error in feed.
 	 */
-	private function _buildJobsArray($results) {
+	private function _buildJobsArray($results, $pShowJobsOnly = TRUE) {
 		if($results->error) { 
 		  $this->jobsArray = array(); // If the results had an error, jobsArray can't be set, so clear previous (if any).
 		  return;
@@ -243,6 +257,13 @@ class CV_SimplyHired_API extends SimplyHired_API {
 		    $lJobsArray[$i]['description'] = xt_getInnerXML($res->e);
 		    // Teaser should have same value as description, for this provider.
 		    $lJobsArray[$i]['short_description'] = $lJobsArray[$i]['description'];
+		    // Set the position type tid. Use 33389 for jobs, and 4794 for volunteer opportunities.
+		    if($pShowJobsOnly == TRUE) {
+		      $lJobsArray[$i]['position_type'] = self::POSITION_TYPE_JOBS;
+		    }
+		    else {
+		      $lJobsArray[$i]['position_type'] = self::POSITION_TYPE_OPPS;
+		    }
 		    $i++;
 		  }
 		}

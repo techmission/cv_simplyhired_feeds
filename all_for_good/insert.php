@@ -94,9 +94,9 @@ function fetchOpps($lat, $long) {
 
           $opportunities[] = array(
 			"title"       => $opp['title'],
-                        "description"  => $opp['description'],
+            "description"  => $opp['description'],
 			"short_description"  => $opp['description'],
-			"source"      => "All For Good", // can this be lowercase w/underscores ~ead
+			"source"      => "All For Good",
 			"org_name"    => $opp['sponsoringOrganizationName'],
 			"referralurl" => $url,
 			"source_guid" => $url,

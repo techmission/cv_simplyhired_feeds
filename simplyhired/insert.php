@@ -20,6 +20,9 @@ define('DEFAULT_LOGFILE', 'cli-results.csv');
 define('BEHAVIOR_COUNT', 0);
 define('BEHAVIOR_QUERY', 1);
 
+define('RECORD_TYPE_JOBS', 1);
+define('RECORD_TYPE_OPPS', 2);
+
 $logging = FALSE;
 
 // Temporarily display runtime errors to the screen.
@@ -82,52 +85,29 @@ if (class_exists( 'CV_SimplyHired_API')) {
 	  }
 
 	  if($behavior == BEHAVIOR_QUERY) {
-        // In the background, run the query and turn the results into the proper format.
+	   // Initialize the database handler.
+	   try {
+	    $jobsDb = new JobsDB();
+	   }
+	   catch(Exception $e) {
+	    echo "Exception: " . $e->getMessage() . "\n";
+	   }
+	   // Set to not log at database layer, since logging does not work in command line mode.
+	   $jobsDb->isLogging = FALSE;
+	   // Connect to the database;
+	   $jobsDb->connect();
+	   
+        // In the background, run the jobs query and turn the results into the proper format.
 	    $jobs = array();
 	    $jobs = $cvsha->fetchJobs(); // Will use the default query terms.
-	    // Echo the jobs array.
-	    //var_dump($jobs);
-    
-	    /* Write the jobs array to the database. */
-	
-	    // Initialize the database handler.
-	    try {
-	      $jobsDb = new JobsDB();
-	    }
-	    catch(Exception $e) {
-	      echo "Exception: " . $e->getMessage() . "\n";
-	    }
-	
-	    // Set to not log at database layer, since logging does not work in command line mode.
-	    $jobsDb->isLogging = FALSE;
-	
-	    // Connect to the database;
-	    $jobsDb->connect();
-	
-	    // Set the table name to count/insert, etc. Not strictly necessary.
-	    //$jobsDb->tableName = TABLE_FEEDS_JOBS;
-	
-	    // Write the jobs records to the tbl_feeds table.
-	    $numInserted = $jobsDb->createRecords($jobs); // @todo: Why is this not showing an accurate count?
-	    if($logging == TRUE) {
-	      if(!is_int($numInserted)) {
-	      	$numInserted = -1; // error condition if numInserted is not a number
-	      }	
-	      echo "Number returned was: " . count($jobs) . "\n";
-	      echo "Number inserted was: " . $numInserted . "\n";
-	    }
-	    // If not logging, then record to a file.
-	    else {
-	      // Open the file in append mode.
-	      if($handle = fopen(DEFAULT_LOGFILE, 'a')) {
-	      	// Log the parameter passed, number returned, and number inserted.
-	      	$log_fields = array($argv[1], count($jobs), $numInserted);
-	      	// Write them in CSV format.
-	      	fputcsv($handle, $log_fields);
-	      	// Close the file handle.
-	      	fclose($handle);
-	      }
-	    }
+	    // Write the jobs array to the database.
+	    writeRecords($jobsDb, $jobs);
+	    
+	    // In the background, run the jobs query and turn the results into the proper format.
+	    $opps = array();
+	    $opps = $cvsha->fetchOpps(); // Will use the default query terms.
+	    // Write the jobs array to the database.
+	    writeRecords($jobsDb, $opps);
 	  }
 	  // Otherwise just run the query and get count.
 	  else {
@@ -153,4 +133,30 @@ if (class_exists( 'CV_SimplyHired_API')) {
 }
 else {
   exit(1); // Exit with error status code
+}
+
+function writeRecords($jobsDb, $records) {
+ // Write the jobs records to the tbl_feeds table.
+ // @fixme: Ensure that createRecords will write opps & jobs differently.
+ // Need to find out what is different about how they are stored.
+ $numInserted = $jobsDb->createRecords($records);
+ if($logging == TRUE) {
+  if(!is_int($numInserted)) {
+   $numInserted = -1; // error condition if numInserted is not a number
+  }
+  echo "Number returned was: " . count($records) . "\n";
+  echo "Number inserted was: " . $numInserted . "\n";
+ }
+ // If not logging, then record to a file.
+ else {
+  // Open the file in append mode.
+  if($handle = fopen(DEFAULT_LOGFILE, 'a')) {
+   // Log the parameter passed, number returned, and number inserted.
+   $log_fields = array($argv[1], count($records), $numInserted);
+   // Write them in CSV format.
+   fputcsv($handle, $log_fields);
+   // Close the file handle.
+   fclose($handle);
+  }
+ }
 }
