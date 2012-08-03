@@ -91,7 +91,7 @@ function fetchOpps() {
         if($end_date) $end_date = strtotime($end_date);
 
     	$opps[] = array(
-            "position_type"       => 4794, // Local volunteering taxonomy tid from Position Type vocabulary.
+            "position_type"       => 'Local Volunteering (in person)',
             "status"              => 1,
     		"title"               => $need['Title'],
     		"description"         => $need['Description'],

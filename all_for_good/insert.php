@@ -109,7 +109,8 @@ function fetchOpps($lat, $long) {
 			"latitude"    => $coords[0],
 			"longitude"   => $coords[1],
 			"created"     => strftime('%Y-%m-%d %H:%M:%S'), // is there nothing in the feed to correlate with this? ~ead
-			"changed"     => strftime('%Y-%m-%d %H:%M:%S')
+			"changed"     => strftime('%Y-%m-%d %H:%M:%S'),
+            "position_type"       => 'Local Volunteering (in person)', // @todo: Figure out if we can set local vs. virtual
 		);
 	}
 	return $opportunities;

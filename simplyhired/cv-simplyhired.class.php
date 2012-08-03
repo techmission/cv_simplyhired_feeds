@@ -44,8 +44,8 @@ class CV_SimplyHired_API extends SimplyHired_API {
 	
 	const MAX_OFFSET = 9; // the maximum number of pages beyond the first page of results to get (1000 results total)
 
-	const POSITION_TYPE_JOBS = 33389;
-	const POSITION_TYPE_OPPS = 4794;
+	const POSITION_TYPE_JOBS = 'Job';
+	const POSITION_TYPE_OPPS = 'Local Volunteering (in person)';
 
 	/* Class variables. */
     
