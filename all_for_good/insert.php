@@ -78,6 +78,7 @@ function fetchOpps($lat, $long) {
 	}
 	
 	$opportunities = array();
+        $virtual_summary = array();
 	if(!$xml || empty($xml->channel) || empty($xml->channel->item)) return $opportunities;
       $opps = array();
 	  foreach($xml->channel->item as $o) {
@@ -91,7 +92,7 @@ function fetchOpps($lat, $long) {
           
           $url_pieces = explode('#', $opp['xml_url']);
           $url = $url_pieces[0];
-
+          
           $opportunities[] = array(
 			"title"       => $opp['title'],
             "description"  => $opp['description'],
@@ -110,7 +111,7 @@ function fetchOpps($lat, $long) {
 			"longitude"   => $coords[1],
 			"created"     => strftime('%Y-%m-%d %H:%M:%S'), // is there nothing in the feed to correlate with this? ~ead
 			"changed"     => strftime('%Y-%m-%d %H:%M:%S'),
-            "position_type"       => 'Local Volunteering (in person)', // @todo: Figure out if we can set local vs. virtual
+                        "position_type" => ((string) $opp['virtual']) == 'True' ? 'Virtual Volunteering (from home)' : 'Local Volunteering (in person)', // @todo: Figure out if we can set local vs. virtual
 		);
 	}
 	return $opportunities;
