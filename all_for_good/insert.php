@@ -31,39 +31,56 @@ $logging = FALSE;
 if(!empty($argv[1]) && !empty($argv[2])) {
   $lat = $argv[1];
   $long = $argv[2];
-  insertOpps(fetchOpps($lat, $long));
-  exit(0);
+  $opps = fetchOppsNear($lat, $long);
 }
 else {
-  echo "This is a command line script. \n";
-  echo "Usage: \n";
-  echo "php " . $argv[0] . " <latitude> <logitude>" . "\n";
-  exit(1); // Exit with error status code.
+  $opps = fetchVirtualOpps();
+}
+insertOpps($opps);
+exit(0);
+
+function coreSearchParams() {
+  $include_terms = _get_include_terms();
+  $exclude_terms = _get_exclude_terms();
+  return array(
+    'key'       => 'christianvolunteering',
+    'output'   => 'rss',
+    'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 40)).  ') AND -(' . implode(' OR ', array_slice($exclude_terms, 0, 25)) . ')'
+  );
 }
 
-function fetchOpps($lat, $long) {
+function locationBasedSearchParams($lat, $long) {
+  $params = coreSearchParams();
+  $params['num'] = '100';
+  $params['vol_dist'] = '100';
+  $params['vol_loc'] = $lat . ',' . $long;
+  return $params;
+}
+
+function virtualSearchParams() {
+  $params = coreSearchParams();
+  $params['type'] = 'virtual';
+  return $params;
+}
+
+function fetchOppsNear($lat, $long) {
+  return fetchOppsCore(locationBasedSearchParams($lat, $long));
+}
+
+function fetchVirtualOpps() {
+  $to_return = array();
+  return fetchOppsCore(virtualSearchParams());
+}
+
+
+function fetchOppsCore($params) {
 	// Set return variable to null by default.
 	$xml = null;
-	
-	$include_terms = _get_include_terms();
-	$exclude_terms = _get_exclude_terms();
-
-        // var_dump(count($include_terms));
-        // var_dump(count($exclude_terms));
 
 	$response = make_http_request(
-	  'http://www.allforgood.org/api/volopps', 
-	  array(
-	         'key'       => 'christianvolunteering',
-	  	      'output'   => 'rss',
-	  	      'vol_loc'  => $lat . ',' . $long,
-	  	      'q'        => '-detailurl:http*christianvolunteering* AND -detailurl:http*churchvolunteering* AND (' . implode(' OR ', array_slice($include_terms, 0, 40)).  ') AND -(' . implode(' OR ', array_slice($exclude_terms, 0, 25)) . ')',
-	  	      'num'      => '100',
-	  	      'vol_dist' => '100'
-	  )
+	  'http://www.allforgood.org/api/volopps',
+          $params 
 	);
-
-        // var_dump($response);
 
 	if(isset($response->body) && !empty($response->body)) {
 		// Do a try/catch on parsing to XML.
@@ -94,8 +111,8 @@ function fetchOpps($lat, $long) {
           $url = $url_pieces[0];
           
           $opportunities[] = array(
-			"title"       => $opp['title'],
-            "description"  => $opp['description'],
+			"title"        => $opp['title'],
+                        "description"  => $opp['description'],
 			"short_description"  => $opp['description'],
 			"source"      => "All For Good",
 			"org_name"    => $opp['sponsoringOrganizationName'],
