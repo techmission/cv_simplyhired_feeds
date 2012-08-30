@@ -1,0 +1,8 @@
+#!/bin/bash
+
+SCRIPT_PATH=`dirname $0`
+DELETE_SCRIPT=delete.php
+INSERT_SCRIPT=insert.php
+
+php $SCRIPT_PATH/$DELETE_SCRIPT
+php $SCRIPT_PATH/$INSERT_SCRIPT
