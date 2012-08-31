@@ -56,7 +56,7 @@ function fetchOpps() {
     foreach($jobs['item'] as $j) {
     	$opps[] = array(
             "position_type"      => 'Job',
-            "status"             => 1,
+            "status"             => 0,
             "title"              => $j['title'],
     	    "description"        => $j['description'],
     	    "short_description"  => $j['description'],
