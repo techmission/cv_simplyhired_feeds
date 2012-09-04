@@ -60,7 +60,7 @@ function fetchOpps() {
           $j['country-name'] = '';
         }
     	$opps[] = array(
-            "position_type"      => 'Job',
+            "position_type"      => $j['is-salaried'] == '1' ? 'Job' : 'Local Volunteering (in person)',
             "status"             => 0,
             "title"              => $j['title'],
     	    "description"        => $j['description'],
