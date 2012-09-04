@@ -53,7 +53,12 @@ function getFeed() {
 function fetchOpps() {
     $jobs = xt_xml_to_array(getFeed());
     $opps = array();
+    $interserve_countries_that_should_be_regions = array('Arab World', 'Central Asia', 'East Asia', 'South Asia', 'South East Asia', 'West Asia');
     foreach($jobs['item'] as $j) {
+        if(in_array($j['country-name'], $interserve_countries_that_should_be_regions)) {
+          $j['region-name'] = $j['country-name'];
+          $j['country-name'] = '';
+        }
     	$opps[] = array(
             "position_type"      => 'Job',
             "status"             => 0,
@@ -64,6 +69,7 @@ function fetchOpps() {
             "referralurl"        => 'http://interserve.org/index.php?option=com_jumi&fileid=4&Itemid=94&id=' . $j['id'],
             "source_guid"        => $j['id'],
     	    "country_name"       => $j['country-name'],
+            "region"             => $j['region-name'], 
             "created"            => strtotime($j['posted']),
     	    "changed"            => strtotime($j['last-modified'])
     	);
