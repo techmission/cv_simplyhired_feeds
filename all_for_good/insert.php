@@ -41,6 +41,16 @@ exit(0);
 
 function coreSearchParams() {
   $include_terms = _get_include_terms();
+  $disaster_terms = array();
+  $disaster_terms[] = 'hurricane';
+  $disaster_terms[] = 'sandy';
+  $disaster_terms[] = 'flood';
+  $disaster_terms[] = 'debris';
+  $disaster_terms[] = 'tree clearing';
+  $disaster_terms[] = 'tropical';
+  $diaster_terms[] = 'storm';
+  $include_terms = $disaster_terms + $include_terms;
+  print_r($include_terms);
   $exclude_terms = _get_exclude_terms();
   return array(
     'key'       => 'christianvolunteering',
@@ -126,8 +136,8 @@ function fetchOppsCore($params) {
 			"end_date"    => $opp['endDate'],
 			"latitude"    => $coords[0],
 			"longitude"   => $coords[1],
-			"created"     => strftime('%Y-%m-%d %H:%M:%S'), // is there nothing in the feed to correlate with this? ~ead
-			"changed"     => strftime('%Y-%m-%d %H:%M:%S'),
+			"created"     => time(), // is there nothing in the feed to correlate with this? ~ead
+			"changed"     => time(),
                         "position_type" => ((string) $opp['virtual']) == 'True' ? 'Virtual Volunteering (from home)' : 'Local Volunteering (in person)', // @todo: Figure out if we can set local vs. virtual
 		);
 	}
