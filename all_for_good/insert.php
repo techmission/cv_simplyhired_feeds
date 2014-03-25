@@ -43,14 +43,12 @@ function coreSearchParams() {
   $include_terms = _get_include_terms();
   $disaster_terms = array();
   $disaster_terms[] = 'hurricane';
-  $disaster_terms[] = 'sandy';
   $disaster_terms[] = 'flood';
   $disaster_terms[] = 'debris';
   $disaster_terms[] = 'tree clearing';
   $disaster_terms[] = 'tropical';
   $diaster_terms[] = 'storm';
   $include_terms = $disaster_terms + $include_terms;
-  print_r($include_terms);
   $exclude_terms = _get_exclude_terms();
   return array(
     'key'       => 'christianvolunteering',
