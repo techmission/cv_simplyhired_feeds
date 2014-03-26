@@ -193,7 +193,7 @@ function _get_include_terms() {
    // 103 => 'monastery',
    104 => 'Nazarene',
    105 => 'priest',
-   106 => 'Quaker',
+   // 106 => 'Quaker',
    // 107 => 'RUF',
    // 108 => '"spiritual director"',
    // 109 => 'theologian',
@@ -232,6 +232,13 @@ function _get_exclude_terms() {
    25 => 'Universalist',
    26 => '"Church & Dwight"',
    27 => 'Buddhist',
+   28 => 'FedEx',
+   29 => '"Material Handler"',
+   30 => '"Church Hill"',
+   31 => '"McDonald"',
+   32 => 'CDL',
+   31 => '"Robert Half International"',
+   32 => '"City Vision Internship"',
  );
  return $exclude_terms;
 }
